@@ -1,6 +1,5 @@
 ﻿namespace Tripsters.Web.Areas.Identity.Pages.Account
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
@@ -90,7 +89,7 @@
             if (this.ModelState.IsValid)
             {
                 var town = new Town { Name = this.Input.Town };
-                var user = new ApplicationUser { UserName = this.Input.Name, Email = this.Input.Email, Town = town };
+                var user = new ApplicationUser { UserName = this.Input.Name, Email = this.Input.Email, HomeTown = town };
                 var result = await this._userManager.CreateAsync(user, this.Input.Password);
                 if (result.Succeeded)
                 {

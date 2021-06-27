@@ -24,13 +24,9 @@ namespace Tripsters.Data.Models
         [Range(16, 99)]
         public int Age { get; set; }
 
-        public int TownId { get; set; }
+        public string HomeTownId { get; set; }
 
-        public Town Town { get; set; }
-
-        public ICollection<ApplicationUser> Friends { get; set; }
-
-        public ICollection<Badge> Badges { get; set; }
+        public Town HomeTown { get; set; }
 
         // Audit info
         public DateTime CreatedOn { get; set; }
@@ -41,6 +37,12 @@ namespace Tripsters.Data.Models
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
+
+        public ICollection<ApplicationUser> Friends { get; set; }
+
+        public ICollection<Badge> Badges { get; set; }
+
+        public ICollection<Trip> Trips { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 

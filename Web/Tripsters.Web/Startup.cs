@@ -21,6 +21,8 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Tripsters.Services.Data.Trips;
+    using Tripsters.Services.Data.Towns;
 
     public class Startup
     {
@@ -65,6 +67,8 @@
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<ITripsService, TripsService>();
+            services.AddTransient<ITownService, TownService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

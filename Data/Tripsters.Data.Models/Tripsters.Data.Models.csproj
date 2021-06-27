@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Tripsters.Common\Tripsters.Common.csproj" />
     <ProjectReference Include="..\Tripsters.Data.Common\Tripsters.Data.Common.csproj" />
   </ItemGroup>
   

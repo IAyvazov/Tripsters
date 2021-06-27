@@ -26,6 +26,14 @@
 
         public DbSet<Setting> Settings { get; set; }
 
+        public DbSet<Trip> Trips { get; set; }
+
+        public DbSet<Badge> Badges { get; set; }
+
+        public DbSet<Town> Towns { get; set; }
+
+        public DbSet<Landmark> Landmarks { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -48,9 +56,18 @@
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Trip>()
-                .HasOne(x => x.ToTown)
-                .WithMany(x => x.Trips)
-                .HasForeignKey(x => x.ToTownId);
+                .HasOne(tr => tr.FromTown)
+                .WithMany(t => t.FromTrips)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Trip>()
+                .HasOne(tr => tr.ToTown)
+                .WithMany(t => t.ToTrips)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Town>()
+                .HasIndex(t => t.Name)
+                .IsUnique();
 
             // Needed for Identity models configuration
             base.OnModelCreating(builder);
