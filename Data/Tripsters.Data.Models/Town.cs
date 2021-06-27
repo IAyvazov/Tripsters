@@ -10,6 +10,7 @@
         public Town()
         {
             this.Landmarks = new HashSet<Landmark>();
+            this.Trips = new HashSet<Trip>();
         }
 
         [Required]

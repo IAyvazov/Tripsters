@@ -2,9 +2,9 @@
 {
     using System.Diagnostics;
 
-    using Tripsters.Web.ViewModels;
-
     using Microsoft.AspNetCore.Mvc;
+
+    using Tripsters.Web.ViewModels;
 
     public class HomeController : BaseController
     {
@@ -23,6 +23,11 @@
         {
             return this.View(
                 new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult About()
+        {
+            return this.View();
         }
     }
 }

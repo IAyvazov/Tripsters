@@ -4,9 +4,9 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Tripsters.Data.Common.Repositories;
-
     using Microsoft.EntityFrameworkCore;
+
+    using Tripsters.Data.Common.Repositories;
 
     public class EfRepository<TEntity> : IRepository<TEntity>
         where TEntity : class

@@ -17,15 +17,9 @@ namespace Tripsters.Data.Models
             this.Roles = new HashSet<IdentityUserRole<string>>();
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
+            this.Friends = new HashSet<ApplicationUser>();
+            this.Badges = new HashSet<Badge>();
         }
-
-        [Required]
-        [MaxLength(20)]
-        public string FirstName { get; set; }
-
-        [Required]
-        [MaxLength(20)]
-        public string LastName { get; set; }
 
         [Range(16, 99)]
         public int Age { get; set; }

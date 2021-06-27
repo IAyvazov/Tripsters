@@ -3,12 +3,12 @@
     using System;
     using System.Threading.Tasks;
 
+    using Microsoft.AspNetCore.Mvc;
+
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data;
     using Tripsters.Web.ViewModels.Settings;
-
-    using Microsoft.AspNetCore.Mvc;
 
     public class SettingsController : BaseController
     {
