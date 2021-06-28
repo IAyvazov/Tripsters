@@ -16,7 +16,7 @@
         }
 
         [Required]
-        [MaxLength(GlobalConstants.Trip.NameMaxLength)]
+        [MaxLength(GlobalConstants.TripSecurity.NameMaxLength)]
         public string Name { get; set; }
 
         public string Description { get; set; }

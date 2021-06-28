@@ -1,7 +1,31 @@
-﻿<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body>
-</body>
-</html>
+﻿@using Tripsters.Web.ViewModels.Trips
+
+@model TripsListingModel
+
+@{
+    ViewData["Title"] = "All Trips";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="col-md-4">
+    @foreach (var trip in Model.Trips)
+    {
+        <div class="container">
+            <div class="">
+                <img src="">
+            </div>
+            <h2>Trip Name: @trip.Name</h2>
+            <div class="">
+                <div class="">
+                    <h3>Destination: @trip.FromTown => @trip.ToTown</h3>
+                    <h3>Available Seats: @trip.AvailableSeats</h3>
+                    <h3>Description: @trip.Description</h3>
+                </div>
+                <div class="data-buttons">
+                    <a href="/Trips/Join" >Join</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

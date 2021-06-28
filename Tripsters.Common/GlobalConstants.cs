@@ -6,7 +6,7 @@
 
         public const string AdministratorRoleName = "Administrator";
 
-        public class Trip
+        public class TripSecurity
         {
             public const int NameMinLength = 5;
             public const int NameMaxLength = 100;

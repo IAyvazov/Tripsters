@@ -9,27 +9,27 @@
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Name")]
-        [StringLength(GlobalConstants.Trip.NameMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.Trip.NameMinLength)]
+        [StringLength(GlobalConstants.TripSecurity.NameMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.NameMinLength)]
         public string Name { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "From Town")]
-        [StringLength(GlobalConstants.Trip.NameMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.Trip.NameMinLength)]
+        [StringLength(GlobalConstants.TripSecurity.TownMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.TownMinLength)]
         public string FromTown { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "To Town")]
-        [StringLength(GlobalConstants.Trip.TownMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.Trip.TownMinLength)]
+        [StringLength(GlobalConstants.TripSecurity.TownMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.TownMinLength)]
         public string ToTown { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "Available Seats")]
-        [Range(GlobalConstants.Trip.AvailableSeatsMinRange, GlobalConstants.Trip.AvailableSeatsMaxRange)]
+        [Range(GlobalConstants.TripSecurity.AvailableSeatsMinRange, GlobalConstants.TripSecurity.AvailableSeatsMaxRange)]
         public int AvailableSeats { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "Description")]
-        [StringLength(GlobalConstants.Trip.DescriptionMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.Trip.DescriptionMinLength)]
+        [StringLength(GlobalConstants.TripSecurity.DescriptionMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.DescriptionMinLength)]
         public string Description { get; set; }
     }
 }

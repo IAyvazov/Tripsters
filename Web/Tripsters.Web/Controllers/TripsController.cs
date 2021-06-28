@@ -1,5 +1,7 @@
 ﻿namespace Tripsters.Web.Controllers
 {
+    using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Mvc;
 
     using Tripsters.Services.Data.Trips;
@@ -21,7 +23,10 @@
                 return this.Unauthorized();
             }
 
-            return this.View();
+            var trips = this.tripsService.GetAllTrips();
+            var model = new TripsListingModel { Trips = trips };
+
+            return this.View(model);
         }
 
         public IActionResult Add(TripsInputFormModel trips)
@@ -35,14 +40,14 @@
         }
 
         [HttpPost]
-        public IActionResult AddTrip(TripsInputFormModel trips)
+        public async Task<IActionResult> AddTrip(TripsInputFormModel trips)
         {
             if (this.User == null)
             {
                 return this.Unauthorized();
             }
 
-            this.tripsService.Add(trips);
+            await this.tripsService.AddTrip(trips);
 
             return this.Redirect("/Trips/All");
         }
