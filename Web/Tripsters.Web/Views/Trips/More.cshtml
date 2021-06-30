@@ -1,0 +1,40 @@
+﻿@using Tripsters.Web.ViewModels.Trips
+
+@model TripsViewModel
+
+@{
+    ViewData["Title"] = "Trip";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="card text-center">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="/Trips/More?tripId=@Model.Id">Trip info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/Users/Info?creatorId=@Model.CreatorId&userId=@Model.CurrentUserId&currTripId=@Model.Id">Creator info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Trips/Members?tripId=@Model.Id">Members (@Model.Members.Count)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="/Trips/Photo?tripId={2}">Photos</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <h3 class="card-title">@Model.Name</h3>
+        <h5 class="card-text">We  go on: @Model.StartDate</h5>
+        <h5 class="card-text">From: @Model.FromTown</h5>
+        <h5 class="card-text">To: @Model.ToTown</h5>
+        <h5 class="card-text">We have: @Model.AvailableSeats seats left</h5>
+        <p class="card-text">@Model.Description</p>
+        @if (!Model.Members.Any(u => u.Id == Model.CurrentUserId))
+        {
+            <a href="/Trips/Join?tripId=@Model.Id&userId=@Model.CurrentUserId" class="btn btn-primary">Join</a>
+        }
+    </div>
+</div>

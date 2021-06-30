@@ -2,17 +2,6 @@
 {
     using System.Reflection;
 
-    using Tripsters.Data;
-    using Tripsters.Data.Common;
-    using Tripsters.Data.Common.Repositories;
-    using Tripsters.Data.Models;
-    using Tripsters.Data.Repositories;
-    using Tripsters.Data.Seeding;
-    using Tripsters.Services.Data;
-    using Tripsters.Services.Mapping;
-    using Tripsters.Services.Messaging;
-    using Tripsters.Web.ViewModels;
-
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -21,8 +10,20 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Tripsters.Services.Data.Trips;
+
+    using Tripsters.Data;
+    using Tripsters.Data.Common;
+    using Tripsters.Data.Common.Repositories;
+    using Tripsters.Data.Models;
+    using Tripsters.Data.Repositories;
+    using Tripsters.Data.Seeding;
+    using Tripsters.Services.Data;
     using Tripsters.Services.Data.Towns;
+    using Tripsters.Services.Data.Trips;
+    using Tripsters.Services.Data.Users;
+    using Tripsters.Services.Mapping;
+    using Tripsters.Services.Messaging;
+    using Tripsters.Web.ViewModels;
 
     public class Startup
     {
@@ -69,6 +70,7 @@
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<ITripsService, TripsService>();
             services.AddTransient<ITownsService, TownsService>();
+            services.AddTransient<IUsersService, UsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

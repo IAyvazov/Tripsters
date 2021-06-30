@@ -9,10 +9,12 @@
     {
         ICollection<string> Validate(TripsInputFormModel tripData);
 
-        Task AddTrip(TripsInputFormModel tripData);
+        Task AddTrip(TripsInputFormModel tripData, string userName);
 
         ICollection<TripsViewModel> GetAllTrips();
 
-        TripsViewModel GetTripById(string tripId);
+        TripsViewModel GetTripById(string tripId, string userId);
+
+        Task JoinTrip(string tripId, string userId);
     }
 }

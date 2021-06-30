@@ -8,24 +8,23 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<div class="col-md-4">
+<div class="row">
     @foreach (var trip in Model.Trips)
     {
-        <div class="container">
-            <div class="">
-                <img src="">
-            </div>
-            <h2>Trip Name: @trip.Name</h2>
-            <div class="">
-                <div class="">
-                    <h3>Destination: @trip.FromTown => @trip.ToTown</h3>
-                    <h3>Available Seats: @trip.AvailableSeats</h3>
-                    <h3>Description: @trip.Description</h3>
-                </div>
-                <div class="data-buttons">
-                    <a href="/Trips/Join" >Join</a>
+        <div class="container m-sm-4 col-sm-3 ">
+            <div class="card alert-link" style="width: 18rem;">
+                @trip.CreatorName
+                <div class="card-body">
+                    <h5 class="card-title">@trip.Name</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">From: @trip.FromTown</li>
+                        <li class="list-group-item">To: @trip.ToTown</li>
+                        <li class="list-group-item">Seats: @trip.AvailableSeats</li>
+                    </ul>
+                    <a href="/Trips/More?tripId=@trip.Id" class="btn btn-primary">More</a>
                 </div>
             </div>
+
         </div>
     }
 </div>

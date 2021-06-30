@@ -25,6 +25,10 @@
         [Range(2, 6)]
         public int AvailableSeats { get; set; }
 
+        public string UserId { get; set; }
+
+        public ApplicationUser User { get; set; }
+
         [Required]
         public string FromTownId { get; set; }
 
@@ -34,6 +38,8 @@
         public string ToTownId { get; set; }
 
         public Town ToTown { get; set; }
+
+        public DateTime StartDate { get; set; }
 
         public ICollection<ApplicationUser> Travellers { get; set; }
     }

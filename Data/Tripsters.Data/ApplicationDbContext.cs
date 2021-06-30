@@ -56,6 +56,11 @@
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Trip>()
+                .HasOne(u => u.User)
+                .WithMany(t => t.Trips)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Trip>()
                 .HasOne(tr => tr.FromTown)
                 .WithMany(t => t.FromTrips)
                 .OnDelete(DeleteBehavior.Restrict);

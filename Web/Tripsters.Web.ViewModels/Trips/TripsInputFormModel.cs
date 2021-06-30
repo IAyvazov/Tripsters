@@ -1,5 +1,6 @@
 ﻿namespace Tripsters.Web.ViewModels.Trips
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
 
     using Tripsters.Common;
@@ -21,6 +22,10 @@
         [Display(Name = "To Town")]
         [StringLength(GlobalConstants.TripSecurity.TownMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.TownMinLength)]
         public string ToTown { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Departure day and time")]
+        public DateTime StartDate { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "Available Seats")]

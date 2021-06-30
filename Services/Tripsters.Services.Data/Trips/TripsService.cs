@@ -1,5 +1,6 @@
 ﻿namespace Tripsters.Services.Data.Trips
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -7,28 +8,40 @@
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Towns;
+    using Tripsters.Services.Data.Users;
+    using Tripsters.Web.ViewModels.Badges;
     using Tripsters.Web.ViewModels.Trips;
+    using Tripsters.Web.ViewModels.Users;
 
     using static Tripsters.Common.GlobalConstants;
 
     public class TripsService : ITripsService
     {
         private readonly IDeletableEntityRepository<Trip> tripRepository;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly ITownsService townsService;
+        private readonly IUsersService usersService;
 
-        public TripsService(IDeletableEntityRepository<Trip> tripRepository, ITownsService townsService)
+        public TripsService(
+            IDeletableEntityRepository<Trip> tripRepository,
+            IDeletableEntityRepository<ApplicationUser> userRepository,
+            ITownsService townsService,
+            IUsersService usersService)
         {
             this.tripRepository = tripRepository;
+            this.userRepository = userRepository;
             this.townsService = townsService;
+            this.usersService = usersService;
         }
 
-        public async Task AddTrip(TripsInputFormModel tripData)
+        public async Task AddTrip(TripsInputFormModel tripData, string userName)
         {
             var trip = new Trip
             {
                 AvailableSeats = tripData.AvailableSeats,
                 Name = tripData.Name,
                 Description = tripData.Description,
+                StartDate = DateTime.UtcNow,
             };
 
             var fromTown = this.townsService.GetTownByName(tripData.FromTown);
@@ -51,8 +64,10 @@
                 };
             }
 
+            var user = this.usersService.GetUser(userName);
             trip.FromTown = fromTown;
             trip.ToTown = toTown;
+            trip.User = user ?? throw new ArgumentNullException("You are not loggin.");
 
             await this.tripRepository.AddAsync(trip);
             await this.tripRepository.SaveChangesAsync();
@@ -62,27 +77,81 @@
         => this.tripRepository.All()
             .Select(t => new TripsViewModel
             {
+                Id = t.Id,
                 Name = t.Name,
                 FromTown = t.FromTown.Name,
                 ToTown = t.ToTown.Name,
                 AvailableSeats = t.AvailableSeats,
                 Description = t.Description,
-            })
-            .ToList();
+                CreatorName = t.User.UserName,
+                StartDate = t.StartDate.ToString("G"),
+                Members = t.Travellers
+                .Select(m => new UserViewModel
+                {
+                    Id = m.Id,
+                    UserName = m.UserName,
+                    Age = m.Age,
+                    HomeTown = m.HomeTown.Name,
+                    CurrentTripId = t.Id,
+                    Badges = m.Badges
+                    .Select(b => new BadgeViewModel
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                    })
+                    .ToList(),
+                })
+                .ToList(),
+            }).ToList();
 
-        public TripsViewModel GetTripById(string tripId)
+        public TripsViewModel GetTripById(string tripId, string userId)
         => this.tripRepository.All()
             .Where(t => t.Id == tripId)
             .Select(t => new TripsViewModel
             {
+                Id = t.Id,
                 Name = t.Name,
                 AvailableSeats = t.AvailableSeats,
                 FromTown = t.FromTown.Name,
                 ToTown = t.ToTown.Name,
                 Description = t.Description,
-
+                StartDate = t.StartDate.ToString("G"),
+                CreatorName = t.User.UserName,
+                CreatorId = t.UserId,
+                CurrentUserId = userId,
+                Members = t.Travellers
+                .Select(m => new UserViewModel
+                {
+                    Id = m.Id,
+                    UserName = m.UserName,
+                    Age = m.Age,
+                    HomeTown = m.HomeTown.Name,
+                    CurrentTripId = t.Id,
+                    Badges = m.Badges
+                    .Select(b => new BadgeViewModel
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                    })
+                    .ToList(),
+                })
+                .ToList(),
             })
             .FirstOrDefault();
+
+        public async Task JoinTrip(string tripId, string userId)
+        {
+            var user = this.userRepository.All()
+                .FirstOrDefault(u => u.Id == userId);
+
+            var trip = this.tripRepository.All()
+                  .FirstOrDefault(t => t.Id == tripId);
+
+            trip.AvailableSeats--;
+            trip.Travellers.Add(user);
+
+            await this.tripRepository.SaveChangesAsync();
+        }
 
         public ICollection<string> Validate(TripsInputFormModel tripData)
         {
