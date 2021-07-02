@@ -1,1 +1,18 @@
 ﻿
+@{
+    ViewData["Title"] = "My Trip";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<ul class="nav justify-content-center">
+    <li class="nav-item">
+        <a class="nav-link active" href="/Trips/MadeByMe">Made by me</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Trips/Upcoming">Upcoming</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Trips/Past">Past</a>
+    </li>
+</ul>

@@ -32,7 +32,7 @@
         <h5 class="card-text">To: @Model.ToTown</h5>
         <h5 class="card-text">We have: @Model.AvailableSeats seats left</h5>
         <p class="card-text">@Model.Description</p>
-        @if (!Model.Members.Any(u => u.Id == Model.CurrentUserId))
+        @if (!ViewBag.IsUserJoined && ViewBag.IsAvailableSeats)
         {
             <a href="/Trips/Join?tripId=@Model.Id&userId=@Model.CurrentUserId" class="btn btn-primary">Join</a>
         }

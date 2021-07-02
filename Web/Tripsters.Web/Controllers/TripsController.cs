@@ -51,6 +51,9 @@
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
             var trip = this.tripsService.GetTripById(tripId, userId);
 
+            this.ViewBag.IsUserJoined = this.tripsService.IsUserJoined(tripId, userId);
+            this.ViewBag.IsAvailableSeats = trip.AvailableSeats > 0;
+
             return this.View(trip);
         }
 
@@ -61,6 +64,16 @@
             var trip = this.tripsService.GetTripById(tripId, userId);
 
             return this.View(trip);
+        }
+
+        [Authorize]
+        public IActionResult MadeByMe()
+        {
+            var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
+            var trips = this.tripsService.GetAllUserTrips(userId);
+            var model = new TripsListingModel { Trips = trips };
+
+            return this.View(model);
         }
 
         [HttpPost]

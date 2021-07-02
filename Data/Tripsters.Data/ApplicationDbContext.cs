@@ -34,6 +34,8 @@
 
         public DbSet<Landmark> Landmarks { get; set; }
 
+        public DbSet<UserTrip> UserTrips { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -55,10 +57,9 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Trip>()
-                .HasOne(u => u.User)
-                .WithMany(t => t.Trips)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<UserTrip>()
+                .HasKey(k => new { k.UserId, k.TripId });
+
 
             builder.Entity<Trip>()
                 .HasOne(tr => tr.FromTown)

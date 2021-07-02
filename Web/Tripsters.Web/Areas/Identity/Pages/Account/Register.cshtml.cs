@@ -15,7 +15,7 @@
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
-
+    using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
 
     [AllowAnonymous]
@@ -25,17 +25,20 @@
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IDeletableEntityRepository<Town> townRepository;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IDeletableEntityRepository<Town> townRepository)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._logger = logger;
             this._emailSender = emailSender;
+            this.townRepository = townRepository;
         }
 
         [BindProperty]
@@ -88,7 +91,19 @@
             this.ExternalLogins = (await this._signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-                var town = new Town { Name = this.Input.Town };
+
+                Town town = null;
+
+                if (this.townRepository.All().Any(t => t.Name == this.Input.Town))
+                {
+                    town = this.townRepository.All()
+                        .FirstOrDefault(t => t.Name == this.Input.Town);
+                }
+                else
+                {
+                    town = new Town { Name = this.Input.Town };
+                }
+
                 var user = new ApplicationUser { UserName = this.Input.Name, Email = this.Input.Email, HomeTown = town };
                 var result = await this._userManager.CreateAsync(user, this.Input.Password);
                 if (result.Succeeded)

@@ -13,8 +13,12 @@
 
         ICollection<TripsViewModel> GetAllTrips();
 
+        ICollection<TripsViewModel> GetAllUserTrips(string userId);
+
         TripsViewModel GetTripById(string tripId, string userId);
 
         Task JoinTrip(string tripId, string userId);
+
+        bool IsUserJoined(string tripId, string userId);
     }
 }

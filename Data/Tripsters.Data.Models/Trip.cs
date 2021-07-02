@@ -12,7 +12,7 @@
         public Trip()
         {
             this.Id = Guid.NewGuid().ToString();
-            this.Travellers = new HashSet<ApplicationUser>();
+            this.Travellers = new HashSet<UserTrip>();
         }
 
         [Required]
@@ -41,6 +41,6 @@
 
         public DateTime StartDate { get; set; }
 
-        public ICollection<ApplicationUser> Travellers { get; set; }
+        public ICollection<UserTrip> Travellers { get; set; }
     }
 }

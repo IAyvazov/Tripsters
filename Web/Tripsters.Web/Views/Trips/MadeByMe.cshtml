@@ -3,10 +3,22 @@
 @model TripsListingModel
 
 @{
-    ViewData["Title"] = "All Trips";
+    ViewData["Title"] = "Made by me";
 }
 
 <h1>@ViewData["Title"]</h1>
+
+<ul class="nav justify-content-center">
+    <li class="nav-item">
+        <a class="nav-link active" href="/Trips/MadeByMe">Made by me</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Trips/Upcoming">Upcoming</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Trips/Past">Past</a>
+    </li>
+</ul>
 
 <div class="row">
     @foreach (var trip in Model.Trips)
@@ -22,10 +34,7 @@
                         <li class="list-group-item">Seats: @trip.AvailableSeats</li>
                     </ul>
                     <a href="/Trips/More?tripId=@trip.Id" class="btn btn-primary">More</a>
-                    @if (trip.CreatorName == User.Identity.Name)
-                    {
-                        <a href="/Trips/Delete?tripId=@trip.Id" class="btn btn-danger">Delete</a>
-                    }
+                    <a href="/Trips/Delete?tripId=@trip.Id" class="btn btn-danger">Delete</a>
                 </div>
             </div>
 

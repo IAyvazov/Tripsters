@@ -19,6 +19,7 @@ namespace Tripsters.Data.Models
             this.Logins = new HashSet<IdentityUserLogin<string>>();
             this.Friends = new HashSet<ApplicationUser>();
             this.Badges = new HashSet<Badge>();
+            this.Trips = new HashSet<UserTrip>();
         }
 
         [Range(16, 99)]
@@ -42,7 +43,7 @@ namespace Tripsters.Data.Models
 
         public ICollection<Badge> Badges { get; set; }
 
-        public ICollection<Trip> Trips { get; set; }
+        public ICollection<UserTrip> Trips { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 

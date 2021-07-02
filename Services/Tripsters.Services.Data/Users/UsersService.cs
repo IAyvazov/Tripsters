@@ -41,12 +41,12 @@
                 Trips = u.Trips
                 .Select(t => new TripsViewModel
                 {
-                    Name = t.Name,
-                    Description = t.Description,
-                    FromTown = t.FromTown.Name,
-                    ToTown = t.ToTown.Name,
+                    Name = t.Trip.Name,
+                    Description = t.Trip.Description,
+                    FromTown = t.Trip.FromTown.Name,
+                    ToTown = t.Trip.ToTown.Name,
                     Id = t.Id,
-                    StartDate = t.StartDate.ToString("G"),
+                    StartDate = t.Trip.StartDate.ToString("G"),
                 }).ToList(),
                 MutualFriends = u.Friends.Where(x => x.Id == creatorId && x.Id == userId)
                 .Select(f => new UserViewModel
