@@ -11,6 +11,8 @@
 
         Task AddTrip(TripsInputFormModel tripData, string userName);
 
+        Task EditTrip(TripsViewModel tripData);
+
         ICollection<TripsViewModel> GetAllTrips();
 
         ICollection<TripsViewModel> GetAllUserTrips(string userId);
@@ -19,6 +21,12 @@
 
         Task JoinTrip(string tripId, string userId);
 
-        bool IsUserJoined(string tripId, string userId);
+        Task Delete(string tripId);
+
+        ICollection<TripsViewModel> GetUpcommingTodayTrips(string userId);
+
+        ICollection<TripsViewModel> GetUpcommingTomorrowTrips(string userId);
+
+        ICollection<TripsViewModel> GetPastTrips(string userId);
     }
 }

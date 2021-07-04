@@ -51,7 +51,6 @@
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
             var trip = this.tripsService.GetTripById(tripId, userId);
 
-            this.ViewBag.IsUserJoined = this.tripsService.IsUserJoined(tripId, userId);
             this.ViewBag.IsAvailableSeats = trip.AvailableSeats > 0;
 
             return this.View(trip);
@@ -89,6 +88,54 @@
         public IActionResult UserTrips()
         {
             return this.View();
+        }
+
+        [Authorize]
+
+        public async Task<IActionResult> Delete(string tripId)
+        {
+            await this.tripsService.Delete(tripId);
+
+            return this.Redirect("/Trips/MadeByMe");
+        }
+
+        [Authorize]
+        public IActionResult Edit(string tripId)
+        {
+            var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
+
+            var trip = this.tripsService.GetTripById(tripId, userId);
+
+            return this.View(trip);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EditTip(TripsViewModel trips)
+        {
+            await this.tripsService.EditTrip(trips);
+
+            return this.Redirect("/Trips/MadeByMe");
+        }
+
+        public IActionResult Upcoming()
+        {
+            var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
+            var todayTrips = this.tripsService.GetUpcommingTodayTrips(userId);
+            var tomorrowTrips = this.tripsService.GetUpcommingTomorrowTrips(userId);
+
+            var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips };
+
+            return this.View(upcomingTripsModel);
+        }
+
+        public IActionResult Past()
+        {
+            var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
+            var pastTrips = this.tripsService.GetPastTrips(userId);
+            var model = new TripsListingModel { Trips = pastTrips };
+
+            return this.View(model);
         }
     }
 }

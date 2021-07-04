@@ -91,7 +91,6 @@
             this.ExternalLogins = (await this._signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-
                 Town town = null;
 
                 if (this.townRepository.All().Any(t => t.Name == this.Input.Town))

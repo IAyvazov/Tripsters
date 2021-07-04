@@ -30,16 +30,6 @@
         <h5 class="card-text">Age: @Model.Age </h5>
         <h5 class="card-text">From: @Model.HomeTown</h5>
         <h5 class="card-text">Badges: @string.Join(",", Model.Badges)</h5>
-        <ul class="card-columns">
-            User Trips:
-
-            @foreach (var trip in Model.Trips)
-            {
-                <li class="card-text">
-                    <a href="/Trips/GetTrip?tripId=@trip.Id">@trip.Name</a>
-                </li>
-            }
-        </ul>
         <h5 class="card-text">Mutual friends: @Model.MutualFriends.Count</h5>
     </div>
 </div>

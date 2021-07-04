@@ -38,16 +38,6 @@
                     Id = b.Id,
                     Name = b.Name,
                 }).ToList(),
-                Trips = u.Trips
-                .Select(t => new TripsViewModel
-                {
-                    Name = t.Trip.Name,
-                    Description = t.Trip.Description,
-                    FromTown = t.Trip.FromTown.Name,
-                    ToTown = t.Trip.ToTown.Name,
-                    Id = t.Id,
-                    StartDate = t.Trip.StartDate.ToString("G"),
-                }).ToList(),
                 MutualFriends = u.Friends.Where(x => x.Id == creatorId && x.Id == userId)
                 .Select(f => new UserViewModel
                 {

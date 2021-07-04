@@ -20,7 +20,5 @@
         public ICollection<UserViewModel> MutualFriends { get; set; }
 
         public ICollection<BadgeViewModel> Badges { get; set; }
-
-        public ICollection<TripsViewModel> Trips { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -73,8 +74,57 @@
             await this.tripRepository.SaveChangesAsync();
         }
 
+        public async Task Delete(string tripId)
+        {
+            var trip = this.tripRepository.All()
+                .Where(t => t.Id == tripId)
+                .FirstOrDefault().IsDeleted = true;
+
+            await this.tripRepository.SaveChangesAsync();
+        }
+
+        public async Task EditTrip(TripsViewModel tripData)
+        {
+            var trip = this.tripRepository.All()
+                 .Where(t => t.Id == tripData.Id)
+                 .FirstOrDefault();
+
+            DateTime startDate;
+            DateTime.TryParseExact(tripData.StartDate, "G", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
+
+            var fromTown = this.townsService.GetTownByName(tripData.FromTown);
+
+            if (fromTown == null)
+            {
+                fromTown = new Town
+                {
+                    Name = tripData.FromTown,
+                };
+            }
+
+            var toTown = this.townsService.GetTownByName(tripData.ToTown);
+
+            if (toTown == null)
+            {
+                toTown = new Town
+                {
+                    Name = tripData.ToTown,
+                };
+            }
+
+            trip.Name = tripData.Name;
+            trip.FromTown = fromTown;
+            trip.ToTown = toTown;
+            trip.AvailableSeats = tripData.AvailableSeats;
+            trip.Description = tripData.Description;
+            trip.StartDate = startDate;
+
+            await this.tripRepository.SaveChangesAsync();
+        }
+
         public ICollection<TripsViewModel> GetAllTrips()
         => this.tripRepository.All()
+            .Where(t => t.IsDeleted == false)
             .Select(t => new TripsViewModel
             {
                 Id = t.Id,
@@ -107,7 +157,7 @@
 
         public ICollection<TripsViewModel> GetAllUserTrips(string userId)
         => this.tripRepository.All()
-            .Where(t => t.UserId == userId)
+            .Where(t => t.UserId == userId && t.IsDeleted == false)
             .Select(t => new TripsViewModel
             {
                 Id = t.Id,
@@ -138,9 +188,34 @@
             })
             .ToList();
 
+        public ICollection<TripsViewModel> GetPastTrips(string userId)
+        => this.tripRepository.All()
+            .Where(t => t.UserId == userId && t.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+            .Select(t => new TripsViewModel
+            {
+                Name = t.Name,
+                FromTown = t.FromTown.Name,
+                ToTown = t.ToTown.Name,
+                CreatorName = t.User.UserName,
+                Description = t.Description,
+                Members = t.Travellers
+                .Select(m => new UserViewModel
+                {
+                    UserName = m.User.UserName,
+                    Age = m.User.Age,
+                    HomeTown = m.User.HomeTown.Name,
+                    Badges = m.User.Badges
+                    .Select(b => new BadgeViewModel
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                    }).ToList(),
+                }).ToList(),
+            }).ToList();
+
         public TripsViewModel GetTripById(string tripId, string userId)
         => this.tripRepository.All()
-            .Where(t => t.Id == tripId)
+            .Where(t => t.Id == tripId && t.IsDeleted == false)
             .Select(t => new TripsViewModel
             {
                 Id = t.Id,
@@ -173,13 +248,35 @@
             })
             .FirstOrDefault();
 
-        public bool IsUserJoined(string tripId, string userId)
-        => this.userTripRepository.All()
-            .Any(u => u.UserId == userId && u.TripId == tripId);
+        public ICollection<TripsViewModel> GetUpcommingTodayTrips(string userId)
+        => this.tripRepository.All()
+            .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear.CompareTo(DateTime.Today.DayOfYear) == 0)
+            .Select(t => new TripsViewModel
+            {
+                Name = t.Name,
+                FromTown = t.FromTown.Name,
+                ToTown = t.ToTown.Name,
+                CreatorName = t.User.UserName,
+                Description = t.Description,
+            })
+            .ToList();
+
+        public ICollection<TripsViewModel> GetUpcommingTomorrowTrips(string userId)
+       => this.tripRepository.All()
+           .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear.CompareTo(DateTime.Today.DayOfYear) == 1)
+           .Select(t => new TripsViewModel
+           {
+               Name = t.Name,
+               FromTown = t.FromTown.Name,
+               ToTown = t.ToTown.Name,
+               CreatorName = t.User.UserName,
+               Description = t.Description,
+           })
+           .ToList();
 
         public async Task JoinTrip(string tripId, string userId)
         {
-            if (!this.userTripRepository.All().Any(u => u.UserId == userId && u.TripId == tripId))
+            if (!this.userTripRepository.All().Any(u => u.UserId == userId && u.TripId == tripId && u.IsDeleted == false))
             {
                 var userTrip = new UserTrip
                 {
@@ -187,9 +284,9 @@
                     UserId = userId,
                 };
 
-                if (this.tripRepository.All().FirstOrDefault(t => t.Id == tripId).AvailableSeats > 0)
+                if (this.tripRepository.All().FirstOrDefault(t => t.Id == tripId && t.IsDeleted == false).AvailableSeats > 0)
                 {
-                    this.tripRepository.All().FirstOrDefault(t => t.Id == tripId).AvailableSeats--;
+                    this.tripRepository.All().FirstOrDefault(t => t.Id == tripId && t.IsDeleted == false).AvailableSeats--;
                 }
                 else
                 {

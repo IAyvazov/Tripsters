@@ -9,13 +9,15 @@ using Tripsters.Data;
 using Tripsters.Data.Models;
 
 [assembly: HostingStartup(typeof(Tripsters.Web.Areas.Identity.IdentityHostingStartup))]
+
 namespace Tripsters.Web.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup
     {
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices((context, services) => {
+            builder.ConfigureServices((context, services) =>
+            {
             });
         }
     }
