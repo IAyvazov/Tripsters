@@ -6,41 +6,40 @@
 
 <h1>@ViewData["Title"]</h1>
 
-    <div class="col-md-4">
-        <form asp-action="AddTrip" method="post">
-            <h4>Create a new trip.</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FromTown"></label>
-                <input asp-for="FromTown" class="form-control" />
-                <span asp-validation-for="FromTown" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ToTown"></label>
-                <input asp-for="ToTown" class="form-control" />
-                <span asp-validation-for="ToTown" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AvailableSeats"></label>
-                <input asp-for="AvailableSeats" class="form-control" />
-                <span asp-validation-for="AvailableSeats" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Add</button>
-        </form>
-    </div>
+<div class="col-md-4">
+    <form asp-action="AddTrip" method="post">
+        <h4>Create a new trip.</h4>
+        <hr />
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Adventure time" />
+            <span asp-validation-for="Name" class="small text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FromTown"></label>
+            <input asp-for="FromTown" class="form-control" placeholder="Sofia"/>
+            <span asp-validation-for="FromTown" class="small text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ToTown"></label>
+            <input asp-for="ToTown" class="form-control" placeholder="Plovdiv"/>
+            <span asp-validation-for="ToTown" class="small text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AvailableSeats"></label>
+            <input asp-for="AvailableSeats" class="form-control" placeholder="1" />
+            <span asp-validation-for="AvailableSeats" class="small text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StartDate"></label>
+            <input asp-for="StartDate" class="form-control"/>
+            <span asp-validation-for="StartDate" class="small text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control" placeholder="Some description for the trip."></textarea>
+            <span asp-validation-for="Description" class="small text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</div>

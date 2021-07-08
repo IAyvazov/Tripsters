@@ -297,38 +297,5 @@
                 await this.userTripRepository.SaveChangesAsync();
             }
         }
-
-        public ICollection<string> Validate(TripsInputFormModel tripData)
-        {
-            var errors = new HashSet<string>();
-
-            if (tripData.Name == null || tripData.Name.Length < TripSecurity.NameMinLength || tripData.Name.Length > TripSecurity.NameMaxLength)
-            {
-                errors.Add($"The Name must be at least {TripSecurity.NameMinLength} and at max {TripSecurity.NameMaxLength} characters long.");
-            }
-
-            if (tripData.FromTown == null || tripData.FromTown.Length < TripSecurity.TownMinLength || tripData.FromTown.Length > TripSecurity.TownMinLength)
-            {
-                errors.Add($"The Town must be at least {TripSecurity.TownMinLength} and at max {TripSecurity.TownMaxLength} characters long.");
-            }
-
-            if (tripData.ToTown == null || tripData.ToTown.Length < TripSecurity.TownMinLength || tripData.ToTown.Length > TripSecurity.TownMinLength)
-            {
-                errors.Add($"The Town must be at least {TripSecurity.TownMinLength} and at max {TripSecurity.TownMaxLength} characters long.");
-            }
-
-            if (tripData.AvailableSeats < 1 || tripData.AvailableSeats > 6)
-            {
-                errors.Add($"The Available seats must be at least 1 and at max 6 characters long.");
-            }
-
-
-            if (tripData.Description.Length < TripSecurity.DescriptionMinLength || tripData.Description.Length > TripSecurity.DescriptionMaxLength)
-            {
-                errors.Add($"The Description seats must be at least {TripSecurity.DescriptionMinLength} and at max {TripSecurity.DescriptionMaxLength} characters long.");
-            }
-
-            return errors;
-        }
     }
 }

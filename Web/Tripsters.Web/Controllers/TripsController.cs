@@ -31,9 +31,23 @@
         }
 
         [Authorize]
-        public IActionResult Add(TripsInputFormModel trips)
+        public IActionResult Add()
         {
-            return this.View(trips);
+            return this.View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Add(TripsInputFormModel trips)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(trips);
+            }
+
+            await this.tripsService.AddTrip(trips, this.User.Identity.Name);
+
+            return this.Redirect("/Trips/All");
         }
 
         [Authorize]
@@ -45,6 +59,7 @@
             return this.View(trip);
         }
 
+        // Change to Details
         [Authorize]
         public IActionResult More(string tripId)
         {
@@ -66,22 +81,13 @@
         }
 
         [Authorize]
-        public IActionResult MadeByMe()
+        public IActionResult MyTrips()
         {
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
             var trips = this.tripsService.GetAllUserTrips(userId);
             var model = new TripsListingModel { Trips = trips };
 
             return this.View(model);
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> AddTrip(TripsInputFormModel trips)
-        {
-            await this.tripsService.AddTrip(trips, this.User.Identity.Name);
-
-            return this.Redirect("/Trips/All");
         }
 
         [Authorize]

@@ -11,8 +11,8 @@
 <div class="row">
     @foreach (var trip in Model.Trips)
     {
-        <div class="container m-sm-4 col-sm-3 ">
-            <div class="card alert-link" style="width: 18rem;">
+        <div class="container m-sm-4 col-sm-3">
+            <div class="card alert-heading" style="width: 18rem;">
                 @trip.CreatorName
                 <div class="card-body">
                     <h5 class="card-title">@trip.Name</h5>
@@ -21,7 +21,7 @@
                         <li class="list-group-item">To: @trip.ToTown</li>
                         <li class="list-group-item">Seats: @trip.AvailableSeats</li>
                     </ul>
-                    <a href="/Trips/More?tripId=@trip.Id" class="btn btn-primary">More</a>
+                    <a href="/Trips/More?tripId=@trip.Id" class="btn btn-primary">Info</a>
                     @if (trip.CreatorName == User.Identity.Name)
                     {
                         <a href="/Trips/Delete?tripId=@trip.Id" class="btn btn-danger">Delete</a>

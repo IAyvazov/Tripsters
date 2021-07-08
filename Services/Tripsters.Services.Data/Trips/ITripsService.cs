@@ -7,8 +7,6 @@
 
     public interface ITripsService
     {
-        ICollection<string> Validate(TripsInputFormModel tripData);
-
         Task AddTrip(TripsInputFormModel tripData, string userName);
 
         Task EditTrip(TripsViewModel tripData);

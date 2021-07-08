@@ -3,14 +3,14 @@
 @model TripsListingModel
 
 @{
-    ViewData["Title"] = "Made by me";
+    ViewData["Title"] = "My trips";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <ul class="nav justify-content-center">
     <li class="nav-item">
-        <a class="nav-link active" href="/Trips/MadeByMe">Made by me</a>
+        <a class="nav-link active" href="/Trips/MyTrips">Made by me</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="/Trips/Upcoming">Upcoming</a>
@@ -38,7 +38,6 @@
                     <a href="/Trips/Delete?tripId=@trip.Id" class="btn btn-danger">Delete</a>
                 </div>
             </div>
-
         </div>
     }
 </div>

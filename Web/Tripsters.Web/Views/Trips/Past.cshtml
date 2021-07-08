@@ -8,25 +8,37 @@
 
 <h1>@ViewData["Title"]</h1>
 
+<ul class="nav justify-content-center">
+    <li class="nav-item">
+        <a class="nav-link active" href="/Trips/MyTrips">Made by me</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Trips/Upcoming">Upcoming</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Trips/Past">Past</a>
+    </li>
+</ul>
 
-<div class="container>
-    @foreach (var trip in Model.Trips)
-    {
-        <div class="card mb-3">
+@foreach (var trip in Model.Trips)
+{
+    <div class="card row-cols-4">
+        <div class="card-body">
             <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">@trip.Name</h5>
-                <p class="card-text">@trip.FromTown</p>
-                <p class="card-text">@trip.ToTown</p>
-                @foreach (var member in trip.Members)
-                {
-                    <p class="card-text">@member.UserName</p>
-                    <p class="card-text">@member.Age</p>
-                    <p class="card-text">@member.HomeTown</p>
-                    <p class="card-text">@String.Join(", ", member.Badges)</p>
-                }
-                <p class="card-text"><small class="text-muted"></small></p>
-            </div>
+            <h5 class="card-title">@trip.Name</h5>
+            <p class="card-text">@trip.FromTown</p>
+            <p class="card-text">@trip.ToTown</p>
+            @foreach (var member in trip.Members)
+            {
+                <p class="card-text">@member.UserName</p>
+                <p class="card-text">@member.Age</p>
+                <p class="card-text">@member.HomeTown</p>
+                <p class="card-text">@String.Join(", ", member.Badges)</p>
+            }
         </div>
-    }
-</div>
+        <div>
+            <button type="submit" class="btn btn-primary">👍 Likes</button>
+            <button type="submit" class="btn btn-primary">Comment</button>
+        </div>
+    </div>
+}
