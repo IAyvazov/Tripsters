@@ -13,6 +13,8 @@
         {
             this.Id = Guid.NewGuid().ToString();
             this.Travellers = new HashSet<UserTrip>();
+            this.Likes = new HashSet<Like>();
+            this.Comments = new HashSet<Comment>();
         }
 
         [Required]
@@ -40,6 +42,10 @@
         public Town ToTown { get; set; }
 
         public DateTime StartDate { get; set; }
+
+        public ICollection<Like> Likes { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
 
         public ICollection<UserTrip> Travellers { get; set; }
     }

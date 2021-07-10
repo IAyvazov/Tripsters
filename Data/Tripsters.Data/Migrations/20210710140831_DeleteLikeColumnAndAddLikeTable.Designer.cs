@@ -10,8 +10,8 @@ using Tripsters.Data;
 namespace Tripsters.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210702190317_AddUserTripsTable")]
-    partial class AddUserTripsTable
+    [Migration("20210710140831_DeleteLikeColumnAndAddLikeTable")]
+    partial class DeleteLikeColumnAndAddLikeTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -218,6 +218,15 @@ namespace Tripsters.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<int>("LikeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LikeTripId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LikeUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -247,9 +256,6 @@ namespace Tripsters.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TripId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -273,7 +279,7 @@ namespace Tripsters.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("TripId");
+                    b.HasIndex("LikeTripId", "LikeUserId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -304,6 +310,37 @@ namespace Tripsters.Data.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.ToTable("Badges");
+                });
+
+            modelBuilder.Entity("Tripsters.Data.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TripId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("TripId");
+
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Landmark", b =>
@@ -344,6 +381,22 @@ namespace Tripsters.Data.Migrations
                     b.HasIndex("TownId");
 
                     b.ToTable("Landmarks");
+                });
+
+            modelBuilder.Entity("Tripsters.Data.Models.Like", b =>
+                {
+                    b.Property<string>("TripId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.HasKey("TripId", "UserId");
+
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Setting", b =>
@@ -473,7 +526,24 @@ namespace Tripsters.Data.Migrations
                     b.Property<string>("TripId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("UserId", "TripId");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("TripId");
 
@@ -556,11 +626,23 @@ namespace Tripsters.Data.Migrations
                         .WithMany()
                         .HasForeignKey("HomeTownId");
 
-                    b.HasOne("Tripsters.Data.Models.Trip", null)
-                        .WithMany("Travellers")
-                        .HasForeignKey("TripId");
+                    b.HasOne("Tripsters.Data.Models.Like", "Like")
+                        .WithMany("User")
+                        .HasForeignKey("LikeTripId", "LikeUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("HomeTown");
+
+                    b.Navigation("Like");
+                });
+
+            modelBuilder.Entity("Tripsters.Data.Models.Comment", b =>
+                {
+                    b.HasOne("Tripsters.Data.Models.Trip", "Trip")
+                        .WithMany("Comments")
+                        .HasForeignKey("TripId");
+
+                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Landmark", b =>
@@ -570,6 +652,17 @@ namespace Tripsters.Data.Migrations
                         .HasForeignKey("TownId");
 
                     b.Navigation("Town");
+                });
+
+            modelBuilder.Entity("Tripsters.Data.Models.Like", b =>
+                {
+                    b.HasOne("Tripsters.Data.Models.Trip", "Trip")
+                        .WithMany("Likes")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Trip", b =>
@@ -587,9 +680,8 @@ namespace Tripsters.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Tripsters.Data.Models.ApplicationUser", "User")
-                        .WithMany("Trips")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("FromTown");
 
@@ -601,13 +693,13 @@ namespace Tripsters.Data.Migrations
             modelBuilder.Entity("Tripsters.Data.Models.UserTrip", b =>
                 {
                     b.HasOne("Tripsters.Data.Models.Trip", "Trip")
-                        .WithMany()
+                        .WithMany("Travellers")
                         .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Tripsters.Data.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Trips")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -630,6 +722,11 @@ namespace Tripsters.Data.Migrations
                     b.Navigation("Trips");
                 });
 
+            modelBuilder.Entity("Tripsters.Data.Models.Like", b =>
+                {
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Tripsters.Data.Models.Town", b =>
                 {
                     b.Navigation("FromTrips");
@@ -641,6 +738,10 @@ namespace Tripsters.Data.Migrations
 
             modelBuilder.Entity("Tripsters.Data.Models.Trip", b =>
                 {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Likes");
+
                     b.Navigation("Travellers");
                 });
 #pragma warning restore 612, 618

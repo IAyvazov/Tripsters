@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
 
+    using Tripsters.Data.Models;
     using Tripsters.Web.ViewModels.Users;
 
     public class TripsViewModel
@@ -25,6 +26,10 @@
         public string StartDate { get; set; }
 
         public string CurrentUserId { get; set; }
+
+        public int Likes { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
 
         public ICollection<UserViewModel> Members { get; set; }
     }

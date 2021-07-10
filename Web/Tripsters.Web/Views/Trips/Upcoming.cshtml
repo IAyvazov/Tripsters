@@ -88,10 +88,36 @@
             </div>
         </div>
         <div class="col-sm alert-success">
-            The day after
+            Future
 
-            <div>
+            <div class="container">
+                @foreach (var trip in Model.TheDayAfterTrips)
+                {
+                    <div class="card">
 
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                @trip.Name
+                            </h3>
+
+                            <h5 class="card-text">
+                                @trip.CreatorName
+                            </h5>
+
+                            <p class="card-text">
+                                @trip.FromTown
+                            </p>
+
+                            <p class="card-text">
+                                @trip.ToTown
+                            </p>
+
+                            <p class="card-text">
+                                @trip.Description
+                            </p>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>

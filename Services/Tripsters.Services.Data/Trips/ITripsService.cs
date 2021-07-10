@@ -26,5 +26,9 @@
         ICollection<TripsViewModel> GetUpcommingTomorrowTrips(string userId);
 
         ICollection<TripsViewModel> GetPastTrips(string userId);
+
+        ICollection<TripsViewModel> GetDayAfterTrips(string userId);
+
+        Task<int> LikeTrip(string tripId, string userId);
     }
 }

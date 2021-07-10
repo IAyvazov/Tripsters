@@ -129,8 +129,9 @@
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
             var todayTrips = this.tripsService.GetUpcommingTodayTrips(userId);
             var tomorrowTrips = this.tripsService.GetUpcommingTomorrowTrips(userId);
+            var dayAfterTrips = this.tripsService.GetDayAfterTrips(userId);
 
-            var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips };
+            var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips, TheDayAfterTrips = dayAfterTrips };
 
             return this.View(upcomingTripsModel);
         }
@@ -142,6 +143,14 @@
             var model = new TripsListingModel { Trips = pastTrips };
 
             return this.View(model);
+        }
+
+        public async Task<IActionResult> Like(string tripId)
+        {
+            var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
+            await this.tripsService.LikeTrip(tripId, userId);
+
+            return this.RedirectToAction("Past");
         }
     }
 }

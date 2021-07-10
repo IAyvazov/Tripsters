@@ -37,8 +37,8 @@
             }
         </div>
         <div>
-            <button type="submit" class="btn btn-primary">👍 Likes</button>
-            <button type="submit" class="btn btn-primary">Comment</button>
+            <a href="/Trips/Like?tripId=@trip.Id"  class="btn btn-primary">👍 @trip.Likes Likes</a>
+            <a href="/Trips/Comments?tripId=@trip.Id" class="btn btn-primary">Comment (@trip.Comments.Count)</a>
         </div>
     </div>
 }

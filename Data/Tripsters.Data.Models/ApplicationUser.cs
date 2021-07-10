@@ -29,12 +29,14 @@ namespace Tripsters.Data.Models
 
         public Town HomeTown { get; set; }
 
-        // Audit info
+        public int LikeId { get; set; }
+
+        public Like Like { get; set; }
+
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }
 
-        // Deletable entity
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }

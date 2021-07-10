@@ -57,9 +57,21 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Like>()
+                .HasOne(l => l.Trip)
+                .WithMany(t => t.Likes)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Like>()
+                .HasMany(l => l.User)
+                .WithOne(u => u.Like)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Like>()
+                .HasKey(l => new { l.TripId, l.UserId });
+
             builder.Entity<UserTrip>()
                 .HasKey(k => new { k.UserId, k.TripId });
-
 
             builder.Entity<Trip>()
                 .HasOne(tr => tr.FromTown)

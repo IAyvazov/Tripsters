@@ -42,7 +42,7 @@
                 AvailableSeats = tripData.AvailableSeats,
                 Name = tripData.Name,
                 Description = tripData.Description,
-                StartDate = DateTime.UtcNow,
+                StartDate = tripData.StartDate,
             };
 
             var fromTown = this.townsService.GetTownByName(tripData.FromTown);
@@ -124,7 +124,7 @@
 
         public ICollection<TripsViewModel> GetAllTrips()
         => this.tripRepository.All()
-            .Where(t => t.IsDeleted == false)
+            .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow)
             .Select(t => new TripsViewModel
             {
                 Id = t.Id,
@@ -188,9 +188,9 @@
             })
             .ToList();
 
-        public ICollection<TripsViewModel> GetPastTrips(string userId)
+        public ICollection<TripsViewModel> GetDayAfterTrips(string userId)
         => this.tripRepository.All()
-            .Where(t => t.UserId == userId && t.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+            .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.Today.DayOfYear > 1)
             .Select(t => new TripsViewModel
             {
                 Name = t.Name,
@@ -198,6 +198,22 @@
                 ToTown = t.ToTown.Name,
                 CreatorName = t.User.UserName,
                 Description = t.Description,
+            })
+            .ToList();
+
+        public ICollection<TripsViewModel> GetPastTrips(string userId)
+        => this.tripRepository.All()
+            .Where(t => t.UserId == userId && t.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+            .Select(t => new TripsViewModel
+            {
+                Id = t.Id,
+                Name = t.Name,
+                FromTown = t.FromTown.Name,
+                ToTown = t.ToTown.Name,
+                CreatorName = t.User.UserName,
+                Description = t.Description,
+                Likes = t.Likes.Count,
+                Comments = t.Comments,
                 Members = t.Travellers
                 .Select(m => new UserViewModel
                 {
@@ -263,7 +279,7 @@
 
         public ICollection<TripsViewModel> GetUpcommingTomorrowTrips(string userId)
        => this.tripRepository.All()
-           .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear.CompareTo(DateTime.Today.DayOfYear) == 1)
+           .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.UtcNow.DayOfYear == 1)
            .Select(t => new TripsViewModel
            {
                Name = t.Name,
@@ -296,6 +312,34 @@
                 await this.userTripRepository.AddAsync(userTrip);
                 await this.userTripRepository.SaveChangesAsync();
             }
+        }
+
+        public async Task<int> LikeTrip(string tripId, string userId)
+        {
+            var tripLike = this.tripRepository.All()
+                .Where(t => t.Likes.Any(l => l.TripId == tripId && l.UserId == userId))
+                .FirstOrDefault();
+
+            if (tripLike == null)
+            {
+                var like = new Like
+                {
+                    TripId = tripId,
+                    UserId = userId,
+                };
+
+                var trip = this.tripRepository.All()
+                    .Where(t => t.Id == tripId)
+                    .FirstOrDefault();
+
+                trip.Likes.Add(like);
+
+                await this.tripRepository.SaveChangesAsync();
+
+                return trip.Likes.Count();
+            }
+
+            return tripLike.Likes.Count();
         }
     }
 }
