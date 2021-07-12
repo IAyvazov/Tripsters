@@ -12,11 +12,6 @@
             this.usersService = usersService;
         }
 
-        public IActionResult Info(string creatorId, string userId, string currTripId)
-        {
-            var user = this.usersService.GetUserById(creatorId, userId, currTripId);
-
-            return this.View(user);
-        }
+       
     }
 }

@@ -8,17 +8,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<ul class="nav justify-content-center">
-    <li class="nav-item">
-        <a class="nav-link active" href="/Trips/MyTrips">Made by me</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/Trips/Upcoming">Upcoming</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/Trips/Past">Past</a>
-    </li>
-</ul>
+<partial name="_MyTripsMenuPartial" />
 
 <div class="container">
     <div class="row">
@@ -29,26 +19,30 @@
                 @foreach (var trip in Model.TodayTrips)
                 {
                     <div class="card">
-
                         <div class="card-body">
                             <h3 class="card-title">
                                 @trip.Name
                             </h3>
 
                             <h5 class="card-text">
-                                @trip.CreatorName
+                                Creator: @trip.CreatorName
                             </h5>
 
                             <p class="card-text">
-                                @trip.FromTown
+                                From: @trip.FromTown
                             </p>
 
                             <p class="card-text">
-                                @trip.ToTown
+                                To: @trip.ToTown
                             </p>
-
+                            @if (trip.Description != null)
+                            {
+                                <p class="card-text">
+                                    Description: @trip.Description
+                                </p>
+                            }
                             <p class="card-text">
-                                @trip.Description
+                                Date and Time @trip.StartDate
                             </p>
                         </div>
                     </div>
@@ -61,26 +55,30 @@
                 @foreach (var trip in Model.TomorrowTrips)
                 {
                     <div class="card">
-
                         <div class="card-body">
                             <h3 class="card-title">
                                 @trip.Name
                             </h3>
 
                             <h5 class="card-text">
-                                @trip.CreatorName
+                                Creator: @trip.CreatorName
                             </h5>
 
                             <p class="card-text">
-                                @trip.FromTown
+                                From: @trip.FromTown
                             </p>
 
                             <p class="card-text">
-                                @trip.ToTown
+                                To: @trip.ToTown
                             </p>
-
+                            @if (trip.Description != null)
+                            {
+                                <p class="card-text">
+                                    Description: @trip.Description
+                                </p>
+                            }
                             <p class="card-text">
-                                @trip.Description
+                                Date and Time @trip.StartDate
                             </p>
                         </div>
                     </div>
@@ -94,27 +92,28 @@
                 @foreach (var trip in Model.TheDayAfterTrips)
                 {
                     <div class="card">
-
                         <div class="card-body">
                             <h3 class="card-title">
                                 @trip.Name
                             </h3>
 
                             <h5 class="card-text">
-                                @trip.CreatorName
+                                Creator: @trip.CreatorName
                             </h5>
 
                             <p class="card-text">
-                                @trip.FromTown
+                                From: @trip.FromTown
                             </p>
 
                             <p class="card-text">
-                                @trip.ToTown
+                                To: @trip.ToTown
                             </p>
-
-                            <p class="card-text">
-                                @trip.Description
-                            </p>
+                            @if (trip.Description != null)
+                            {
+                                <p class="card-text">
+                                    Description: @trip.Description
+                                </p>
+                            }
                         </div>
                     </div>
                 }

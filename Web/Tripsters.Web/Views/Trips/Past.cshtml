@@ -8,17 +8,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<ul class="nav justify-content-center">
-    <li class="nav-item">
-        <a class="nav-link active" href="/Trips/MyTrips">Made by me</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/Trips/Upcoming">Upcoming</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/Trips/Past">Past</a>
-    </li>
-</ul>
+<partial name="_MyTripsMenuPartial" />
 
 @foreach (var trip in Model.Trips)
 {
@@ -37,8 +27,8 @@
             }
         </div>
         <div>
-            <a href="/Trips/Like?tripId=@trip.Id"  class="btn btn-primary">👍 @trip.Likes Likes</a>
-            <a href="/Trips/Comments?tripId=@trip.Id" class="btn btn-primary">Comment (@trip.Comments.Count)</a>
+            <a href="/Trips/Like?tripId=@trip.Id" class="btn btn-primary">👍 @trip.Likes Likes</a>
+            <a href="/Trips/Comment?tripId=@trip.Id" class="btn btn-primary">Comment (@trip.Comments.Count)</a>
         </div>
     </div>
 }

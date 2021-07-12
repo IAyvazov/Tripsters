@@ -30,5 +30,9 @@
         ICollection<TripsViewModel> GetDayAfterTrips(string userId);
 
         Task<int> LikeTrip(string tripId, string userId);
+
+        Task AddComment(string userId, string tripId, string commentInput);
+
+        public ICollection<CommentViewModel> GetAllTripComments(string tripId);
     }
 }

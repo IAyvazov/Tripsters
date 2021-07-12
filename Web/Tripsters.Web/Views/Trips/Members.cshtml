@@ -12,10 +12,10 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
-                <a class="nav-link " href="/Trips/More?tripId=@Model.Id">Trip info</a>
+                <a class="nav-link " href="/Trips/Details?tripId=@Model.Id">Trip info</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="/Users/Info?creatorId=@Model.CreatorId&userId=@Model.CurrentUserId&currTripId=@Model.Id">Creator info</a>
+                <a class="nav-link " href="/Trips/Creator?creatorId=@Model.CreatorId&userId=@Model.CurrentUserId&currTripId=@Model.Id">Creator info</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" href="/Trips/Members?tripId=@Model.Id">Members (@Model.Members.Count)</a>

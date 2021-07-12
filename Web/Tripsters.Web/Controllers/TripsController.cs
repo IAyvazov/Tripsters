@@ -1,5 +1,6 @@
 ﻿namespace Tripsters.Web.Controllers
 {
+    using System;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -36,11 +37,30 @@
             return this.View();
         }
 
+        [Authorize]
+        public IActionResult Comment(string tripId)
+        {
+            var comments = this.tripsService.GetAllTripComments(tripId);
+            var model = new CommentListingVIewModel { Comments = comments, TripId = tripId };
+
+            return this.View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Comment(CommentFormModel commentData)
+        {
+            var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
+            await this.tripsService.AddComment(userId, commentData.TripId, commentData.Text);
+
+            return this.Redirect($"/Trips/Comment?tripId={commentData.TripId}");
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Add(TripsInputFormModel trips)
         {
-            if (!this.ModelState.IsValid)
+            if (!this.ModelState.IsValid || trips.StartDate.DayOfYear < DateTime.Now.DayOfYear)
             {
                 return this.View(trips);
             }
@@ -59,9 +79,8 @@
             return this.View(trip);
         }
 
-        // Change to Details
         [Authorize]
-        public IActionResult More(string tripId)
+        public IActionResult Details(string tripId)
         {
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
             var trip = this.tripsService.GetTripById(tripId, userId);
@@ -69,6 +88,13 @@
             this.ViewBag.IsAvailableSeats = trip.AvailableSeats > 0;
 
             return this.View(trip);
+        }
+
+        public IActionResult Creator(string creatorId, string userId, string currTripId)
+        {
+            var user = this.usersService.GetUserById(creatorId, userId, currTripId);
+
+            return this.View(user);
         }
 
         [Authorize]

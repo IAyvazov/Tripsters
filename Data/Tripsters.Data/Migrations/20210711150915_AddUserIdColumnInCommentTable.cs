@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tripsters.Data.Migrations
 {
-    public partial class DeleteLikeColumnAndAddLikeTable : Migration
+    public partial class AddUserIdColumnInCommentTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -201,6 +201,25 @@ namespace Tripsters.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TripId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Trips",
                 columns: table => new
                 {
@@ -235,30 +254,7 @@ namespace Tripsters.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TripId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comment_Trips_TripId",
-                        column: x => x.TripId,
-                        principalTable: "Trips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Like",
+                name: "Likes",
                 columns: table => new
                 {
                     TripId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -267,9 +263,9 @@ namespace Tripsters.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Like", x => new { x.TripId, x.UserId });
+                    table.PrimaryKey("PK_Likes", x => new { x.TripId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_Like_Trips_TripId",
+                        name: "FK_Likes_Trips_TripId",
                         column: x => x.TripId,
                         principalTable: "Trips",
                         principalColumn: "Id",
@@ -316,9 +312,9 @@ namespace Tripsters.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Like_LikeTripId_LikeUserId",
+                        name: "FK_AspNetUsers_Likes_LikeTripId_LikeUserId",
                         columns: x => new { x.LikeTripId, x.LikeUserId },
-                        principalTable: "Like",
+                        principalTable: "Likes",
                         principalColumns: new[] { "TripId", "UserId" },
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -433,14 +429,19 @@ namespace Tripsters.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_IsDeleted",
-                table: "Comment",
+                name: "IX_Comments_IsDeleted",
+                table: "Comments",
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_TripId",
-                table: "Comment",
+                name: "IX_Comments_TripId",
+                table: "Comments",
                 column: "TripId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_UserId",
+                table: "Comments",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Landmarks_IsDeleted",
@@ -539,6 +540,22 @@ namespace Tripsters.Data.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Comments_AspNetUsers_UserId",
+                table: "Comments",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Comments_Trips_TripId",
+                table: "Comments",
+                column: "TripId",
+                principalTable: "Trips",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Trips_AspNetUsers_UserId",
                 table: "Trips",
                 column: "UserId",
@@ -572,7 +589,7 @@ namespace Tripsters.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Landmarks");
@@ -593,7 +610,7 @@ namespace Tripsters.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Like");
+                name: "Likes");
 
             migrationBuilder.DropTable(
                 name: "Trips");

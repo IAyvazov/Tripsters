@@ -10,8 +10,8 @@ using Tripsters.Data;
 namespace Tripsters.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210710140831_DeleteLikeColumnAndAddLikeTable")]
-    partial class DeleteLikeColumnAndAddLikeTable
+    [Migration("20210711150915_AddUserIdColumnInCommentTable")]
+    partial class AddUserIdColumnInCommentTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -331,7 +331,13 @@ namespace Tripsters.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TripId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -340,7 +346,9 @@ namespace Tripsters.Data.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Comment");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Landmark", b =>
@@ -396,7 +404,7 @@ namespace Tripsters.Data.Migrations
 
                     b.HasKey("TripId", "UserId");
 
-                    b.ToTable("Like");
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Setting", b =>
@@ -642,7 +650,13 @@ namespace Tripsters.Data.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("TripId");
 
+                    b.HasOne("Tripsters.Data.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Trip");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Landmark", b =>

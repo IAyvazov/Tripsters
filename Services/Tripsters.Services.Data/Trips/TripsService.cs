@@ -35,6 +35,23 @@
             this.usersService = usersService;
         }
 
+        public async Task AddComment(string userId, string tripId, string commentInput)
+        {
+            var comment = new Comment
+            {
+                TripId = tripId,
+                Text = commentInput,
+                UserId = userId,
+            };
+
+            var comments = this.tripRepository.All()
+                .Where(t => t.Id == tripId)
+                .FirstOrDefault();
+
+            comments.Comments.Add(comment);
+            await this.tripRepository.SaveChangesAsync();
+        }
+
         public async Task AddTrip(TripsInputFormModel tripData, string userName)
         {
             var trip = new Trip
@@ -202,19 +219,19 @@
             .ToList();
 
         public ICollection<TripsViewModel> GetPastTrips(string userId)
-        => this.tripRepository.All()
-            .Where(t => t.UserId == userId && t.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+        => this.userTripRepository.All()
+            .Where(u => u.User.Id == userId && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
             .Select(t => new TripsViewModel
             {
-                Id = t.Id,
-                Name = t.Name,
-                FromTown = t.FromTown.Name,
-                ToTown = t.ToTown.Name,
+                Id = t.TripId,
+                Name = t.Trip.Name,
+                FromTown = t.Trip.FromTown.Name,
+                ToTown = t.Trip.ToTown.Name,
                 CreatorName = t.User.UserName,
-                Description = t.Description,
-                Likes = t.Likes.Count,
-                Comments = t.Comments,
-                Members = t.Travellers
+                Description = t.Trip.Description,
+                Likes = t.Trip.Likes.Count,
+                Comments = t.Trip.Comments,
+                Members = t.Trip.Travellers
                 .Select(m => new UserViewModel
                 {
                     UserName = m.User.UserName,
@@ -228,6 +245,18 @@
                     }).ToList(),
                 }).ToList(),
             }).ToList();
+
+        public ICollection<CommentViewModel> GetAllTripComments(string tripId)
+       => this.tripRepository.All()
+            .Where(t => t.IsDeleted == false && t.Id == tripId)
+           .SelectMany(c => c.Comments)
+            .Select(c => new CommentViewModel
+            {
+                Text = c.Text,
+                UserName = c.User.UserName,
+                TripId = c.TripId,
+            })
+            .ToList();
 
         public TripsViewModel GetTripById(string tripId, string userId)
         => this.tripRepository.All()
@@ -244,6 +273,7 @@
                 CreatorName = t.User.UserName,
                 CreatorId = t.UserId,
                 CurrentUserId = userId,
+                Comments = t.Comments,
                 Members = t.Travellers
                 .Select(m => new UserViewModel
                 {
@@ -274,6 +304,7 @@
                 ToTown = t.ToTown.Name,
                 CreatorName = t.User.UserName,
                 Description = t.Description,
+                StartDate = t.StartDate.ToString("G"),
             })
             .ToList();
 
@@ -287,6 +318,7 @@
                ToTown = t.ToTown.Name,
                CreatorName = t.User.UserName,
                Description = t.Description,
+               StartDate = t.StartDate.ToString("G"),
            })
            .ToList();
 
