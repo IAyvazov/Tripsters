@@ -15,6 +15,7 @@
             this.Travellers = new HashSet<UserTrip>();
             this.Likes = new HashSet<Like>();
             this.Comments = new HashSet<Comment>();
+            this.Photos = new HashSet<Photo>();
         }
 
         [Required]
@@ -48,5 +49,7 @@
         public ICollection<Comment> Comments { get; set; }
 
         public ICollection<UserTrip> Travellers { get; set; }
+
+        public ICollection<Photo> Photos { get; set; }
     }
 }

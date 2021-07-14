@@ -67,11 +67,6 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Like>()
-                .HasMany(l => l.User)
-                .WithOne(u => u.Like)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Like>()
                 .HasKey(l => new { l.TripId, l.UserId });
 
             builder.Entity<UserTrip>()

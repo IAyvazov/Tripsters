@@ -20,6 +20,7 @@ namespace Tripsters.Data.Models
             this.Friends = new HashSet<ApplicationUser>();
             this.Badges = new HashSet<Badge>();
             this.Trips = new HashSet<UserTrip>();
+            this.Photos = new HashSet<Photo>();
         }
 
         [Range(16, 99)]
@@ -28,10 +29,6 @@ namespace Tripsters.Data.Models
         public string HomeTownId { get; set; }
 
         public Town HomeTown { get; set; }
-
-        public int LikeId { get; set; }
-
-        public Like Like { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
@@ -46,6 +43,8 @@ namespace Tripsters.Data.Models
         public ICollection<Badge> Badges { get; set; }
 
         public ICollection<UserTrip> Trips { get; set; }
+
+        public ICollection<Photo> Photos { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 
