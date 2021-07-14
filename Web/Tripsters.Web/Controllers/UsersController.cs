@@ -12,6 +12,11 @@
             this.usersService = usersService;
         }
 
-       
+        public IActionResult Profile()
+        {
+            var user = this.usersService.GetUserProfile(this.User.Identity.Name);
+
+            return this.View(user);
+        }
     }
 }

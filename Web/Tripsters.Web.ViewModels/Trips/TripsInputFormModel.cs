@@ -13,11 +13,13 @@
         [StringLength(GlobalConstants.TripSecurity.NameMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.NameMinLength)]
         public string Name { get; set; }
 
+        [Required]
         [DataType(DataType.Text)]
         [Display(Name = "From Town")]
         [StringLength(GlobalConstants.TripSecurity.TownMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.TownMinLength)]
         public string FromTown { get; set; }
 
+        [Required]
         [DataType(DataType.Text)]
         [Display(Name = "To Town")]
         [StringLength(GlobalConstants.TripSecurity.TownMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.TownMinLength)]

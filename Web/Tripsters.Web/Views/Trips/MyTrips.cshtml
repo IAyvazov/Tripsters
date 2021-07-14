@@ -10,24 +10,46 @@
 
 <partial name="_MyTripsMenuPartial" />
 
-<div class="row">
+<div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var trip in Model.Trips)
     {
-        <div class="container m-sm-4 col-sm-3 ">
-            <div class="card alert-link" style="width: 18rem;">
-                @trip.CreatorName
-                <div class="card-body">
+        <div class="col mt-4">
+            <div class="card">
+                <img src="https://img.freepik.com/free-vector/road-trip-summer-vacation-holidays-travel-by-car_107791-2152.jpg?size=626&ext=jpg" class="card-img-top" alt="...">
+                <div class="card-body ">
                     <h5 class="card-title">@trip.Name</h5>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">From: @trip.FromTown</li>
                         <li class="list-group-item">To: @trip.ToTown</li>
                         <li class="list-group-item">Seats: @trip.AvailableSeats</li>
                     </ul>
-                    <a href="/Trips/Details?tripId=@trip.Id" class="btn btn-primary">Info</a>
-                    <a href="/Trips/Edit?tripId=@trip.Id" class="btn badge-warning">Edit</a>
-                    <a href="/Trips/Delete?tripId=@trip.Id" class="btn btn-danger">Delete</a>
+                    <a asp-controller="Trips" asp-action="Details" asp-route-tripId="@trip.Id" class="btn btn-primary">Info</a>
+                    @if (trip.CreatorName == User.Identity.Name)
+                    {
+                        <a asp-controller="Trips" asp-action="Edit" asp-route-tripId="@trip.Id" class="btn badge-warning">Edit</a>
+                        <a asp-controller="Trips" asp-action="Delete" asp-route-tripId="@trip.Id" class="btn btn-danger">Delete</a>
+                    }
                 </div>
             </div>
         </div>
     }
+</div>
+
+@{
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+
+    var maxPage = Math.Ceiling((double)Model.TotalTrips / Model.TripsPerPage);
+}
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@previousPage><<</a>
+    </div>
+    <div class="col-md-6">
+        <a class="btn btn-primary float-right @(Model.CurrentPage == maxPage ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@(Model.CurrentPage + 1)>>></a>
+    </div>
 </div>

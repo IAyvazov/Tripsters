@@ -139,9 +139,12 @@
             await this.tripRepository.SaveChangesAsync();
         }
 
-        public ICollection<TripsViewModel> GetAllTrips()
+        public ICollection<TripsViewModel> GetAllTrips(int currentPage, int tripsPerPage)
         => this.tripRepository.All()
             .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow)
+            .OrderBy(t => t.StartDate)
+            .Skip((currentPage - 1) * tripsPerPage)
+                .Take(tripsPerPage)
             .Select(t => new TripsViewModel
             {
                 Id = t.Id,
@@ -170,11 +173,15 @@
                     .ToList(),
                 })
                 .ToList(),
-            }).ToList();
+            })
+            .ToList();
 
-        public ICollection<TripsViewModel> GetAllUserTrips(string userId)
+        public ICollection<TripsViewModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage)
         => this.tripRepository.All()
             .Where(t => t.UserId == userId && t.IsDeleted == false)
+            .OrderBy(t => t.StartDate)
+            .Skip((currentPage - 1) * tripsPerPage)
+                .Take(tripsPerPage)
             .Select(t => new TripsViewModel
             {
                 Id = t.Id,
@@ -373,5 +380,15 @@
 
             return tripLike.Likes.Count();
         }
+
+        public int GetAllTripsCount()
+        => this.tripRepository.All()
+            .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow)
+            .Count();
+
+        public int GetAllUserTripsCount(string userId)
+        => this.tripRepository.All()
+            .Where(t => t.UserId == userId && t.IsDeleted == false)
+            .Count();
     }
 }

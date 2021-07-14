@@ -4,7 +4,7 @@
 
     using Tripsters.Web.ViewModels.Badges;
 
-    public class UserViewModel
+    public class UserProfileViewModel
     {
         public string Id { get; set; }
 
@@ -14,9 +14,7 @@
 
         public string HomeTown { get; set; }
 
-        public string CurrentTripId { get; set; }
-
-        public ICollection<UserViewModel> MutualFriends { get; set; }
+        public ICollection<UserViewModel> Friends { get; set; }
 
         public ICollection<BadgeViewModel> Badges { get; set; }
     }

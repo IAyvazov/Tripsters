@@ -1,6 +1,7 @@
 ﻿namespace Tripsters.Services.Data.Trips
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Tripsters.Web.ViewModels.Trips;
@@ -11,9 +12,13 @@
 
         Task EditTrip(TripsViewModel tripData);
 
-        ICollection<TripsViewModel> GetAllTrips();
+        ICollection<TripsViewModel> GetAllTrips(int currentPage, int tripsPerPage);
 
-        ICollection<TripsViewModel> GetAllUserTrips(string userId);
+        int GetAllTripsCount();
+
+        int GetAllUserTripsCount(string userId);
+
+        ICollection<TripsViewModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage);
 
         TripsViewModel GetTripById(string tripId, string userId);
 

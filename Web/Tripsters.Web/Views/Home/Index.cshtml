@@ -3,9 +3,18 @@
     this.ViewData["Title"] = "Home Page";
 }
 
+
 <div class="text-center">
     <h1 class="display-4">Welcome to @GlobalConstants.SystemName!</h1>
-            <div class="carousel-item active">
-                <img src="https://adventure.ir/wp-content/uploads/2019/12/adventure-trips-in-india_1440486703_aNbqdJ.jpg" class="d-block w-100" alt="Adventure trips">
-            </div>
+    <div class="carousel-item active">
+        <img src="https://adventure.ir/wp-content/uploads/2019/12/adventure-trips-in-india_1440486703_aNbqdJ.jpg" class="d-block w-100" alt="Adventure trips">
+        @if (User.Identity.Name != null)
+        {
+            <a class="btn btn-outline-primary mt-5" asp-controller="Trips" asp-action="Add">Make Trip</a>
+        }
+        else
+        {
+            <a class="btn btn-outline-primary mt-5" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        }
+    </div>
 </div>

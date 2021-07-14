@@ -8,5 +8,7 @@
         ApplicationUser GetUser(string userName);
 
         UserViewModel GetUserById(string creatorId, string userId, string currTripId);
+
+        UserProfileViewModel GetUserProfile(string userName);
     }
 }

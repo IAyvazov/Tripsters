@@ -26,9 +26,10 @@
                     <ul class="nav navbar-nav pull-left flex-grow-1">
                         @if (User != null)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"> @this.User.Identity.Name</a>
-                            </li>
+                        <li class="nav-item">
+                            @*<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"> @this.User.Identity.Name</a>*@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Profile" > @this.User.Identity.Name</a>
+                        </li>
                         }
 
                     </ul>

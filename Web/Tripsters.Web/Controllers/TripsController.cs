@@ -22,11 +22,13 @@
         }
 
         [Authorize]
-        public IActionResult All()
+        public IActionResult All(TripsListingModel model)
         {
-            var trips = this.tripsService.GetAllTrips();
+            var tripCount = this.tripsService.GetAllTripsCount();
 
-            var model = new TripsListingModel { Trips = trips };
+            var trips = this.tripsService.GetAllTrips(model.CurrentPage, model.TripsPerPage);
+
+            model = new TripsListingModel { Trips = trips, CurrentPage = model.CurrentPage, TotalTrips = tripCount };
 
             return this.View(model);
         }
@@ -35,6 +37,20 @@
         public IActionResult Add()
         {
             return this.View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Add(TripsInputFormModel trips)
+        {
+            if (!this.ModelState.IsValid || trips.StartDate.DayOfYear < DateTime.Now.DayOfYear)
+            {
+                return this.View(trips);
+            }
+
+            await this.tripsService.AddTrip(trips, this.User.Identity.Name);
+
+            return this.Redirect("/Trips/All");
         }
 
         [Authorize]
@@ -54,20 +70,6 @@
             await this.tripsService.AddComment(userId, commentData.TripId, commentData.Text);
 
             return this.Redirect($"/Trips/Comment?tripId={commentData.TripId}");
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Add(TripsInputFormModel trips)
-        {
-            if (!this.ModelState.IsValid || trips.StartDate.DayOfYear < DateTime.Now.DayOfYear)
-            {
-                return this.View(trips);
-            }
-
-            await this.tripsService.AddTrip(trips, this.User.Identity.Name);
-
-            return this.Redirect("/Trips/All");
         }
 
         [Authorize]
@@ -107,11 +109,15 @@
         }
 
         [Authorize]
-        public IActionResult MyTrips()
+        public IActionResult MyTrips(TripsListingModel model)
         {
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
-            var trips = this.tripsService.GetAllUserTrips(userId);
-            var model = new TripsListingModel { Trips = trips };
+
+            var trips = this.tripsService.GetAllUserTrips(userId, model.CurrentPage, model.TripsPerPage);
+
+            var tripCount = this.tripsService.GetAllUserTripsCount(userId);
+
+            model = new TripsListingModel { Trips = trips, CurrentPage = model.CurrentPage, TotalTrips = tripCount };
 
             return this.View(model);
         }
