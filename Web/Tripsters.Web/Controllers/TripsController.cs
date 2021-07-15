@@ -1,6 +1,7 @@
 ﻿namespace Tripsters.Web.Controllers
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -27,6 +28,18 @@
             var tripCount = this.tripsService.GetAllTripsCount();
 
             var trips = this.tripsService.GetAllTrips(model.CurrentPage, model.TripsPerPage);
+
+            if (model.SearchTerm != null)
+            {
+                trips = trips.Where(t =>
+                          t.CreatorName.ToLower().Contains(model.SearchTerm.ToLower()) ||
+                          t.FromTown.ToLower().Contains(model.SearchTerm.ToLower()) ||
+                          t.ToTown.ToLower().Contains(model.SearchTerm.ToLower()) ||
+                          t.Name.ToLower().Contains(model.SearchTerm.ToLower()))
+                    .ToList();
+
+                tripCount = trips.Count();
+            }
 
             model = new TripsListingModel { Trips = trips, CurrentPage = model.CurrentPage, TotalTrips = tripCount };
 
