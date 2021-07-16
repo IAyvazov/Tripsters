@@ -1,0 +1,44 @@
+﻿@using Tripsters.Web.ViewModels.Users
+
+@model UserProfileViewModel
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post">
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input asp-for="Id" class="form-control" hidden value="@Model.Id" />
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger" value="@Model.UserName"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger" value="@Model.Email"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Age"></label>
+                <input asp-for="Age" class="form-control" value="@Model.Age" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HomeTown"></label>
+                <input asp-for="HomeTown" class="form-control" value="@Model.HomeTown" />
+                <span asp-validation-for="HomeTown" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProfilePictureUrl"></label>
+                <input asp-for="ProfilePictureUrl" class="form-control" value="@Model.ProfilePictureUrl" />
+                <span asp-validation-for="ProfilePictureUrl" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit Profile</button>
+        </form>
+    </div>
+</div>

@@ -225,9 +225,11 @@
             })
             .ToList();
 
-        public ICollection<TripsViewModel> GetPastTrips(string userId)
+        public ICollection<TripsViewModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
         => this.userTripRepository.All()
             .Where(u => u.User.Id == userId && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+            .Skip((currentPage - 1) * tripsPerPage)
+                .Take(tripsPerPage)
             .Select(t => new TripsViewModel
             {
                 Id = t.TripId,
@@ -241,6 +243,7 @@
                 Members = t.Trip.Travellers
                 .Select(m => new UserViewModel
                 {
+                    Id = m.UserId,
                     UserName = m.User.UserName,
                     Age = m.User.Age,
                     HomeTown = m.User.HomeTown.Name,

@@ -30,7 +30,7 @@
 
         ICollection<TripsViewModel> GetUpcommingTomorrowTrips(string userId);
 
-        ICollection<TripsViewModel> GetPastTrips(string userId);
+        ICollection<TripsViewModel> GetPastTrips(string userId, int currentPage, int tripsPerPage);
 
         ICollection<TripsViewModel> GetDayAfterTrips(string userId);
 

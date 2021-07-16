@@ -7,5 +7,7 @@
         public ICollection<CommentViewModel> Comments { get; set; }
 
         public string TripId { get; set; }
+
+        public string TripName { get; set; }
     }
 }

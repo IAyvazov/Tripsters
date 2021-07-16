@@ -1,7 +1,7 @@
 ﻿namespace Tripsters.Services.Data.Users
 {
     using System.Linq;
-
+    using System.Threading.Tasks;
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
     using Tripsters.Web.ViewModels.Badges;
@@ -14,6 +14,20 @@
         public UsersService(IDeletableEntityRepository<ApplicationUser> userRepostory)
         {
             this.userRepostory = userRepostory;
+        }
+
+        public async Task Edit(UserProfileViewModel userData)
+        {
+            var user = this.userRepostory.All()
+                .Where(u => u.Id == userData.Id)
+                .FirstOrDefault();
+
+            user.UserName = userData.UserName;
+            user.Age = userData.Age;
+            user.Email = userData.Email;
+            user.Photos.Add(new Photo { Url = userData.ProfilePictureUrl, UserId = user.Id, IsProfilePicture = true });
+
+            await this.userRepostory.SaveChangesAsync();
         }
 
         public ApplicationUser GetUser(string userName)
@@ -55,6 +69,10 @@
                 UserName = u.UserName,
                 Age = u.Age,
                 HomeTown = u.HomeTown.Name,
+                Email = u.Email,
+                ProfilePictureUrl = u.Photos
+                .Where(p => p.IsProfilePicture == true)
+                .FirstOrDefault().Url,
                 Badges = u.Badges
                 .Select(b => new BadgeViewModel
                 {

@@ -10,25 +10,48 @@
 
 <partial name="_MyTripsMenuPartial" />
 
-@foreach (var trip in Model.Trips)
-{
-    <div class="card row-cols-4">
-        <div class="card-body">
-            <img src="..." class="card-img-top" alt="...">
-            <h5 class="card-title">@trip.Name</h5>
-            <p class="card-text">@trip.FromTown</p>
-            <p class="card-text">@trip.ToTown</p>
-            @foreach (var member in trip.Members)
-            {
-                <p class="card-text">@member.UserName</p>
-                <p class="card-text">@member.Age</p>
-                <p class="card-text">@member.HomeTown</p>
-                <p class="card-text">@String.Join(", ", member.Badges)</p>
-            }
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var trip in Model.Trips)
+    {
+        <div class="col mt-4">
+            <div class="card">
+                <img src="https://img.freepik.com/free-vector/road-trip-summer-vacation-holidays-travel-by-car_107791-2152.jpg?size=626&ext=jpg" class="card-img-top" alt="...">
+                <div class="card-body ">
+                    <h5 class="card-title">@trip.Name</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">From: @trip.FromTown</li>
+                        <li class="list-group-item">To: @trip.ToTown</li>
+                        <p class="text-center">Members: </p>
+                        @foreach (var member in trip.Members)
+                        {
+                            <li class="list-group-item">@member.UserName <a class="btn btn-outline-dark ml-5" href="/Users/Profile?userId=@member.Id">View Profile</a></li>
+                        }
+                    </ul>
+                    <div>
+                        <a href="/Trips/Like?tripId=@trip.Id" class="btn btn-primary mt-5">👍 @trip.Likes Likes</a>
+                        <a href="/Trips/Comment?tripId=@trip.Id" class="btn btn-primary mt-5">Comment (@trip.Comments.Count)</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <a href="/Trips/Like?tripId=@trip.Id" class="btn btn-primary">👍 @trip.Likes Likes</a>
-            <a href="/Trips/Comment?tripId=@trip.Id" class="btn btn-primary">Comment (@trip.Comments.Count)</a>
-        </div>
-    </div>
+    }
+</div>
+
+@{
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+
+    var maxPage = Math.Ceiling((double)Model.TotalTrips / Model.TripsPerPage);
 }
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@previousPage><<</a>
+    </div>
+    <div class="col-md-6">
+        <a class="btn btn-primary float-right @(Model.CurrentPage == maxPage ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@(Model.CurrentPage + 1)>>></a>
+    </div>
+</div>

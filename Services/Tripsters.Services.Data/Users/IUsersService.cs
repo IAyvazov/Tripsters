@@ -1,5 +1,6 @@
 ﻿namespace Tripsters.Services.Data.Users
 {
+    using System.Threading.Tasks;
     using Tripsters.Data.Models;
     using Tripsters.Web.ViewModels.Users;
 
@@ -10,5 +11,7 @@
         UserViewModel GetUserById(string creatorId, string userId, string currTripId);
 
         UserProfileViewModel GetUserProfile(string userName);
+
+        Task Edit(UserProfileViewModel userData);
     }
 }

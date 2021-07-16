@@ -70,7 +70,9 @@
         public IActionResult Comment(string tripId)
         {
             var comments = this.tripsService.GetAllTripComments(tripId);
-            var model = new CommentListingVIewModel { Comments = comments, TripId = tripId };
+            var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
+            var tripName = this.tripsService.GetTripById(tripId, userId).Name;
+            var model = new CommentListingVIewModel { Comments = comments, TripId = tripId, TripName = tripName };
 
             return this.View(model);
         }
@@ -162,7 +164,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> EditTip(TripsViewModel trips)
+        public async Task<IActionResult> EditTrip(TripsViewModel trips)
         {
             await this.tripsService.EditTrip(trips);
 
@@ -181,11 +183,11 @@
             return this.View(upcomingTripsModel);
         }
 
-        public IActionResult Past()
+        public IActionResult Past(TripsListingModel model)
         {
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
-            var pastTrips = this.tripsService.GetPastTrips(userId);
-            var model = new TripsListingModel { Trips = pastTrips };
+            var pastTrips = this.tripsService.GetPastTrips(userId, model.CurrentPage, model.TripsPerPage);
+            model = new TripsListingModel { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count() };
 
             return this.View(model);
         }
