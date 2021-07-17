@@ -24,7 +24,11 @@
                         <p class="text-center">Members: </p>
                         @foreach (var member in trip.Members)
                         {
-                            <li class="list-group-item">@member.UserName <a class="btn btn-outline-dark ml-5" href="/Users/Profile?userId=@member.Id">View Profile</a></li>
+                            <li class="list-group-item">
+                                <a asp-controller="Users" asp-action="Profile" asp-route-userId="@member.Id" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" title="View Profile">
+                                    @member.UserName
+                                </a><a class="btn btn-dark ml-5" href="/Users/AddBadge?userId=@member.Id">Add Badge</a>
+                            </li>
                         }
                     </ul>
                     <div>

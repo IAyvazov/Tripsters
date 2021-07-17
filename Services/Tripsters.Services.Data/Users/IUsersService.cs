@@ -12,6 +12,8 @@
 
         UserProfileViewModel GetUserProfile(string userName);
 
+        UserProfileViewModel GetUserProfileById(string userId);
+
         Task Edit(UserProfileViewModel userData);
     }
 }

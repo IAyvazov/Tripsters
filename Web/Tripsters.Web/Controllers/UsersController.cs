@@ -1,7 +1,9 @@
 ﻿namespace Tripsters.Web.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Mvc;
+
     using Tripsters.Services.Data.Users;
     using Tripsters.Web.ViewModels.Users;
 
@@ -14,9 +16,14 @@
             this.usersService = usersService;
         }
 
-        public IActionResult Profile()
+        public IActionResult Profile(string userId)
         {
             var user = this.usersService.GetUserProfile(this.User.Identity.Name);
+
+            if (userId != null)
+            {
+                user = this.usersService.GetUserProfileById(userId);
+            }
 
             return this.View(user);
         }
@@ -39,6 +46,11 @@
             await this.usersService.Edit(userData);
 
             return this.RedirectToAction("Profile");
+        }
+
+        public IActionResult AddBadge(string userId)
+        {
+            return this.View();
         }
     }
 }

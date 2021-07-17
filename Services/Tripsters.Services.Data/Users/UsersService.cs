@@ -97,5 +97,43 @@
                 .ToList(),
             })
             .FirstOrDefault();
+
+        public UserProfileViewModel GetUserProfileById(string userId)
+         => this.userRepostory.All()
+            .Where(u => u.Id == userId)
+            .Select(u => new UserProfileViewModel
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                Age = u.Age,
+                HomeTown = u.HomeTown.Name,
+                Email = u.Email,
+                ProfilePictureUrl = u.Photos
+                .Where(p => p.IsProfilePicture == true)
+                .FirstOrDefault().Url,
+                Badges = u.Badges
+                .Select(b => new BadgeViewModel
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                })
+                .ToList(),
+                Friends = u.Friends
+                .Select(f => new UserViewModel
+                {
+                    Id = f.Id,
+                    UserName = f.UserName,
+                    Age = f.Age,
+                    HomeTown = f.HomeTown.Name,
+                    Badges = f.Badges.Select(b => new BadgeViewModel
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                    })
+                    .ToList(),
+                })
+                .ToList(),
+            })
+            .FirstOrDefault();
     }
 }

@@ -27,6 +27,7 @@
                           {
                               new RolesSeeder(),
                               new SettingsSeeder(),
+                              new BadgesSeeder(),
                           };
 
             foreach (var seeder in seeders)
