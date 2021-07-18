@@ -11,19 +11,19 @@
         public Badge()
         {
             this.Id = Guid.NewGuid().ToString();
-            this.Users = new HashSet<ApplicationUser>();
+            this.Users = new HashSet<UsersBadges>();
         }
 
         [Required]
         public string Name { get; set; }
 
-        public ICollection<ApplicationUser> Users { get; set; }
+        public ICollection<UsersBadges> Users { get; set; }
 
-        //Funny,
-        //Adventurer,
-        //Grumbler,
-        //Talkative,
-        //Angry,
-        //Crazy,
+        // Funny,
+        // Adventurer,
+        // Grumbler,
+        // Talkative,
+        // Angry,
+        // Crazy,
     }
 }

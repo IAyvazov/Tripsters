@@ -5,6 +5,8 @@
     using Microsoft.AspNetCore.Mvc;
 
     using Tripsters.Services.Data.Users;
+    using Tripsters.Web.ViewModels.Badges;
+    using Tripsters.Web.ViewModels.Trips;
     using Tripsters.Web.ViewModels.Users;
 
     public class UsersController : Controller
@@ -48,9 +50,12 @@
             return this.RedirectToAction("Profile");
         }
 
-        public IActionResult AddBadge(string userId)
+        [HttpPost]
+        public async Task<IActionResult> AddBadge(string badgeId, string userId)
         {
-            return this.View();
+            await this.usersService.AddBadgeToUser(badgeId, userId);
+
+            return this.Redirect("/Trips/Past");
         }
     }
 }

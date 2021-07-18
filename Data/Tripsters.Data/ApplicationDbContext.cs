@@ -40,6 +40,8 @@
 
         public DbSet<Comment> Comments { get; set; }
 
+        public DbSet<UsersBadges> UsersBadges { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -61,6 +63,16 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<ApplicationUser>()
+                .HasMany(b => b.Badges)
+                .WithOne(u => u.User)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Badge>()
+                .HasMany(b => b.Users)
+                .WithOne(u => u.Badge)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Like>()
                 .HasOne(l => l.Trip)
                 .WithMany(t => t.Likes)

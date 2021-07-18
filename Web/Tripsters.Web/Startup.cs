@@ -18,6 +18,7 @@
     using Tripsters.Data.Repositories;
     using Tripsters.Data.Seeding;
     using Tripsters.Services.Data;
+    using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Towns;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Users;
@@ -71,6 +72,7 @@
             services.AddTransient<ITripsService, TripsService>();
             services.AddTransient<ITownsService, TownsService>();
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IBadgesService, BadgesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

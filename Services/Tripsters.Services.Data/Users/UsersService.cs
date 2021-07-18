@@ -1,19 +1,54 @@
 ﻿namespace Tripsters.Services.Data.Users
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
+    using Tripsters.Services.Data.Badges;
     using Tripsters.Web.ViewModels.Badges;
     using Tripsters.Web.ViewModels.Users;
 
     public class UsersService : IUsersService
     {
         private readonly IDeletableEntityRepository<ApplicationUser> userRepostory;
+        private readonly IDeletableEntityRepository<UsersBadges> userBadgesRepostory;
+        private readonly IBadgesService badgesService;
 
-        public UsersService(IDeletableEntityRepository<ApplicationUser> userRepostory)
+        public UsersService(
+            IDeletableEntityRepository<ApplicationUser> userRepostory,
+            IDeletableEntityRepository<UsersBadges> userBadgesRepostory,
+            IBadgesService badgesService)
         {
             this.userRepostory = userRepostory;
+            this.userBadgesRepostory = userBadgesRepostory;
+            this.badgesService = badgesService;
+        }
+
+        public async Task AddBadgeToUser(string badgeId, string userId)
+        {
+            var user = this.userRepostory.All()
+                .Where(u => u.Id == userId)
+                .FirstOrDefault();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException("There is no such user.");
+            }
+
+            var badge = this.badgesService.GetBadgeById(badgeId);
+
+            if (badge == null)
+            {
+                throw new ArgumentNullException("There is no such badge");
+            }
+
+            var userBadges = new UsersBadges { BadgeId = badgeId, UserId = userId };
+
+            await this.userBadgesRepostory.AddAsync(userBadges);
+
+            await this.userBadgesRepostory.SaveChangesAsync();
         }
 
         public async Task Edit(UserProfileViewModel userData)
@@ -48,8 +83,8 @@
                 Badges = u.Badges
                 .Select(b => new BadgeViewModel
                 {
-                    Id = b.Id,
-                    Name = b.Name,
+                    Id = b.Badge.Id,
+                    Name = b.Badge.Name,
                 }).ToList(),
                 MutualFriends = u.Friends.Where(x => x.Id == creatorId && x.Id == userId)
                 .Select(f => new UserViewModel
@@ -76,8 +111,8 @@
                 Badges = u.Badges
                 .Select(b => new BadgeViewModel
                 {
-                    Id = b.Id,
-                    Name = b.Name,
+                    Id = b.Badge.Id,
+                    Name = b.Badge.Name,
                 })
                 .ToList(),
                 Friends = u.Friends
@@ -89,8 +124,8 @@
                     HomeTown = f.HomeTown.Name,
                     Badges = f.Badges.Select(b => new BadgeViewModel
                     {
-                        Id = b.Id,
-                        Name = b.Name,
+                        Id = b.Badge.Id,
+                        Name = b.Badge.Name,
                     })
                     .ToList(),
                 })
@@ -114,8 +149,8 @@
                 Badges = u.Badges
                 .Select(b => new BadgeViewModel
                 {
-                    Id = b.Id,
-                    Name = b.Name,
+                    Id = b.Badge.Id,
+                    Name = b.Badge.Name,
                 })
                 .ToList(),
                 Friends = u.Friends
@@ -127,8 +162,8 @@
                     HomeTown = f.HomeTown.Name,
                     Badges = f.Badges.Select(b => new BadgeViewModel
                     {
-                        Id = b.Id,
-                        Name = b.Name,
+                        Id = b.Badge.Id,
+                        Name = b.Badge.Name,
                     })
                     .ToList(),
                 })

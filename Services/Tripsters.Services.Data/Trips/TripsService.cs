@@ -167,8 +167,8 @@
                     Badges = m.User.Badges
                     .Select(b => new BadgeViewModel
                     {
-                        Id = b.Id,
-                        Name = b.Name,
+                        Id = b.Badge.Id,
+                        Name = b.Badge.Name,
                     })
                     .ToList(),
                 })
@@ -203,8 +203,8 @@
                     Badges = u.User.Badges
                     .Select(b => new BadgeViewModel
                     {
-                        Name = b.Name,
-                        Id = b.Id,
+                        Name = b.Badge.Name,
+                        Id = b.Badge.Id,
                     })
                     .ToList(),
                 })
@@ -250,8 +250,8 @@
                     Badges = m.User.Badges
                     .Select(b => new BadgeViewModel
                     {
-                        Id = b.Id,
-                        Name = b.Name,
+                        Id = b.Badge.Id,
+                        Name = b.Badge.Name,
                     }).ToList(),
                 }).ToList(),
             }).ToList();
@@ -295,8 +295,8 @@
                     Badges = m.User.Badges
                     .Select(b => new BadgeViewModel
                     {
-                        Id = b.Id,
-                        Name = b.Name,
+                        Id = b.Badge.Id,
+                        Name = b.Badge.Name,
                     })
                     .ToList(),
                 })

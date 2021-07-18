@@ -1,6 +1,7 @@
 ﻿namespace Tripsters.Services.Data.Users
 {
     using System.Threading.Tasks;
+
     using Tripsters.Data.Models;
     using Tripsters.Web.ViewModels.Users;
 
@@ -15,5 +16,7 @@
         UserProfileViewModel GetUserProfileById(string userId);
 
         Task Edit(UserProfileViewModel userData);
+
+        Task AddBadgeToUser(string badgeId, string userId);
     }
 }

@@ -18,7 +18,7 @@ namespace Tripsters.Data.Models
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
             this.Friends = new HashSet<ApplicationUser>();
-            this.Badges = new HashSet<Badge>();
+            this.Badges = new HashSet<UsersBadges>();
             this.Trips = new HashSet<UserTrip>();
             this.Photos = new HashSet<Photo>();
         }
@@ -40,7 +40,7 @@ namespace Tripsters.Data.Models
 
         public ICollection<ApplicationUser> Friends { get; set; }
 
-        public ICollection<Badge> Badges { get; set; }
+        public ICollection<UsersBadges> Badges { get; set; }
 
         public ICollection<UserTrip> Trips { get; set; }
 

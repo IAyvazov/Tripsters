@@ -6,7 +6,7 @@
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-
+    using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Users;
     using Tripsters.Web.ViewModels.Trips;
@@ -15,11 +15,16 @@
     {
         private readonly ITripsService tripsService;
         private readonly IUsersService usersService;
+        private readonly IBadgesService badgesService;
 
-        public TripsController(ITripsService tripsService, IUsersService usersService)
+        public TripsController(
+            ITripsService tripsService,
+            IUsersService usersService,
+            IBadgesService badgesService)
         {
             this.tripsService = tripsService;
             this.usersService = usersService;
+            this.badgesService = badgesService;
         }
 
         [Authorize]
@@ -187,7 +192,8 @@
         {
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
             var pastTrips = this.tripsService.GetPastTrips(userId, model.CurrentPage, model.TripsPerPage);
-            model = new TripsListingModel { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count() };
+            var badges = this.badgesService.GetAllBadges();
+            model = new TripsListingModel { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count(), Badges = badges };
 
             return this.View(model);
         }
