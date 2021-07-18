@@ -4,10 +4,13 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Microsoft.EntityFrameworkCore;
+
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Badges;
     using Tripsters.Web.ViewModels.Badges;
+    using Tripsters.Web.ViewModels.Photos;
     using Tripsters.Web.ViewModels.Users;
 
     public class UsersService : IUsersService
@@ -30,6 +33,7 @@
         {
             var user = this.userRepostory.All()
                 .Where(u => u.Id == userId)
+                .Include(x => x.Badges)
                 .FirstOrDefault();
 
             if (user == null)
@@ -44,11 +48,29 @@
                 throw new ArgumentNullException("There is no such badge");
             }
 
+            if (user.Badges.Any(b => b.BadgeId == badgeId))
+            {
+                return;
+            }
+
             var userBadges = new UsersBadges { BadgeId = badgeId, UserId = userId };
 
             await this.userBadgesRepostory.AddAsync(userBadges);
 
             await this.userBadgesRepostory.SaveChangesAsync();
+        }
+
+        public async Task AddPhoto(string path, string userId)
+        {
+            var user = this.userRepostory.All()
+               .Where(u => u.Id == userId)
+               .FirstOrDefault();
+
+            var photo = new Photo { Url = path.Substring(62), IsProfilePicture = false };
+
+            user.Photos.Add(photo);
+
+            await this.userRepostory.SaveChangesAsync();
         }
 
         public async Task Edit(UserProfileViewModel userData)
@@ -60,7 +82,8 @@
             user.UserName = userData.UserName;
             user.Age = userData.Age;
             user.Email = userData.Email;
-            user.Photos.Add(new Photo { Url = userData.ProfilePictureUrl, UserId = user.Id, IsProfilePicture = true });
+
+            user.Photos.Add(new Photo { Url = userData.ProfilePictureUrl.Substring(62), UserId = user.Id, IsProfilePicture = true });
 
             await this.userRepostory.SaveChangesAsync();
         }
@@ -130,6 +153,13 @@
                     .ToList(),
                 })
                 .ToList(),
+                Photos = u.Photos
+                .Where(p => p.IsProfilePicture == false)
+                .Select(p => new PhotoViewModel
+                {
+                    Url = p.Url,
+                })
+                .ToList(),
             })
             .FirstOrDefault();
 
@@ -166,6 +196,13 @@
                         Name = b.Badge.Name,
                     })
                     .ToList(),
+                })
+                .ToList(),
+                Photos = u.Photos
+                .Where(p => p.IsProfilePicture == false)
+                .Select(p => new PhotoViewModel
+                {
+                    Url = p.Url,
                 })
                 .ToList(),
             })

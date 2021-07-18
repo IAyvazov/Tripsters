@@ -3,10 +3,10 @@
     using System;
     using System.Linq;
 
+    using Microsoft.EntityFrameworkCore;
+
     using Tripsters.Data.Common.Models;
     using Tripsters.Data.Common.Repositories;
-
-    using Microsoft.EntityFrameworkCore;
 
     public class EfDeletableEntityRepository<TEntity> : EfRepository<TEntity>, IDeletableEntityRepository<TEntity>
         where TEntity : class, IDeletableEntity

@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" method="post">
+        <form enctype="multipart/form-data" asp-action="Edit" method="post">
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <input asp-for="Id" class="form-control" hidden value="@Model.Id" />
@@ -34,11 +34,14 @@
                 <span asp-validation-for="HomeTown" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProfilePictureUrl"></label>
-                <input asp-for="ProfilePictureUrl" class="form-control" value="@Model.ProfilePictureUrl" />
-                <span asp-validation-for="ProfilePictureUrl" class="text-danger"></span>
+
+                <span>Select File:</span>
+                <input type="file" asp-for="ProfilePicture" multiple />
+                <br />
+                <span style="color:green">@Html.Raw(ViewBag.Message)</span>
             </div>
-            <button type="submit" class="btn btn-primary">Edit Profile</button>
+
+            <button type="submit" class="btn btn-primary mt-5">Edit Profile</button>
         </form>
     </div>
 </div>

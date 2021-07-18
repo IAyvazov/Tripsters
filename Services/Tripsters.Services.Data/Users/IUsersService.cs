@@ -18,5 +18,7 @@
         Task Edit(UserProfileViewModel userData);
 
         Task AddBadgeToUser(string badgeId, string userId);
+
+        Task AddPhoto(string path, string userId);
     }
 }

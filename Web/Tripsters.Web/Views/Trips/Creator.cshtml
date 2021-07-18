@@ -29,7 +29,7 @@
         <h3 class="card-title">@Model.UserName</h3>
         <h5 class="card-text">Age: @Model.Age </h5>
         <h5 class="card-text">From: @Model.HomeTown</h5>
-        <h5 class="card-text">Badges: @string.Join(",", Model.Badges)</h5>
+        <h5 class="card-text">Badges: @string.Join(",", Model.Badges.Select(b => b.Name))</h5>
         <h5 class="card-text">Mutual friends: @Model.MutualFriends.Count</h5>
     </div>
 </div>
