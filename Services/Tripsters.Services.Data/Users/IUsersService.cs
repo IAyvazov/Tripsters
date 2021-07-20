@@ -3,21 +3,21 @@
     using System.Threading.Tasks;
 
     using Tripsters.Data.Models;
-    using Tripsters.Web.ViewModels.Users;
+    using Tripsters.Services.Data.Users.Models;
 
     public interface IUsersService
     {
         ApplicationUser GetUser(string userName);
 
-        UserViewModel GetUserById(string creatorId, string userId, string currTripId);
+        UserServiceModel GetUserById(string creatorId, string userId, string currTripId);
 
-        UserProfileViewModel GetUserProfile(string userName);
+        UserProfileServiceModel GetUserProfile(string userName);
 
-        UserProfileViewModel GetUserProfileById(string userId);
+        UserProfileServiceModel GetUserProfileById(string userId);
 
-        Task Edit(UserProfileViewModel userData);
+        Task Edit(UserProfileServiceModel userData);
 
-        Task AddBadgeToUser(string badgeId, string userId);
+        Task AddBadgeToUser(int badgeId, string userId);
 
         Task AddPhoto(string path, string userId);
     }

@@ -24,15 +24,11 @@
         {
         }
 
-        public DbSet<Setting> Settings { get; set; }
-
         public DbSet<Trip> Trips { get; set; }
 
         public DbSet<Badge> Badges { get; set; }
 
-        public DbSet<Town> Towns { get; set; }
-
-        public DbSet<Landmark> Landmarks { get; set; }
+        public DbSet<Destination> Destinations { get; set; }
 
         public DbSet<UserTrip> UserTrips { get; set; }
 
@@ -83,20 +79,6 @@
 
             builder.Entity<UserTrip>()
                 .HasKey(k => new { k.UserId, k.TripId });
-
-            builder.Entity<Trip>()
-                .HasOne(tr => tr.FromTown)
-                .WithMany(t => t.FromTrips)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Trip>()
-                .HasOne(tr => tr.ToTown)
-                .WithMany(t => t.ToTrips)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Town>()
-                .HasIndex(t => t.Name)
-                .IsUnique();
 
             // Needed for Identity models configuration
             base.OnModelCreating(builder);

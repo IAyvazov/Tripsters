@@ -1,6 +1,6 @@
-﻿@using Tripsters.Web.ViewModels.Users
+﻿@using Tripsters.Services.Data.Users.Models
 
-@model UserProfileViewModel
+@model UserProfileServiceModel
 
 @{
     ViewData["Title"] = "Edit Profile";
@@ -29,12 +29,6 @@
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HomeTown"></label>
-                <input asp-for="HomeTown" class="form-control" value="@Model.HomeTown" />
-                <span asp-validation-for="HomeTown" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-
                 <span>Select File:</span>
                 <input type="file" asp-for="ProfilePicture" multiple />
                 <br />

@@ -1,6 +1,6 @@
-﻿@using Tripsters.Web.ViewModels.Users
+﻿@using Tripsters.Services.Data.Users.Models
 
-@model UserProfileViewModel
+@model UserProfileServiceModel
 
 @{
     ViewData["Title"] = $"{@Model.UserName} Photos";
@@ -28,7 +28,6 @@
                     </div>
                     <div class="media-body mb-5 text-white">
                         <h4 class="mt-0 mb-0">@Model.UserName</h4>
-                        <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i>@Model.HomeTown</p>
                     </div>
                 </div>
             </div>

@@ -1,11 +1,10 @@
-﻿// ReSharper disable VirtualMemberCallInConstructor
-namespace Tripsters.Data.Models
+﻿namespace Tripsters.Data.Models
 {
     using System;
 
-    using Tripsters.Data.Common.Models;
-
     using Microsoft.AspNetCore.Identity;
+
+    using Tripsters.Data.Common.Models;
 
     public class ApplicationRole : IdentityRole, IAuditInfo, IDeletableEntity
     {

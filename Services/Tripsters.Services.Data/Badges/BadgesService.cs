@@ -26,7 +26,7 @@
             })
             .ToList();
 
-        public Badge GetBadgeById(string badgeId)
+        public Badge GetBadgeById(int badgeId)
         => this.badgeRepository.All()
             .Where(b => b.Id == badgeId)
             .Select(b => new Badge

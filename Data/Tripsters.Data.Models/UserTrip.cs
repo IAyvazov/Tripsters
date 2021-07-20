@@ -2,7 +2,7 @@
 {
     using Tripsters.Data.Common.Models;
 
-    public class UserTrip : BaseDeletableModel<string>
+    public class UserTrip : BaseDeletableModel<int>
     {
         public string UserId { get; set; }
 

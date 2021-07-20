@@ -25,20 +25,17 @@
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly IDeletableEntityRepository<Town> townRepository;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
-            IDeletableEntityRepository<Town> townRepository)
+            IEmailSender emailSender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._logger = logger;
             this._emailSender = emailSender;
-            this.townRepository = townRepository;
         }
 
         [BindProperty]
@@ -60,12 +57,6 @@
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
-
-            [Required]
-            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-            [Display(Name = "Town")]
-            [DataType(DataType.Text)]
-            public string Town { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -91,19 +82,7 @@
             this.ExternalLogins = (await this._signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-                Town town = null;
-
-                if (this.townRepository.All().Any(t => t.Name == this.Input.Town))
-                {
-                    town = this.townRepository.All()
-                        .FirstOrDefault(t => t.Name == this.Input.Town);
-                }
-                else
-                {
-                    town = new Town { Name = this.Input.Town };
-                }
-
-                var user = new ApplicationUser { UserName = this.Input.Name, Email = this.Input.Email, HomeTown = town };
+                var user = new ApplicationUser { UserName = this.Input.Name, Email = this.Input.Email};
                 var result = await this._userManager.CreateAsync(user, this.Input.Password);
                 if (result.Succeeded)
                 {

@@ -4,11 +4,11 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Tripsters.Common;
-    using Tripsters.Data.Models;
-
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.DependencyInjection;
+
+    using Tripsters.Common;
+    using Tripsters.Data.Models;
 
     internal class RolesSeeder : ISeeder
     {

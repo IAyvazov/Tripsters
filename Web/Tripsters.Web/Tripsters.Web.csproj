@@ -42,8 +42,4 @@
     <ProjectReference Include="..\Tripsters.Web.Infrastructure\Tripsters.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\Tripsters.Web.ViewModels\Tripsters.Web.ViewModels.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\Uploads\" />
-  </ItemGroup>
 </Project>

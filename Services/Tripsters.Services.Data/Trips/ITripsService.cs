@@ -1,38 +1,38 @@
 ﻿namespace Tripsters.Services.Data.Trips
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
+    using Tripsters.Services.Data.Trips.Models;
     using Tripsters.Web.ViewModels.Trips;
 
     public interface ITripsService
     {
         Task AddTrip(TripsInputFormModel tripData, string userName);
 
-        Task EditTrip(TripsViewModel tripData);
+        Task EditTrip(TripServiceModel tripData);
 
-        ICollection<TripsViewModel> GetAllTrips(int currentPage, int tripsPerPage);
+        ICollection<TripServiceModel> GetAllTrips(int currentPage, int tripsPerPage);
 
         int GetAllTripsCount();
 
         int GetAllUserTripsCount(string userId);
 
-        ICollection<TripsViewModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage);
+        ICollection<TripServiceModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage);
 
-        TripsViewModel GetTripById(string tripId, string userId);
+        TripServiceModel GetTripById(string tripId, string userId);
 
         Task JoinTrip(string tripId, string userId);
 
         Task Delete(string tripId);
 
-        ICollection<TripsViewModel> GetUpcommingTodayTrips(string userId);
+        ICollection<TripServiceModel> GetUpcommingTodayTrips(string userId);
 
-        ICollection<TripsViewModel> GetUpcommingTomorrowTrips(string userId);
+        ICollection<TripServiceModel> GetUpcommingTomorrowTrips(string userId);
 
-        ICollection<TripsViewModel> GetPastTrips(string userId, int currentPage, int tripsPerPage);
+        ICollection<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage);
 
-        ICollection<TripsViewModel> GetDayAfterTrips(string userId);
+        ICollection<TripServiceModel> GetDayAfterTrips(string userId);
 
         Task<int> LikeTrip(string tripId, string userId);
 

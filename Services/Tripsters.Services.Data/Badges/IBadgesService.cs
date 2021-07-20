@@ -9,6 +9,6 @@
     {
         ICollection<BadgeViewModel> GetAllBadges();
 
-        Badge GetBadgeById(string badgeId);
+        Badge GetBadgeById(int badgeId);
     }
 }

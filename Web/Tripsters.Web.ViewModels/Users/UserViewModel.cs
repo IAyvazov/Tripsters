@@ -12,8 +12,6 @@
 
         public int Age { get; set; }
 
-        public string HomeTown { get; set; }
-
         public string CurrentTripId { get; set; }
 
         public ICollection<UserViewModel> MutualFriends { get; set; }

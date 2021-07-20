@@ -26,10 +26,6 @@ namespace Tripsters.Data.Models
         [Range(16, 99)]
         public int Age { get; set; }
 
-        public string HomeTownId { get; set; }
-
-        public Town HomeTown { get; set; }
-
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }

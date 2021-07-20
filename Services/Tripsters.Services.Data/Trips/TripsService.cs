@@ -8,30 +8,25 @@
 
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
-    using Tripsters.Services.Data.Towns;
+    using Tripsters.Services.Data.Badges;
+    using Tripsters.Services.Data.Trips.Models;
     using Tripsters.Services.Data.Users;
-    using Tripsters.Web.ViewModels.Badges;
+    using Tripsters.Services.Data.Users.Models;
     using Tripsters.Web.ViewModels.Trips;
-    using Tripsters.Web.ViewModels.Users;
-
-    using static Tripsters.Common.GlobalConstants;
 
     public class TripsService : ITripsService
     {
         private readonly IDeletableEntityRepository<Trip> tripRepository;
         private readonly IDeletableEntityRepository<UserTrip> userTripRepository;
-        private readonly ITownsService townsService;
         private readonly IUsersService usersService;
 
         public TripsService(
             IDeletableEntityRepository<Trip> tripRepository,
             IDeletableEntityRepository<UserTrip> userTripRepository,
-            ITownsService townsService,
             IUsersService usersService)
         {
             this.tripRepository = tripRepository;
             this.userTripRepository = userTripRepository;
-            this.townsService = townsService;
             this.usersService = usersService;
         }
 
@@ -60,31 +55,10 @@
                 Name = tripData.Name,
                 Description = tripData.Description,
                 StartDate = tripData.StartDate,
+                Destination = new Destination { From = tripData.From, To = tripData.To },
             };
 
-            var fromTown = this.townsService.GetTownByName(tripData.FromTown);
-
-            if (fromTown == null)
-            {
-                fromTown = new Town
-                {
-                    Name = tripData.FromTown,
-                };
-            }
-
-            var toTown = this.townsService.GetTownByName(tripData.ToTown);
-
-            if (toTown == null)
-            {
-                toTown = new Town
-                {
-                    Name = tripData.ToTown,
-                };
-            }
-
             var user = this.usersService.GetUser(userName);
-            trip.FromTown = fromTown;
-            trip.ToTown = toTown;
             trip.User = user ?? throw new ArgumentNullException("You are not loggin.");
 
             await this.tripRepository.AddAsync(trip);
@@ -100,7 +74,7 @@
             await this.tripRepository.SaveChangesAsync();
         }
 
-        public async Task EditTrip(TripsViewModel tripData)
+        public async Task EditTrip(TripServiceModel tripData)
         {
             var trip = this.tripRepository.All()
                  .Where(t => t.Id == tripData.Id)
@@ -109,63 +83,42 @@
             DateTime startDate;
             DateTime.TryParseExact(tripData.StartDate, "G", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
 
-            var fromTown = this.townsService.GetTownByName(tripData.FromTown);
-
-            if (fromTown == null)
-            {
-                fromTown = new Town
-                {
-                    Name = tripData.FromTown,
-                };
-            }
-
-            var toTown = this.townsService.GetTownByName(tripData.ToTown);
-
-            if (toTown == null)
-            {
-                toTown = new Town
-                {
-                    Name = tripData.ToTown,
-                };
-            }
-
             trip.Name = tripData.Name;
-            trip.FromTown = fromTown;
-            trip.ToTown = toTown;
             trip.AvailableSeats = tripData.AvailableSeats;
             trip.Description = tripData.Description;
             trip.StartDate = startDate;
+            trip.Destination.From = tripData.From;
+            trip.Destination.To = tripData.To;
 
             await this.tripRepository.SaveChangesAsync();
         }
 
-        public ICollection<TripsViewModel> GetAllTrips(int currentPage, int tripsPerPage)
+        public ICollection<TripServiceModel> GetAllTrips(int currentPage, int tripsPerPage)
         => this.tripRepository.All()
             .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow)
             .OrderBy(t => t.StartDate)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
-            .Select(t => new TripsViewModel
+            .Select(t => new TripServiceModel
             {
                 Id = t.Id,
                 Name = t.Name,
-                FromTown = t.FromTown.Name,
-                ToTown = t.ToTown.Name,
+                From = t.Destination.From,
+                To = t.Destination.To,
                 AvailableSeats = t.AvailableSeats,
                 Description = t.Description,
                 CreatorName = t.User.UserName,
                 StartDate = t.StartDate.ToString("G"),
                 CreatorId = t.UserId,
                 Members = t.Travellers
-                .Select(m => new UserViewModel
+                .Select(m => new UserServiceModel
                 {
-                    Id = m.Id,
+                    Id = m.User.Id,
                     UserName = m.User.UserName,
                     Age = m.User.Age,
-                    HomeTown = m.User.HomeTown.Name,
                     CurrentTripId = t.Id,
                     Badges = m.User.Badges
-                    .Select(b => new BadgeViewModel
+                    .Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
@@ -176,32 +129,31 @@
             })
             .ToList();
 
-        public ICollection<TripsViewModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage)
+        public ICollection<TripServiceModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage)
         => this.tripRepository.All()
             .Where(t => t.UserId == userId && t.IsDeleted == false)
             .OrderBy(t => t.StartDate)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
-            .Select(t => new TripsViewModel
+            .Select(t => new TripServiceModel
             {
                 Id = t.Id,
                 CreatorId = userId,
                 AvailableSeats = t.AvailableSeats,
                 CreatorName = t.User.UserName,
                 Description = t.Description,
-                FromTown = t.FromTown.Name,
-                ToTown = t.ToTown.Name,
+                From = t.Destination.From,
+                To = t.Destination.To,
                 StartDate = t.StartDate.ToString("G"),
                 Name = t.Name,
                 Members = t.Travellers
-                .Select(u => new UserViewModel
+                .Select(u => new UserServiceModel
                 {
-                    Id = u.Id,
+                    Id = u.User.Id,
                     UserName = u.User.UserName,
                     Age = u.User.Age,
-                    HomeTown = u.User.HomeTown.Name,
                     Badges = u.User.Badges
-                    .Select(b => new BadgeViewModel
+                    .Select(b => new BadgeServiceModel
                     {
                         Name = b.Badge.Name,
                         Id = b.Badge.Id,
@@ -212,43 +164,42 @@
             })
             .ToList();
 
-        public ICollection<TripsViewModel> GetDayAfterTrips(string userId)
+        public ICollection<TripServiceModel> GetDayAfterTrips(string userId)
         => this.tripRepository.All()
             .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.Today.DayOfYear > 1)
-            .Select(t => new TripsViewModel
+            .Select(t => new TripServiceModel
             {
                 Name = t.Name,
-                FromTown = t.FromTown.Name,
-                ToTown = t.ToTown.Name,
+                From = t.Destination.From,
+                To = t.Destination.To,
                 CreatorName = t.User.UserName,
                 Description = t.Description,
             })
             .ToList();
 
-        public ICollection<TripsViewModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
+        public ICollection<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
         => this.userTripRepository.All()
             .Where(u => u.User.Id == userId && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
-            .Select(t => new TripsViewModel
+            .Select(t => new TripServiceModel
             {
                 Id = t.TripId,
                 Name = t.Trip.Name,
-                FromTown = t.Trip.FromTown.Name,
-                ToTown = t.Trip.ToTown.Name,
+                From = t.Trip.Destination.From,
+                To = t.Trip.Destination.To,
                 CreatorName = t.User.UserName,
                 Description = t.Trip.Description,
                 Likes = t.Trip.Likes.Count,
                 Comments = t.Trip.Comments,
                 Members = t.Trip.Travellers
-                .Select(m => new UserViewModel
+                .Select(m => new UserServiceModel
                 {
                     Id = m.UserId,
                     UserName = m.User.UserName,
                     Age = m.User.Age,
-                    HomeTown = m.User.HomeTown.Name,
                     Badges = m.User.Badges
-                    .Select(b => new BadgeViewModel
+                    .Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
@@ -268,16 +219,16 @@
             })
             .ToList();
 
-        public TripsViewModel GetTripById(string tripId, string userId)
+        public TripServiceModel GetTripById(string tripId, string userId)
         => this.tripRepository.All()
             .Where(t => t.Id == tripId && t.IsDeleted == false)
-            .Select(t => new TripsViewModel
+            .Select(t => new TripServiceModel
             {
                 Id = t.Id,
                 Name = t.Name,
                 AvailableSeats = t.AvailableSeats,
-                FromTown = t.FromTown.Name,
-                ToTown = t.ToTown.Name,
+                From = t.Destination.From,
+                To = t.Destination.To,
                 Description = t.Description,
                 StartDate = t.StartDate.ToString("G"),
                 CreatorName = t.User.UserName,
@@ -285,15 +236,14 @@
                 CurrentUserId = userId,
                 Comments = t.Comments,
                 Members = t.Travellers
-                .Select(m => new UserViewModel
+                .Select(m => new UserServiceModel
                 {
-                    Id = m.Id,
+                    Id = m.User.Id,
                     UserName = m.User.UserName,
                     Age = m.User.Age,
-                    HomeTown = m.User.HomeTown.Name,
                     CurrentTripId = t.Id,
                     Badges = m.User.Badges
-                    .Select(b => new BadgeViewModel
+                    .Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
@@ -304,28 +254,28 @@
             })
             .FirstOrDefault();
 
-        public ICollection<TripsViewModel> GetUpcommingTodayTrips(string userId)
+        public ICollection<TripServiceModel> GetUpcommingTodayTrips(string userId)
         => this.tripRepository.All()
             .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear.CompareTo(DateTime.Today.DayOfYear) == 0)
-            .Select(t => new TripsViewModel
+            .Select(t => new TripServiceModel
             {
                 Name = t.Name,
-                FromTown = t.FromTown.Name,
-                ToTown = t.ToTown.Name,
+                From = t.Destination.From,
+                To = t.Destination.To,
                 CreatorName = t.User.UserName,
                 Description = t.Description,
                 StartDate = t.StartDate.ToString("G"),
             })
             .ToList();
 
-        public ICollection<TripsViewModel> GetUpcommingTomorrowTrips(string userId)
+        public ICollection<TripServiceModel> GetUpcommingTomorrowTrips(string userId)
        => this.tripRepository.All()
            .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.UtcNow.DayOfYear == 1)
-           .Select(t => new TripsViewModel
+           .Select(t => new TripServiceModel
            {
                Name = t.Name,
-               FromTown = t.FromTown.Name,
-               ToTown = t.ToTown.Name,
+               From = t.Destination.From,
+               To = t.Destination.To,
                CreatorName = t.User.UserName,
                Description = t.Description,
                StartDate = t.StartDate.ToString("G"),

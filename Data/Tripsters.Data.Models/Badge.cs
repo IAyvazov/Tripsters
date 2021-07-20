@@ -6,11 +6,10 @@
 
     using Tripsters.Data.Common.Models;
 
-    public class Badge : BaseDeletableModel<string>
+    public class Badge : BaseDeletableModel<int>
     {
         public Badge()
         {
-            this.Id = Guid.NewGuid().ToString();
             this.Users = new HashSet<UsersBadges>();
         }
 

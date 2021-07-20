@@ -17,8 +17,8 @@
             public const int DescriptionMinLength = 10;
             public const int DescriptionMaxLength = 300;
 
-            public const int TownMinLength = 3;
-            public const int TownMaxLength = 50;
+            public const int DestinationMinLength = 3;
+            public const int DestinationMaxLength = 50;
         }
     }
 }

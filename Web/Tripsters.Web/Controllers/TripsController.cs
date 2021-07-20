@@ -1,6 +1,7 @@
 ﻿namespace Tripsters.Web.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -8,8 +9,11 @@
     using Microsoft.AspNetCore.Mvc;
     using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Trips;
+    using Tripsters.Services.Data.Trips.Models;
     using Tripsters.Services.Data.Users;
+    using Tripsters.Web.ViewModels.Badges;
     using Tripsters.Web.ViewModels.Trips;
+    using Tripsters.Web.ViewModels.Users;
 
     public class TripsController : BaseController
     {
@@ -38,15 +42,17 @@
             {
                 trips = trips.Where(t =>
                           t.CreatorName.ToLower().Contains(model.SearchTerm.ToLower()) ||
-                          t.FromTown.ToLower().Contains(model.SearchTerm.ToLower()) ||
-                          t.ToTown.ToLower().Contains(model.SearchTerm.ToLower()) ||
+                          t.From.ToLower().Contains(model.SearchTerm.ToLower()) ||
+                          t.To.ToLower().Contains(model.SearchTerm.ToLower()) ||
                           t.Name.ToLower().Contains(model.SearchTerm.ToLower()))
                     .ToList();
 
                 tripCount = trips.Count();
             }
 
-            model = new TripsListingModel { Trips = trips, CurrentPage = model.CurrentPage, TotalTrips = tripCount };
+            var tripsModel = this.ConvertFromServiceToViewModel(trips);
+
+            model = new TripsListingModel { Trips = tripsModel, CurrentPage = model.CurrentPage, TotalTrips = tripCount };
 
             return this.View(model);
         }
@@ -133,7 +139,7 @@
         {
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
 
-            var trips = this.tripsService.GetAllUserTrips(userId, model.CurrentPage, model.TripsPerPage);
+            var trips = this.ConvertFromServiceToViewModel(this.tripsService.GetAllUserTrips(userId, model.CurrentPage, model.TripsPerPage));
 
             var tripCount = this.tripsService.GetAllUserTripsCount(userId);
 
@@ -169,7 +175,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> EditTrip(TripsViewModel trips)
+        public async Task<IActionResult> EditTrip(TripServiceModel trips)
         {
             await this.tripsService.EditTrip(trips);
 
@@ -179,9 +185,9 @@
         public IActionResult Upcoming()
         {
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
-            var todayTrips = this.tripsService.GetUpcommingTodayTrips(userId);
-            var tomorrowTrips = this.tripsService.GetUpcommingTomorrowTrips(userId);
-            var dayAfterTrips = this.tripsService.GetDayAfterTrips(userId);
+            var todayTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetUpcommingTodayTrips(userId));
+            var tomorrowTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetUpcommingTomorrowTrips(userId));
+            var dayAfterTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetDayAfterTrips(userId));
 
             var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips, TheDayAfterTrips = dayAfterTrips };
 
@@ -191,7 +197,7 @@
         public IActionResult Past(TripsListingModel model)
         {
             var userId = this.usersService.GetUser(this.User.Identity.Name).Id;
-            var pastTrips = this.tripsService.GetPastTrips(userId, model.CurrentPage, model.TripsPerPage);
+            var pastTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetPastTrips(userId, model.CurrentPage, model.TripsPerPage));
             var badges = this.badgesService.GetAllBadges();
             model = new TripsListingModel { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count(), Badges = badges };
 
@@ -205,5 +211,22 @@
 
             return this.RedirectToAction("Past");
         }
+
+        private ICollection<TripsViewModel> ConvertFromServiceToViewModel(ICollection<TripServiceModel> trips)
+        => trips.Select(t => new TripsViewModel
+        {
+            Id = t.Id,
+            Name = t.Name,
+            From = t.From,
+            To = t.To,
+            CreatorId = t.CreatorId,
+            CreatorName = t.CreatorName,
+            AvailableSeats = t.AvailableSeats,
+            CurrentUserId = t.CurrentUserId,
+            StartDate = t.StartDate,
+            Description = t.Description,
+            Comments = t.Comments,
+            Likes = t.Likes,
+        }).ToList();
     }
 }

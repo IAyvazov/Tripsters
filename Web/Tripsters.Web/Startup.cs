@@ -19,7 +19,6 @@
     using Tripsters.Data.Seeding;
     using Tripsters.Services.Data;
     using Tripsters.Services.Data.Badges;
-    using Tripsters.Services.Data.Towns;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Mapping;
@@ -70,7 +69,6 @@
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<ITripsService, TripsService>();
-            services.AddTransient<ITownsService, TownsService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IBadgesService, BadgesService>();
         }

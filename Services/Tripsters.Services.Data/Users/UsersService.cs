@@ -9,9 +9,7 @@
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Badges;
-    using Tripsters.Web.ViewModels.Badges;
-    using Tripsters.Web.ViewModels.Photos;
-    using Tripsters.Web.ViewModels.Users;
+    using Tripsters.Services.Data.Users.Models;
 
     public class UsersService : IUsersService
     {
@@ -29,7 +27,7 @@
             this.badgesService = badgesService;
         }
 
-        public async Task AddBadgeToUser(string badgeId, string userId)
+        public async Task AddBadgeToUser(int badgeId, string userId)
         {
             var user = this.userRepostory.All()
                 .Where(u => u.Id == userId)
@@ -73,7 +71,7 @@
             await this.userRepostory.SaveChangesAsync();
         }
 
-        public async Task Edit(UserProfileViewModel userData)
+        public async Task Edit(UserProfileServiceModel userData)
         {
             var user = this.userRepostory.All()
                 .Where(u => u.Id == userData.Id)
@@ -82,7 +80,6 @@
             user.UserName = userData.UserName;
             user.Age = userData.Age;
             user.Email = userData.Email;
-
             user.Photos.Add(new Photo { Url = userData.ProfilePictureUrl.Substring(62), UserId = user.Id, IsProfilePicture = true });
 
             await this.userRepostory.SaveChangesAsync();
@@ -93,59 +90,55 @@
             .Where(u => u.UserName == userName)
             .FirstOrDefault();
 
-        public UserViewModel GetUserById(string creatorId, string userId, string currTripId)
+        public UserServiceModel GetUserById(string creatorId, string userId, string currTripId)
         => this.userRepostory.All()
             .Where(u => u.Id == creatorId)
-            .Select(u => new UserViewModel
+            .Select(u => new UserServiceModel
             {
                 Id = creatorId,
                 Age = u.Age,
                 UserName = u.UserName,
-                HomeTown = u.HomeTown.Name,
                 CurrentTripId = currTripId,
                 Badges = u.Badges
-                .Select(b => new BadgeViewModel
+                .Select(b => new BadgeServiceModel
                 {
                     Id = b.Badge.Id,
                     Name = b.Badge.Name,
                 }).ToList(),
                 MutualFriends = u.Friends.Where(x => x.Id == creatorId && x.Id == userId)
-                .Select(f => new UserViewModel
+                .Select(f => new UserServiceModel
                 {
                     UserName = f.UserName,
                     Age = f.Age,
-                    HomeTown = f.HomeTown.Name,
                 }).ToList(),
             }).FirstOrDefault();
 
-        public UserProfileViewModel GetUserProfile(string userName)
+        public UserProfileServiceModel GetUserProfile(string userName)
         => this.userRepostory.All()
             .Where(u => u.UserName == userName)
-            .Select(u => new UserProfileViewModel
+            .Select(u => new UserProfileServiceModel
             {
                 Id = u.Id,
                 UserName = u.UserName,
                 Age = u.Age,
-                HomeTown = u.HomeTown.Name,
                 Email = u.Email,
                 ProfilePictureUrl = u.Photos
                 .Where(p => p.IsProfilePicture == true)
                 .FirstOrDefault().Url,
                 Badges = u.Badges
-                .Select(b => new BadgeViewModel
+                .Select(b => new BadgeServiceModel
                 {
                     Id = b.Badge.Id,
                     Name = b.Badge.Name,
                 })
                 .ToList(),
                 Friends = u.Friends
-                .Select(f => new UserViewModel
+                .Select(f => new UserServiceModel
                 {
                     Id = f.Id,
                     UserName = f.UserName,
                     Age = f.Age,
-                    HomeTown = f.HomeTown.Name,
-                    Badges = f.Badges.Select(b => new BadgeViewModel
+                    Badges = f.Badges.Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
@@ -155,7 +148,7 @@
                 .ToList(),
                 Photos = u.Photos
                 .Where(p => p.IsProfilePicture == false)
-                .Select(p => new PhotoViewModel
+                .Select(p => new PhotoServiceModel
                 {
                     Url = p.Url,
                 })
@@ -163,34 +156,32 @@
             })
             .FirstOrDefault();
 
-        public UserProfileViewModel GetUserProfileById(string userId)
+        public UserProfileServiceModel GetUserProfileById(string userId)
          => this.userRepostory.All()
             .Where(u => u.Id == userId)
-            .Select(u => new UserProfileViewModel
+            .Select(u => new UserProfileServiceModel
             {
                 Id = u.Id,
                 UserName = u.UserName,
                 Age = u.Age,
-                HomeTown = u.HomeTown.Name,
                 Email = u.Email,
                 ProfilePictureUrl = u.Photos
                 .Where(p => p.IsProfilePicture == true)
                 .FirstOrDefault().Url,
                 Badges = u.Badges
-                .Select(b => new BadgeViewModel
+                .Select(b => new BadgeServiceModel
                 {
                     Id = b.Badge.Id,
                     Name = b.Badge.Name,
                 })
                 .ToList(),
                 Friends = u.Friends
-                .Select(f => new UserViewModel
+                .Select(f => new UserServiceModel
                 {
                     Id = f.Id,
                     UserName = f.UserName,
                     Age = f.Age,
-                    HomeTown = f.HomeTown.Name,
-                    Badges = f.Badges.Select(b => new BadgeViewModel
+                    Badges = f.Badges.Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
@@ -200,7 +191,7 @@
                 .ToList(),
                 Photos = u.Photos
                 .Where(p => p.IsProfilePicture == false)
-                .Select(p => new PhotoViewModel
+                .Select(p => new PhotoServiceModel
                 {
                     Url = p.Url,
                 })

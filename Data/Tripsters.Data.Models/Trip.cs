@@ -32,15 +32,7 @@
 
         public ApplicationUser User { get; set; }
 
-        [Required]
-        public string FromTownId { get; set; }
-
-        public Town FromTown { get; set; }
-
-        [Required]
-        public string ToTownId { get; set; }
-
-        public Town ToTown { get; set; }
+        public Destination Destination { get; set; }
 
         public DateTime StartDate { get; set; }
 

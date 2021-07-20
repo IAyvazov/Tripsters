@@ -8,7 +8,7 @@
 
         public ApplicationUser User { get; set; }
 
-        public string BadgeId { get; set; }
+        public int BadgeId { get; set; }
 
         public Badge Badge { get; set; }
     }

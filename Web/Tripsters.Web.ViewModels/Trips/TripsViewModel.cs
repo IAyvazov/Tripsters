@@ -3,6 +3,7 @@
     using System.Collections.Generic;
 
     using Tripsters.Data.Models;
+
     using Tripsters.Web.ViewModels.Users;
 
     public class TripsViewModel
@@ -11,9 +12,9 @@
 
         public string Name { get; set; }
 
-        public string ToTown { get; set; }
+        public string From { get; set; }
 
-        public string FromTown { get; set; }
+        public string To { get; set; }
 
         public int AvailableSeats { get; set; }
 

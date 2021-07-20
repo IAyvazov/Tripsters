@@ -9,7 +9,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     using Tripsters.Services.Data.Users;
-    using Tripsters.Web.ViewModels.Users;
+    using Tripsters.Services.Data.Users.Models;
 
     public class UsersController : Controller
     {
@@ -42,7 +42,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(UserProfileViewModel userData)
+        public async Task<IActionResult> Edit(UserProfileServiceModel userData)
         {
             if (!this.ModelState.IsValid)
             {
@@ -68,7 +68,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBadge(string badgeId, string userId)
+        public async Task<IActionResult> AddBadge(int badgeId, string userId)
         {
             await this.usersService.AddBadgeToUser(badgeId, userId);
 

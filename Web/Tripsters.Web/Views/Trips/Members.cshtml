@@ -1,6 +1,6 @@
-﻿@using Tripsters.Web.ViewModels.Trips
+﻿@using Tripsters.Services.Data.Trips.Models
 
-@model TripsViewModel
+@model TripServiceModel
 
 @{
     ViewData["Title"] = "Trip";
@@ -29,12 +29,11 @@
         <ul>
             @foreach (var member in Model.Members)
             {
-            <li>
-                <h3 class="card-title">@member.UserName</h3>
-                <h5 class="card-text">Age: @member.Age</h5>
-                <h5 class="card-text">From: @member.HomeTown</h5>
-                <h5 class="card-text">Badges: @string.Join(",", member.Badges)</h5>
-            </li>
+                <li>
+                    <h3 class="card-title">@member.UserName</h3>
+                    <h5 class="card-text">Age: @member.Age</h5>
+                    <h5 class="card-text">Badges: @string.Join(",", member.Badges)</h5>
+                </li>
             }
         </ul>
     </div>

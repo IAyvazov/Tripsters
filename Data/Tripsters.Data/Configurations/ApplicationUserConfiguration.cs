@@ -1,8 +1,9 @@
 ﻿namespace Tripsters.Data.Configurations
 {
-    using Tripsters.Data.Models;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+    using Tripsters.Data.Models;
 
     public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
     {

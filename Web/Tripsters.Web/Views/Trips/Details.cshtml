@@ -1,6 +1,6 @@
-﻿@using Tripsters.Web.ViewModels.Trips
+﻿@using Tripsters.Services.Data.Trips.Models
 
-@model TripsViewModel
+@model TripServiceModel
 
 @{
     ViewData["Title"] = "Trip";
@@ -31,8 +31,8 @@
     <div class="card-body">
         <h3 class="card-title">@Model.Name</h3>
         <h5 class="card-text">We  go on: @Model.StartDate</h5>
-        <h5 class="card-text">From: @Model.FromTown</h5>
-        <h5 class="card-text">To: @Model.ToTown</h5>
+        <h5 class="card-text">From: @Model.From</h5>
+        <h5 class="card-text">To: @Model.To</h5>
         <h5 class="card-text">We have: @Model.AvailableSeats seats left</h5>
         <p class="card-text">@Model.Description</p>
         @if (Model.CreatorName != User.Identity.Name && ViewBag.IsAvailableSeats && (Model.Members.Count == 0 || Model.Members.Any(u => u.UserName != User.Identity.Name)))
