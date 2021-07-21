@@ -85,9 +85,10 @@
             await this.userRepostory.SaveChangesAsync();
         }
 
-        public ApplicationUser GetUser(string userName)
+        public ApplicationUser GetUser(string userId)
         => this.userRepostory.All()
-            .Where(u => u.UserName == userName)
+            .Where(u => u.Id == userId)
+            .Include(p => p.Photos)
             .FirstOrDefault();
 
         public UserServiceModel GetUserById(string creatorId, string userId, string currTripId)

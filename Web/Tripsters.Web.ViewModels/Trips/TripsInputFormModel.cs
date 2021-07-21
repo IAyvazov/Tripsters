@@ -16,13 +16,13 @@
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "From")]
-        [StringLength(GlobalConstants.TripSecurity.DestinationMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.DescriptionMinLength)]
+        [StringLength(GlobalConstants.TripSecurity.DestinationMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.DestinationMinLength)]
         public string From { get; set; }
 
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "To")]
-        [StringLength(GlobalConstants.TripSecurity.DestinationMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.DescriptionMinLength)]
+        [StringLength(GlobalConstants.TripSecurity.DestinationMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.DestinationMinLength)]
         public string To { get; set; }
 
         [DataType(DataType.DateTime)]

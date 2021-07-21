@@ -12,16 +12,16 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
-                <a class="nav-link " href="/Trips/Details?tripId=@Model.Id">Trip info</a>
+                <a class="nav-link " asp-controller="Trips" asp-action="Details" asp-route-tripId="@Model.Id">Trip info</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="/Trips/Creator?creatorId=@Model.CreatorId&userId=@Model.CurrentUserId&currTripId=@Model.Id">Creator info</a>
+                <a class="nav-link " asp-controller="Trips" asp-action="Creator" asp-route-creatorId="@Model.CreatorId" asp-route-userId="@Model.CurrentUserId" asp-route-currTripId="@Model.Id">Creator info</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/Trips/Members?tripId=@Model.Id">Members (@Model.Members.Count)</a>
+                <a class="nav-link active" asp-controller="Trips" asp-action="Members" asp-route-tripId="@Model.Id">Members (@Model.Members.Count)</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" href="/Trips/Photo?tripId={2}">Photos</a>
+                <a class="nav-link " asp-controller="Trips" asp-action="Comment" asp-route-tripId="@Model.Id">Comments</a>
             </li>
         </ul>
     </div>

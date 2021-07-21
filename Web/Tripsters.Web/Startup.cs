@@ -17,7 +17,6 @@
     using Tripsters.Data.Models;
     using Tripsters.Data.Repositories;
     using Tripsters.Data.Seeding;
-    using Tripsters.Services.Data;
     using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Users;
@@ -67,7 +66,6 @@
 
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
-            services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<ITripsService, TripsService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IBadgesService, BadgesService>();

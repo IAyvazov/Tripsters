@@ -9,5 +9,7 @@
         public string TripId { get; set; }
 
         public string TripName { get; set; }
+
+        public string UserProfilePictureUrl { get; set; }
     }
 }

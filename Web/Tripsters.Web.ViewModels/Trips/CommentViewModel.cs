@@ -9,5 +9,7 @@
         public string UserImg { get; set; }
 
         public string TripId { get; set; }
+
+        public string CreatedOn { get; set; }
     }
 }

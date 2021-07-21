@@ -7,7 +7,7 @@
 
     public interface IUsersService
     {
-        ApplicationUser GetUser(string userName);
+        ApplicationUser GetUser(string userId);
 
         UserServiceModel GetUserById(string creatorId, string userId, string currTripId);
 

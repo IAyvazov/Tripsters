@@ -14,36 +14,21 @@
     <div class="row">
         <div class="col-sm alert-danger">
             Today
-
             <div class="container">
                 @foreach (var trip in Model.TodayTrips)
                 {
-                    <div class="card">
-                        <div class="card-body">
-                            <h3 class="card-title">
-                                @trip.Name
-                            </h3>
-
-                            <h5 class="card-text">
-                                Creator: @trip.CreatorName
-                            </h5>
-
-                            <p class="card-text">
-                                From: @trip.From
-                            </p>
-
-                            <p class="card-text">
-                                To: @trip.To
-                            </p>
-                            @if (trip.Description != null)
-                            {
-                                <p class="card-text">
-                                    Description: @trip.Description
-                                </p>
-                            }
-                            <p class="card-text">
-                                Date and Time @trip.StartDate
-                            </p>
+                    <div class="col mt-4 mb-4">
+                        <div class="card">
+                            <img src="https://img.freepik.com/free-vector/road-trip-summer-vacation-holidays-travel-by-car_107791-2152.jpg?size=626&ext=jpg" class="card-img-top" alt="...">
+                            <div class="card-body ">
+                                <h5 class="card-title">@trip.Name</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">From: @trip.From</li>
+                                    <li class="list-group-item">To: @trip.To</li>
+                                    <li class="list-group-item">Seats: @trip.AvailableSeats</li>
+                                </ul>
+                                <a asp-controller="Trips" asp-action="Details" asp-route-tripId="@trip.Id" class="btn btn-primary">Info</a>
+                            </div>
                         </div>
                     </div>
                 }
@@ -54,66 +39,18 @@
             <div class="container">
                 @foreach (var trip in Model.TomorrowTrips)
                 {
-                    <div class="card">
-                        <div class="card-body">
-                            <h3 class="card-title">
-                                @trip.Name
-                            </h3>
-
-                            <h5 class="card-text">
-                                Creator: @trip.CreatorName
-                            </h5>
-
-                            <p class="card-text">
-                                From: @trip.From
-                            </p>
-
-                            <p class="card-text">
-                                To: @trip.To
-                            </p>
-                            @if (trip.Description != null)
-                            {
-                                <p class="card-text">
-                                    Description: @trip.Description
-                                </p>
-                            }
-                            <p class="card-text">
-                                Date and Time @trip.StartDate
-                            </p>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-        <div class="col-sm alert-success">
-            Future
-
-            <div class="container">
-                @foreach (var trip in Model.TheDayAfterTrips)
-                {
-                    <div class="card">
-                        <div class="card-body">
-                            <h3 class="card-title">
-                                @trip.Name
-                            </h3>
-
-                            <h5 class="card-text">
-                                Creator: @trip.CreatorName
-                            </h5>
-
-                            <p class="card-text">
-                                From: @trip.From
-                            </p>
-
-                            <p class="card-text">
-                                To: @trip.To
-                            </p>
-                            @if (trip.Description != null)
-                            {
-                                <p class="card-text">
-                                    Description: @trip.Description
-                                </p>
-                            }
+                    <div class="col mt-4">
+                        <div class="card">
+                            <img src="https://img.freepik.com/free-vector/road-trip-summer-vacation-holidays-travel-by-car_107791-2152.jpg?size=626&ext=jpg" class="card-img-top" alt="...">
+                            <div class="card-body ">
+                                <h5 class="card-title">@trip.Name</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">From: @trip.From</li>
+                                    <li class="list-group-item">To: @trip.To</li>
+                                    <li class="list-group-item">Seats: @trip.AvailableSeats</li>
+                                </ul>
+                                <a asp-controller="Trips" asp-action="Details" asp-route-tripId="@trip.Id" class="btn btn-primary">Info</a>
+                            </div>
                         </div>
                     </div>
                 }

@@ -47,7 +47,7 @@
             await this.tripRepository.SaveChangesAsync();
         }
 
-        public async Task AddTrip(TripsInputFormModel tripData, string userName)
+        public async Task AddTrip(TripsInputFormModel tripData, string userId)
         {
             var trip = new Trip
             {
@@ -58,8 +58,8 @@
                 Destination = new Destination { From = tripData.From, To = tripData.To },
             };
 
-            var user = this.usersService.GetUser(userName);
-            trip.User = user ?? throw new ArgumentNullException("You are not loggin.");
+            var user = this.usersService.GetUser(userId);
+            trip.User = user ?? throw new ArgumentNullException("You are not logged.");
 
             await this.tripRepository.AddAsync(trip);
             await this.tripRepository.SaveChangesAsync();
@@ -216,6 +216,11 @@
                 Text = c.Text,
                 UserName = c.User.UserName,
                 TripId = c.TripId,
+                UserImg = c.User.Photos
+                .Where(p => p.IsProfilePicture)
+                .Select(x => x.Url)
+                .FirstOrDefault(),
+                CreatedOn = c.CreatedOn.ToString("G"),
             })
             .ToList();
 
@@ -259,6 +264,7 @@
             .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear.CompareTo(DateTime.Today.DayOfYear) == 0)
             .Select(t => new TripServiceModel
             {
+                Id = t.Id,
                 Name = t.Name,
                 From = t.Destination.From,
                 To = t.Destination.To,
@@ -273,6 +279,7 @@
            .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.UtcNow.DayOfYear == 1)
            .Select(t => new TripServiceModel
            {
+               Id = t.Id,
                Name = t.Name,
                From = t.Destination.From,
                To = t.Destination.To,
