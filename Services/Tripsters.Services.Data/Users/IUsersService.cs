@@ -20,5 +20,7 @@
         Task AddBadgeToUser(int badgeId, string userId);
 
         Task AddPhoto(string path, string userId);
+
+        Task AddFriend(string currUserId, string friendUserId);
     }
 }

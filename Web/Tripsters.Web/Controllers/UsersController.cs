@@ -6,20 +6,36 @@
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using Tripsters.Data.Models;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
 
     public class UsersController : Controller
     {
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly IUsersService usersService;
         private IWebHostEnvironment environment;
 
-        public UsersController(IUsersService usersService, IWebHostEnvironment environment)
+
+        public UsersController(
+            IUsersService usersService,
+            IWebHostEnvironment environment,
+            UserManager<ApplicationUser> userManager)
         {
             this.usersService = usersService;
             this.environment = environment;
+            this.userManager = userManager;
+        }
+
+        public async Task<IActionResult> AddFriend(string friendUserId)
+        {
+            var currUserId = this.userManager.GetUserId(this.User);
+            await this.usersService.AddFriend(currUserId, friendUserId);
+
+            return this.Redirect($"/Users/Profile?userId={friendUserId}");
         }
 
         public IActionResult Profile(string userId)

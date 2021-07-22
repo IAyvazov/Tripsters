@@ -5,6 +5,13 @@
 @{
     ViewData["Title"] = $"{User.Identity.Name} Profile";
     var photos = Model.Photos.ToList();
+
+    var maxLength = 4;
+
+    if (photos.Count < 4)
+    {
+        maxLength = photos.Count;
+    }
 }
 
 <div class="row py-5 px-4">
@@ -34,6 +41,10 @@
                 </div>
             </div>
             <div class="bg-light p-4 d-flex justify-content-end text-center">
+                @if (this.User.Identity.Name != Model.UserName && !Model.Friends.Any(f => f.UserName == this.User.Identity.Name))
+                {
+                    <a class="btn btn-outline-info mr-4" asp-controller="Users" asp-action="AddFriend" asp-route-friendUserId="@Model.Id">Add Friend</a>
+                }
                 <ul class="list-inline mb-0">
                     <li class="list-inline-item">
                         <h5 class="font-weight-bold mb-0 d-block">@Model.Photos.Count</h5><small class="text-muted"> <i class="fas fa-image mr-1"></i>Photos</small>
@@ -44,13 +55,16 @@
                 </ul>
             </div>
             <div class="px-4 py-3">
-                <h5 class="mb-0">Badges</h5>
-                <div class="p-4 rounded shadow-sm bg-light">
-                    @foreach (var badge in Model.Badges)
-                    {
-                        <p class="font-italic mb-0">@badge.Name</p>
-                    }
-                </div>
+                @if (Model.Badges.Count != 0)
+                {
+                    <h5 class="mb-0">Badges</h5>
+                    <div class="p-4 rounded shadow-sm bg-light">
+                        @foreach (var badge in Model.Badges)
+                        {
+                            <p class="font-italic mb-0">@badge.Name</p>
+                        }
+                    </div>
+                }
             </div>
             @if (Model.Photos.Count == 0)
             {
@@ -77,7 +91,7 @@
                         <h5 class="mb-0">Recent photos</h5><a asp-controller="Users" asp-action="AllPhoto" asp-route-userId="@Model.Id" class="btn btn-link text-muted">Show all</a>
                     </div>
                     <div class="row">
-                        @for (int i = 0; i < 4; i++)
+                        @for (int i = 0; i < maxLength; i++)
                         {
                             <div class="col-lg-6 mb-2 pr-lg-1"><img src=@photos[i].Url class="img-fluid rounded shadow-sm"></div>
                         }

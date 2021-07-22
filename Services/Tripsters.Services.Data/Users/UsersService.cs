@@ -58,6 +58,16 @@
             await this.userBadgesRepostory.SaveChangesAsync();
         }
 
+        public async Task AddFriend(string currUserId, string friendUserId)
+        {
+            var user = this.GetUser(currUserId);
+            var friend = this.GetUser(friendUserId);
+            user.Friends.Add(friend);
+            friend.Friends.Add(user);
+
+            await this.userRepostory.SaveChangesAsync();
+        }
+
         public async Task AddPhoto(string path, string userId)
         {
             var user = this.userRepostory.All()

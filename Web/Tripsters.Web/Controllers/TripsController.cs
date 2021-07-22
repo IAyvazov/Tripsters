@@ -14,7 +14,9 @@
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Trips.Models;
     using Tripsters.Services.Data.Users;
+    using Tripsters.Web.ViewModels.Badges;
     using Tripsters.Web.ViewModels.Trips;
+    using Tripsters.Web.ViewModels.Users;
 
     public class TripsController : BaseController
     {
@@ -195,9 +197,8 @@
             var userId = this.userManager.GetUserId(this.User);
             var todayTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetUpcommingTodayTrips(userId));
             var tomorrowTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetUpcommingTomorrowTrips(userId));
-            var dayAfterTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetDayAfterTrips(userId));
 
-            var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips, TheDayAfterTrips = dayAfterTrips };
+            var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips};
 
             return this.View(upcomingTripsModel);
         }
@@ -235,6 +236,20 @@
             Description = t.Description,
             Comments = t.Comments,
             Likes = t.Likes,
+            Members = t.Members
+            .Select(m => new UserViewModel
+            {
+                UserName = m.UserName,
+                Age = m.Age,
+                Id = m.Id,
+                CurrentTripId = t.Id,
+                Badges = m.Badges
+                .Select(b => new BadgeViewModel
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                }).ToList(),
+            }).ToList(),
         }).ToList();
     }
 }

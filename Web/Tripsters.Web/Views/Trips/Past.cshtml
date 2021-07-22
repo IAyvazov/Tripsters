@@ -19,6 +19,25 @@
                 <div class="card-body ">
                     <h5 class="card-title">@trip.Name</h5>
                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Creator:
+                            <a asp-controller="Users" asp-action="Profile" asp-route-userId="@trip.CreatorId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" title="View Profile">
+                                @trip.CreatorName
+                            </a>
+                            <form asp-controller="Users" asp-action="AddBadge" method="post">
+                                <label asp-for="Badges"></label>
+                                <select name="badgeId" class="form-control">
+                                    @foreach (var badge in Model.Badges)
+                                    {
+                                        <option value="@badge.Id">@badge.Name</option>
+                                    }
+                                </select>
+                                <select name="userId" class="form-control" hidden>
+                                    <option value="@trip.CreatorId"></option>
+                                </select>
+                                <button class="btn btn-outline-dark" type="submit">Add</button>
+                            </form>
+                        </li>
                         <li class="list-group-item">From: @trip.From</li>
                         <li class="list-group-item">To: @trip.To</li>
                         <p class="text-center">Members: </p>

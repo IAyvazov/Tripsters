@@ -179,7 +179,7 @@
 
         public ICollection<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
         => this.userTripRepository.All()
-            .Where(u => u.User.Id == userId && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+            .Where(u => u.Trip.Travellers.Any(t => t.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
             .Select(t => new TripServiceModel
@@ -188,7 +188,8 @@
                 Name = t.Trip.Name,
                 From = t.Trip.Destination.From,
                 To = t.Trip.Destination.To,
-                CreatorName = t.User.UserName,
+                CreatorName = t.Trip.User.UserName,
+                CreatorId = t.Trip.UserId,
                 Description = t.Trip.Description,
                 Likes = t.Trip.Likes.Count,
                 Comments = t.Trip.Comments,
@@ -213,6 +214,7 @@
            .SelectMany(c => c.Comments)
             .Select(c => new CommentViewModel
             {
+                UserId = c.UserId,
                 Text = c.Text,
                 UserName = c.User.UserName,
                 TripId = c.TripId,
@@ -271,6 +273,20 @@
                 CreatorName = t.User.UserName,
                 Description = t.Description,
                 StartDate = t.StartDate.ToString("G"),
+                Members = t.Travellers
+               .Select(m => new UserServiceModel
+               {
+                   Id = m.UserId,
+                   UserName = m.User.UserName,
+                   Age = m.User.Age,
+                   CurrentTripId = t.Id,
+                   Badges = m.User.Badges
+                   .Select(b => new BadgeServiceModel
+                   {
+                       Id = b.BadgeId,
+                       Name = b.Badge.Name,
+                   }).ToList(),
+               }).ToList(),
             })
             .ToList();
 
@@ -286,6 +302,20 @@
                CreatorName = t.User.UserName,
                Description = t.Description,
                StartDate = t.StartDate.ToString("G"),
+               Members = t.Travellers
+               .Select(m => new UserServiceModel
+               {
+                   Id = m.UserId,
+                   UserName = m.User.UserName,
+                   Age = m.User.Age,
+                   CurrentTripId = t.Id,
+                   Badges = m.User.Badges
+                   .Select(b => new BadgeServiceModel
+                   {
+                       Id = b.BadgeId,
+                       Name = b.Badge.Name,
+                   }).ToList(),
+               }).ToList(),
            })
            .ToList();
 
