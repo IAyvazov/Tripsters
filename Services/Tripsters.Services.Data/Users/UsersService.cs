@@ -127,6 +127,7 @@
         public UserProfileServiceModel GetUserProfile(string userName)
         => this.userRepostory.All()
             .Where(u => u.UserName == userName)
+            .Include(f => f.Friends)
             .Select(u => new UserProfileServiceModel
             {
                 Id = u.Id,
@@ -149,6 +150,9 @@
                     Id = f.Id,
                     UserName = f.UserName,
                     Age = f.Age,
+                    ProfilePictureUrl = f.Photos
+                    .Where(p => p.IsProfilePicture == true)
+                    .FirstOrDefault().Url,
                     Badges = f.Badges.Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,
@@ -170,6 +174,7 @@
         public UserProfileServiceModel GetUserProfileById(string userId)
          => this.userRepostory.All()
             .Where(u => u.Id == userId)
+            .Include(f => f.Friends)
             .Select(u => new UserProfileServiceModel
             {
                 Id = u.Id,
@@ -192,6 +197,9 @@
                     Id = f.Id,
                     UserName = f.UserName,
                     Age = f.Age,
+                    ProfilePictureUrl = f.Photos
+                    .Where(p => p.IsProfilePicture == true)
+                    .FirstOrDefault().Url,
                     Badges = f.Badges.Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,

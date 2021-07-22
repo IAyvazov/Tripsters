@@ -4,14 +4,6 @@
 
 @{
     ViewData["Title"] = $"{User.Identity.Name} Profile";
-    var photos = Model.Photos.ToList();
-
-    var maxLength = 4;
-
-    if (photos.Count < 4)
-    {
-        maxLength = photos.Count;
-    }
 }
 
 <div class="row py-5 px-4">
@@ -50,10 +42,7 @@
                         <h5 class="font-weight-bold mb-0 d-block">@Model.Photos.Count</h5><small class="text-muted"> <i class="fas fa-image mr-1"></i>Photos</small>
                     </li>
                     <li class="list-inline-item">
-                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count</h5><small class="text-muted">
-                            <i class="fas fa-image mr-1"></i>
-                            <a asp-controller="Users" asp-action="MyFriends" asp-route-userId="@Model.Id">Friends</a>
-                        </small>
+                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count</h5><small class="text-muted"> <i class="fas fa-image mr-1"></i>Friends</small>
                     </li>
                 </ul>
             </div>
@@ -70,38 +59,22 @@
                     </div>
                 </div>
             }
-            @if (Model.Photos.Count == 0)
-            {
-                @if (Model.UserName == User.Identity.Name)
-                {
-                    <form method="post" enctype="multipart/form-data" asp-controller="Users" asp-action="UploadPhoto">
-                        <span>Select File:</span>
-                        <input type="file" name="postedFiles" multiple />
-                        <input name="userId" value="@Model.Id" hidden />
-                        <input class="btn btn-outline-dark" type="submit" value="Upload" />
-                        <br />
-                        <span style="color:green">@Html.Raw(ViewBag.Message)</span>
-                    </form>
-                }
-                else
-                {
-                    <p>There is no photo yet.</p>
-                }
-            }
-            else
-            {
-                <div class="py-4 px-4">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h5 class="mb-0">Recent photos</h5><a asp-controller="Users" asp-action="AllPhoto" asp-route-userId="@Model.Id" class="btn btn-link text-muted">Show all</a>
-                    </div>
-                    <div class="row">
-                        @for (int i = 0; i < maxLength; i++)
-                        {
-                            <div class="col-lg-6 mb-2 pr-lg-1"><img src=@photos[i].Url class="img-fluid rounded shadow-sm"></div>
-                        }
-                    </div>
+            <div class="py-4 px-4 mb-4 text-center">
+                <h2 class="mb-0">Frends</h2>
+                <div class="d-flex align-items-center justify-content-between mb-3">
                 </div>
-            }
+                <div class="row">
+                    @foreach (var friend in Model.Friends)
+                    {
+                        <div class="card text-center col-3 mr-4" style="width: 18rem;">
+                            <img src="@friend.ProfilePictureUrl" class="card-img-top" alt="@friend.UserName @friend.Age">
+                            <div class="card-body">
+                                <h5 class="card-title"><a asp-controller="Users" asp-action="Profile" asp-route-userId="@friend.Id"> @friend.UserName</a></h5>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -19,7 +19,6 @@
         private readonly IUsersService usersService;
         private IWebHostEnvironment environment;
 
-
         public UsersController(
             IUsersService usersService,
             IWebHostEnvironment environment,
@@ -28,6 +27,18 @@
             this.usersService = usersService;
             this.environment = environment;
             this.userManager = userManager;
+        }
+
+        public IActionResult MyFriends(string userId)
+        {
+            var user = this.usersService.GetUserProfile(this.User.Identity.Name);
+
+            if (userId != null)
+            {
+                user = this.usersService.GetUserProfileById(userId);
+            }
+
+            return this.View(user);
         }
 
         public async Task<IActionResult> AddFriend(string friendUserId)

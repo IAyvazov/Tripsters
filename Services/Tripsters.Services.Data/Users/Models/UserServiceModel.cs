@@ -14,6 +14,8 @@
 
         public string CurrentTripId { get; set; }
 
+        public string ProfilePictureUrl { get; set; }
+
         public ICollection<UserServiceModel> MutualFriends { get; set; }
 
         public ICollection<BadgeServiceModel> Badges { get; set; }
