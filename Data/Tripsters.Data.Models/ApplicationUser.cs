@@ -17,7 +17,7 @@ namespace Tripsters.Data.Models
             this.Roles = new HashSet<IdentityUserRole<string>>();
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
-            this.Friends = new HashSet<ApplicationUser>();
+            this.Friends = new HashSet<UserFriend>();
             this.Badges = new HashSet<UsersBadges>();
             this.Trips = new HashSet<UserTrip>();
             this.Photos = new HashSet<Photo>();
@@ -34,7 +34,7 @@ namespace Tripsters.Data.Models
 
         public DateTime? DeletedOn { get; set; }
 
-        public ICollection<ApplicationUser> Friends { get; set; }
+        public ICollection<UserFriend> Friends { get; set; }
 
         public ICollection<UsersBadges> Badges { get; set; }
 

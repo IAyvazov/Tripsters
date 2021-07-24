@@ -175,9 +175,6 @@ namespace Tripsters.Data.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -241,8 +238,6 @@ namespace Tripsters.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("IsDeleted");
 
@@ -466,6 +461,38 @@ namespace Tripsters.Data.Migrations
                     b.ToTable("Trips");
                 });
 
+            modelBuilder.Entity("Tripsters.Data.Models.UserFriend", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FriendId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "FriendId");
+
+                    b.HasIndex("FriendId");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("UserFriends");
+                });
+
             modelBuilder.Entity("Tripsters.Data.Models.UserTrip", b =>
                 {
                     b.Property<string>("UserId")
@@ -587,10 +614,6 @@ namespace Tripsters.Data.Migrations
 
             modelBuilder.Entity("Tripsters.Data.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("Tripsters.Data.Models.ApplicationUser", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("Tripsters.Data.Models.Like", null)
                         .WithMany("User")
                         .HasForeignKey("LikeTripId", "LikeUserId");
@@ -648,6 +671,25 @@ namespace Tripsters.Data.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Destination");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Tripsters.Data.Models.UserFriend", b =>
+                {
+                    b.HasOne("Tripsters.Data.Models.ApplicationUser", "Friend")
+                        .WithMany()
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Tripsters.Data.Models.ApplicationUser", "User")
+                        .WithMany("Friends")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Friend");
 
                     b.Navigation("User");
                 });

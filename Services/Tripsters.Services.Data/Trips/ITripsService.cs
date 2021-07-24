@@ -32,8 +32,6 @@
 
         ICollection<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage);
 
-        ICollection<TripServiceModel> GetDayAfterTrips(string userId);
-
         Task<int> LikeTrip(string tripId, string userId);
 
         Task AddComment(string userId, string tripId, string commentInput);

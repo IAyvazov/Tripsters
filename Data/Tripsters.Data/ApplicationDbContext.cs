@@ -38,6 +38,8 @@
 
         public DbSet<UsersBadges> UsersBadges { get; set; }
 
+        public DbSet<UserFriend> UserFriends { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -59,6 +61,14 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<UserFriend>()
+                .HasKey(k => new { k.UserId, k.FriendId });
+
+            builder.Entity<ApplicationUser>()
+                .HasMany(f => f.Friends)
+                .WithOne(u => u.User)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<ApplicationUser>()
                 .HasMany(b => b.Badges)
                 .WithOne(u => u.User)

@@ -1,6 +1,6 @@
 ﻿@using Tripsters.Web.ViewModels.Trips
 
-@model TripsUpcomingListingViewModel
+@model TripsListingModel
 
 @{
     ViewData["Title"] = "Upcoming trip";
@@ -15,7 +15,7 @@
         <div class="col-sm alert-danger">
             Today
             <div class="container">
-                @foreach (var trip in Model.TodayTrips)
+                @foreach (var trip in Model.UpcomingTrips.TodayTrips)
                 {
                     <div class="col mt-4 mb-4">
                         <div class="card">
@@ -37,9 +37,9 @@
         <div class="col-sm alert-primary">
             Tomorrow
             <div class="container">
-                @foreach (var trip in Model.TomorrowTrips)
+                @foreach (var trip in Model.UpcomingTrips.TomorrowTrips)
                 {
-                    <div class="col mt-4">
+                    <div class="col mt-4 mb-4">
                         <div class="card">
                             <img src="https://img.freepik.com/free-vector/road-trip-summer-vacation-holidays-travel-by-car_107791-2152.jpg?size=626&ext=jpg" class="card-img-top" alt="...">
                             <div class="card-body ">
@@ -53,8 +53,10 @@
                             </div>
                         </div>
                     </div>
+
                 }
             </div>
         </div>
     </div>
 </div>
+

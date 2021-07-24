@@ -24,45 +24,32 @@
                             <a asp-controller="Users" asp-action="Profile" asp-route-userId="@trip.CreatorId" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" title="View Profile">
                                 @trip.CreatorName
                             </a>
-                            <form asp-controller="Users" asp-action="AddBadge" method="post">
-                                <label asp-for="Badges"></label>
-                                <select name="badgeId" class="form-control">
-                                    @foreach (var badge in Model.Badges)
-                                    {
-                                        <option value="@badge.Id">@badge.Name</option>
-                                    }
-                                </select>
-                                <select name="userId" class="form-control" hidden>
-                                    <option value="@trip.CreatorId"></option>
-                                </select>
-                                <button class="btn btn-outline-dark" type="submit">Add</button>
-                            </form>
+                            @if (this.User.Identity.Name != trip.CreatorName)
+                            {
+                                <form asp-controller="Users" asp-action="AddBadge" method="post">
+                                    <label asp-for="Badges"></label>
+                                    <select name="badgeId" class="form-control">
+                                        @foreach (var badge in Model.Badges)
+                                        {
+                                            <option value="@badge.Id">@badge.Name</option>
+                                        }
+                                    </select>
+                                    <select name="userId" class="form-control" hidden>
+                                        <option value="@trip.CreatorId"></option>
+                                    </select>
+                                    <button class="btn btn-outline-dark" type="submit">Add</button>
+                                </form>
+                            }
                         </li>
                         <li class="list-group-item">From: @trip.From</li>
                         <li class="list-group-item">To: @trip.To</li>
-                        <p class="text-center">Members: </p>
+                        <li class="list-group ml-4"> Members: </li>
                         @foreach (var member in trip.Members)
                         {
                             <li class="list-group-item">
-                                <a asp-controller="Users" asp-action="Profile" asp-route-userId="@member.Id" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" title="View Profile">
+                                <a asp-controller="Users" asp-action="Profile" asp-route-userId="@member.Id" data-toggle="tooltip" data-placement="top" title="View Profile">
                                     @member.UserName
                                 </a>
-                                @if (User.Identity.Name != member.UserName)
-                                {
-                                    <form asp-controller="Users" asp-action="AddBadge" method="post">
-                                        <label asp-for="Badges"></label>
-                                        <select name="badgeId" class="form-control">
-                                            @foreach (var badge in Model.Badges)
-                                            {
-                                                <option value="@badge.Id">@badge.Name</option>
-                                            }
-                                        </select>
-                                        <select name="userId" class="form-control" hidden>
-                                            <option value="@member.Id"></option>
-                                        </select>
-                                        <button class="btn btn-outline-dark" type="submit">Add</button>
-                                    </form>
-                                }
                             </li>
                         }
                     </ul>
@@ -86,11 +73,14 @@
     var maxPage = Math.Ceiling((double)Model.TotalTrips / Model.TripsPerPage);
 }
 
-<div class="row mt-5">
-    <div class="col-md-6">
-        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@previousPage><<</a>
+@if (Model.TotalTrips > Model.TripsPerPage)
+{
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="Past" asp-route-currentPage=@previousPage>&lt;&lt;</a>
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-primary float-right @(Model.CurrentPage >= maxPage ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="Past" asp-route-currentPage=@(Model.CurrentPage + 1)>&gt;&gt;</a>
+        </div>
     </div>
-    <div class="col-md-6">
-        <a class="btn btn-primary float-right @(Model.CurrentPage >= maxPage ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@(Model.CurrentPage + 1)>>></a>
-    </div>
-</div>
+}

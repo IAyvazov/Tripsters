@@ -29,13 +29,13 @@
             this.userManager = userManager;
         }
 
-        public IActionResult MyFriends(string userId)
+        public IActionResult MyFriends(UserProfileServiceModel userModel)
         {
             var user = this.usersService.GetUserProfile(this.User.Identity.Name);
 
-            if (userId != null)
+            if (userModel.UserId != null)
             {
-                user = this.usersService.GetUserProfileById(userId);
+                user = this.usersService.GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
             }
 
             return this.View(user);
@@ -49,13 +49,13 @@
             return this.Redirect($"/Users/Profile?userId={friendUserId}");
         }
 
-        public IActionResult Profile(string userId)
+        public IActionResult Profile(UserProfileServiceModel userModel)
         {
             var user = this.usersService.GetUserProfile(this.User.Identity.Name);
 
-            if (userId != null)
+            if (userModel.UserId != null)
             {
-                user = this.usersService.GetUserProfileById(userId);
+                user = this.usersService.GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
             }
 
             return this.View(user);
@@ -125,10 +125,9 @@
             return this.RedirectToAction("Profile");
         }
 
-        public IActionResult AllPhoto(string userId)
+        public IActionResult AllPhoto(UserProfileServiceModel userModel)
         {
-            var user = this.usersService.GetUserProfileById(userId);
-
+            var user = this.usersService.GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
             return this.View(user);
         }
     }

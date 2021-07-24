@@ -62,9 +62,12 @@
         {
             var user = this.GetUser(currUserId);
             var friend = this.GetUser(friendUserId);
-            user.Friends.Add(friend);
-            friend.Friends.Add(user);
 
+            var userFriends = new UserFriend { UserId = currUserId, FriendId = friendUserId };
+            var friendFriends = new UserFriend { UserId = friendUserId, FriendId = currUserId };
+
+            friend.Friends.Add(friendFriends);
+            user.Friends.Add(userFriends);
             await this.userRepostory.SaveChangesAsync();
         }
 
@@ -84,7 +87,7 @@
         public async Task Edit(UserProfileServiceModel userData)
         {
             var user = this.userRepostory.All()
-                .Where(u => u.Id == userData.Id)
+                .Where(u => u.Id == userData.UserId)
                 .FirstOrDefault();
 
             user.UserName = userData.UserName;
@@ -116,12 +119,6 @@
                     Id = b.Badge.Id,
                     Name = b.Badge.Name,
                 }).ToList(),
-                MutualFriends = u.Friends.Where(x => x.Id == creatorId && x.Id == userId)
-                .Select(f => new UserServiceModel
-                {
-                    UserName = f.UserName,
-                    Age = f.Age,
-                }).ToList(),
             }).FirstOrDefault();
 
         public UserProfileServiceModel GetUserProfile(string userName)
@@ -130,10 +127,13 @@
             .Include(f => f.Friends)
             .Select(u => new UserProfileServiceModel
             {
-                Id = u.Id,
+                UserId = u.Id,
                 UserName = u.UserName,
                 Age = u.Age,
                 Email = u.Email,
+                TotalPhotos = u.Photos
+                .Where(p => p.IsProfilePicture == false)
+                .Count(),
                 ProfilePictureUrl = u.Photos
                 .Where(p => p.IsProfilePicture == true)
                 .FirstOrDefault().Url,
@@ -147,13 +147,13 @@
                 Friends = u.Friends
                 .Select(f => new UserServiceModel
                 {
-                    Id = f.Id,
-                    UserName = f.UserName,
-                    Age = f.Age,
-                    ProfilePictureUrl = f.Photos
+                    Id = f.FriendId,
+                    UserName = f.Friend.UserName,
+                    Age = f.Friend.Age,
+                    ProfilePictureUrl = f.Friend.Photos
                     .Where(p => p.IsProfilePicture == true)
                     .FirstOrDefault().Url,
-                    Badges = f.Badges.Select(b => new BadgeServiceModel
+                    Badges = f.Friend.Badges.Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
@@ -171,16 +171,20 @@
             })
             .FirstOrDefault();
 
-        public UserProfileServiceModel GetUserProfileById(string userId)
+        public UserProfileServiceModel GetUserProfileById(string userId, int currentPage, int photosPerPage)
          => this.userRepostory.All()
             .Where(u => u.Id == userId)
             .Include(f => f.Friends)
             .Select(u => new UserProfileServiceModel
             {
-                Id = u.Id,
+                UserId = u.Id,
                 UserName = u.UserName,
                 Age = u.Age,
                 Email = u.Email,
+                TotalPhotos = u.Photos
+                .Where(p => p.IsProfilePicture == false)
+                .Count(),
+                CurrentPage = currentPage,
                 ProfilePictureUrl = u.Photos
                 .Where(p => p.IsProfilePicture == true)
                 .FirstOrDefault().Url,
@@ -194,13 +198,13 @@
                 Friends = u.Friends
                 .Select(f => new UserServiceModel
                 {
-                    Id = f.Id,
-                    UserName = f.UserName,
-                    Age = f.Age,
-                    ProfilePictureUrl = f.Photos
+                    Id = f.FriendId,
+                    UserName = f.Friend.UserName,
+                    Age = f.Friend.Age,
+                    ProfilePictureUrl = f.Friend.Photos
                     .Where(p => p.IsProfilePicture == true)
                     .FirstOrDefault().Url,
-                    Badges = f.Badges.Select(b => new BadgeServiceModel
+                    Badges = f.Friend.Badges.Select(b => new BadgeServiceModel
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
@@ -210,6 +214,8 @@
                 .ToList(),
                 Photos = u.Photos
                 .Where(p => p.IsProfilePicture == false)
+                .Skip((currentPage - 1) * photosPerPage)
+                .Take(photosPerPage)
                 .Select(p => new PhotoServiceModel
                 {
                     Url = p.Url,

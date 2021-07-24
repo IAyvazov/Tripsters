@@ -7,9 +7,11 @@
 
     public class TripsListingModel
     {
-        public int TripsPerPage { get; } = 3;
+        public int TripsPerPage { get; } = 4;
 
         public ICollection<TripsViewModel> Trips { get; set; }
+
+        public TripsUpcomingListingViewModel UpcomingTrips { get; set; }
 
         public int CurrentPage { get; set; } = 1;
 

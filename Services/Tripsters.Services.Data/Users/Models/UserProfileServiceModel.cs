@@ -9,7 +9,7 @@
 
     public class UserProfileServiceModel
     {
-        public string Id { get; set; }
+        public string UserId { get; set; }
 
         [Required]
         [StringLength(30, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
@@ -24,6 +24,12 @@
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+
+        public int CurrentPage { get; set; } = 1;
+
+        public int PhotosPerPage { get; } = 4;
+
+        public int TotalPhotos { get; set; }
 
         public IFormFile ProfilePicture { get; set; }
 

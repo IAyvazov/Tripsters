@@ -85,7 +85,7 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> Comment(string tripId)
+        public IActionResult Comment(string tripId)
         {
             var comments = this.tripsService.GetAllTripComments(tripId);
             var userId = this.userManager.GetUserId(this.User);
@@ -192,15 +192,17 @@
             return this.Redirect("/Trips/MadeByMe");
         }
 
-        public IActionResult Upcoming()
+        public IActionResult Upcoming(TripsListingModel model)
         {
             var userId = this.userManager.GetUserId(this.User);
             var todayTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetUpcommingTodayTrips(userId));
             var tomorrowTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetUpcommingTomorrowTrips(userId));
 
-            var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips};
+            var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips };
 
-            return this.View(upcomingTripsModel);
+            var viewModel = new TripsListingModel { UpcomingTrips = upcomingTripsModel, CurrentPage = model.CurrentPage, TotalTrips = upcomingTripsModel.TodayTrips.Count + upcomingTripsModel.TomorrowTrips.Count };
+
+            return this.View(viewModel);
         }
 
         public IActionResult Past(TripsListingModel model)

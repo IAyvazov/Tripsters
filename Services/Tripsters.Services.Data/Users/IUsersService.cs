@@ -13,7 +13,7 @@
 
         UserProfileServiceModel GetUserProfile(string userName);
 
-        UserProfileServiceModel GetUserProfileById(string userId);
+        UserProfileServiceModel GetUserProfileById(string userId, int currentPage, int photosPerPage);
 
         Task Edit(UserProfileServiceModel userData);
 

@@ -12,10 +12,10 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
-                <a class="nav-link " asp-controller="Trips" asp-action="Details" asp-route-tripId="@Model.CurrentTripId" >Trip info</a>
+                <a class="nav-link " asp-controller="Trips" asp-action="Details" asp-route-tripId="@Model.CurrentTripId">Trip info</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active"  asp-controller="Trips" asp-action="Creator" asp-route-creatorId="@Model.Id">Creator info</a>
+                <a class="nav-link active" asp-controller="Trips" asp-action="Creator" asp-route-creatorId="@Model.Id">Creator info</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Trips" asp-action="Members" asp-route-tripId="@Model.CurrentTripId">Members</a>
@@ -28,7 +28,9 @@
     <div class="card-body">
         <h3 class="card-title">@Model.UserName</h3>
         <h5 class="card-text">Age: @Model.Age </h5>
-        <h5 class="card-text">Badges: @string.Join(",", Model.Badges.Select(b => b.Name))</h5>
-        <h5 class="card-text">Mutual friends: @Model.MutualFriends.Count</h5>
+        @if (Model.Badges.Count != 0)
+        {
+            <h5 class="card-text">Badges: @string.Join(",", Model.Badges.Select(b => b.Name))</h5>
+        }
     </div>
 </div>

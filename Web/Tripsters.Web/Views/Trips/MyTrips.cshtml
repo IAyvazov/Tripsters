@@ -52,7 +52,7 @@
             <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@previousPage>&lt;&lt;</a>
         </div>
         <div class="col-md-6">
-            <a class="btn btn-primary float-right @(Model.CurrentPage == maxPage ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@(Model.CurrentPage + 1)>>></a>
+            <a class="btn btn-primary float-right @(Model.CurrentPage == maxPage ? "disabled" : string.Empty)" asp-controller="Trips" asp-action="MyTrips" asp-route-currentPage=@(Model.CurrentPage + 1)>&gt;&gt;</a>
         </div>
     }
 </div>

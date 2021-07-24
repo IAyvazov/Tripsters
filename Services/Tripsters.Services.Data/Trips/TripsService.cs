@@ -164,22 +164,9 @@
             })
             .ToList();
 
-        public ICollection<TripServiceModel> GetDayAfterTrips(string userId)
-        => this.tripRepository.All()
-            .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.Today.DayOfYear > 1)
-            .Select(t => new TripServiceModel
-            {
-                Name = t.Name,
-                From = t.Destination.From,
-                To = t.Destination.To,
-                CreatorName = t.User.UserName,
-                Description = t.Description,
-            })
-            .ToList();
-
         public ICollection<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
         => this.userTripRepository.All()
-            .Where(u => u.Trip.Travellers.Any(t => t.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+            .Where(u => u.Trip.Travellers.Any(tr => tr.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
             .Select(t => new TripServiceModel
