@@ -10,7 +10,7 @@
     {
         Task AddTrip(TripsInputFormModel tripData, string userName);
 
-        Task EditTrip(TripServiceModel tripData);
+        Task EditTrip(string tripId, TripsInputFormModel tripData);
 
         ICollection<TripServiceModel> GetAllTrips(int currentPage, int tripsPerPage);
 

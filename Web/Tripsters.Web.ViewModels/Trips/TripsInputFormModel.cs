@@ -7,6 +7,8 @@
 
     public class TripsInputFormModel
     {
+        public string Id { get; set; }
+
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Name")]

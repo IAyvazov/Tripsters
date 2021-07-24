@@ -74,19 +74,16 @@
             await this.tripRepository.SaveChangesAsync();
         }
 
-        public async Task EditTrip(TripServiceModel tripData)
+        public async Task EditTrip(string tripId, TripsInputFormModel tripData)
         {
             var trip = this.tripRepository.All()
-                 .Where(t => t.Id == tripData.Id)
+                 .Where(t => t.Id == tripId)
                  .FirstOrDefault();
-
-            DateTime startDate;
-            DateTime.TryParseExact(tripData.StartDate, "G", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
 
             trip.Name = tripData.Name;
             trip.AvailableSeats = tripData.AvailableSeats;
             trip.Description = tripData.Description;
-            trip.StartDate = startDate;
+            trip.StartDate = tripData.StartDate;
             trip.Destination.From = tripData.From;
             trip.Destination.To = tripData.To;
 

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
@@ -130,6 +131,7 @@
             return this.View(trip);
         }
 
+        [Authorize]
         public IActionResult Creator(string creatorId, string userId, string currTripId)
         {
             var user = this.usersService.GetUserById(creatorId, userId, currTripId);
@@ -180,14 +182,31 @@
             var userId = this.userManager.GetUserId(this.User);
             var trip = this.tripsService.GetTripById(tripId, userId);
 
-            return this.View(trip);
+            DateTime startDate;
+            DateTime.TryParseExact(trip.StartDate, "G", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
+
+            return this.View(new TripsInputFormModel
+            {
+                Id = trip.Id,
+                Name = trip.Name,
+                AvailableSeats = trip.AvailableSeats,
+                StartDate = startDate,
+                From = trip.From,
+                To = trip.To,
+                Description = trip.Description,
+            });
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> EditTrip(TripServiceModel trips)
+        public async Task<IActionResult> Edit(string tripId, TripsInputFormModel trips)
         {
-            await this.tripsService.EditTrip(trips);
+            if (!this.ModelState.IsValid || trips.StartDate.DayOfYear < DateTime.Now.DayOfYear)
+            {
+                return this.View(trips);
+            }
+
+            await this.tripsService.EditTrip(tripId, trips);
 
             return this.Redirect("/Trips/MadeByMe");
         }
@@ -205,6 +224,7 @@
             return this.View(viewModel);
         }
 
+        [Authorize]
         public IActionResult Past(TripsListingModel model)
         {
             var userId = this.userManager.GetUserId(this.User);
@@ -215,6 +235,7 @@
             return this.View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> Like(string tripId)
         {
             var userId = this.userManager.GetUserId(this.User);
