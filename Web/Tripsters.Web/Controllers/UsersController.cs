@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
-
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
@@ -29,6 +29,7 @@
             this.userManager = userManager;
         }
 
+        [Authorize]
         public IActionResult MyFriends(UserProfileServiceModel userModel)
         {
             var user = this.usersService.GetUserProfile(this.User.Identity.Name);
@@ -41,6 +42,7 @@
             return this.View(user);
         }
 
+        [Authorize]
         public async Task<IActionResult> AddFriend(string friendUserId)
         {
             var currUserId = this.userManager.GetUserId(this.User);
@@ -49,6 +51,7 @@
             return this.Redirect($"/Users/Profile?userId={friendUserId}");
         }
 
+        [Authorize]
         public IActionResult Profile(UserProfileServiceModel userModel)
         {
             var user = this.usersService.GetUserProfile(this.User.Identity.Name);
@@ -61,6 +64,7 @@
             return this.View(user);
         }
 
+        [Authorize]
         public IActionResult Edit()
         {
             var user = this.usersService.GetUserProfile(this.User.Identity.Name);
@@ -69,6 +73,7 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Edit(UserProfileServiceModel userData)
         {
             if (!this.ModelState.IsValid)
@@ -95,6 +100,7 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddBadge(int badgeId, string userId, string userWhoAddId)
         {
             await this.usersService.AddBadgeToUser(badgeId, userId, userWhoAddId);
@@ -103,6 +109,7 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UploadPhoto(List<IFormFile> postedFiles, string userId)
         {
             string path = Path.Combine(this.environment.WebRootPath, "Uploads");
@@ -125,6 +132,20 @@
             return this.RedirectToAction("Profile");
         }
 
+        [Authorize]
+        public async Task<IActionResult> DeletePhoto(int photoId, string userId, int currentPage, int photosPerPage)
+        {
+            var isDeleted = await this.usersService.DeletePhoto(photoId, this.userManager.GetUserId(this.User));
+
+            if (!isDeleted)
+            {
+                return this.BadRequest();
+            }
+
+            return this.Redirect($"/Users/AllPhoto?userId={userId}&currentPage={currentPage}&photosPerPage={photosPerPage}");
+        }
+
+        [Authorize]
         public IActionResult AllPhoto(UserProfileServiceModel userModel)
         {
             var user = this.usersService.GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);

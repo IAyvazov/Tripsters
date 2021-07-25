@@ -84,6 +84,33 @@
             await this.userRepostory.SaveChangesAsync();
         }
 
+        public async Task<bool> DeletePhoto(int photoId, string userId)
+        {
+            var user = this.userRepostory.All()
+                .Where(u => u.Id == userId)
+                .Include(x => x.Photos)
+                .FirstOrDefault();
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            var photo = user.Photos
+                .FirstOrDefault(p => p.IsDeleted == false && p.Id == photoId);
+
+            if (photo == null)
+            {
+                return false;
+            }
+
+            photo.IsDeleted = true;
+
+            await this.userRepostory.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task Edit(UserProfileServiceModel userData)
         {
             var user = this.userRepostory.All()
@@ -136,7 +163,7 @@
                 .Where(p => p.IsProfilePicture == false)
                 .Count(),
                 ProfilePictureUrl = u.Photos
-                .Where(p => p.IsProfilePicture == true)
+                .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
                 .FirstOrDefault().Url,
                 UserBadges = u.Badges
                 .Select(b => new BadgeServiceModel
@@ -153,7 +180,7 @@
                     UserName = f.Friend.UserName,
                     Age = f.Friend.Age,
                     ProfilePictureUrl = f.Friend.Photos
-                    .Where(p => p.IsProfilePicture == true)
+                    .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
                     .FirstOrDefault().Url,
                     Badges = f.Friend.Badges.Select(b => new BadgeServiceModel
                     {
@@ -168,6 +195,7 @@
                 .Where(p => p.IsProfilePicture == false)
                 .Select(p => new PhotoServiceModel
                 {
+                    Id = p.Id,
                     Url = p.Url,
                 })
                 .ToList(),
@@ -186,11 +214,11 @@
                 Age = u.Age,
                 Email = u.Email,
                 TotalPhotos = u.Photos
-                .Where(p => p.IsProfilePicture == false)
+                .Where(p => p.IsProfilePicture == false && !p.IsDeleted)
                 .Count(),
                 CurrentPage = currentPage,
                 ProfilePictureUrl = u.Photos
-                .Where(p => p.IsProfilePicture == true)
+                .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
                 .FirstOrDefault().Url,
                 UserBadges = u.Badges
                 .Select(b => new BadgeServiceModel
@@ -207,7 +235,7 @@
                     UserName = f.Friend.UserName,
                     Age = f.Friend.Age,
                     ProfilePictureUrl = f.Friend.Photos
-                    .Where(p => p.IsProfilePicture == true)
+                    .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
                     .FirstOrDefault().Url,
                     Badges = f.Friend.Badges.Select(b => new BadgeServiceModel
                     {
@@ -219,11 +247,12 @@
                 })
                 .ToList(),
                 Photos = u.Photos
-                .Where(p => p.IsProfilePicture == false)
+                .Where(p => p.IsProfilePicture == false && !p.IsDeleted)
                 .Skip((currentPage - 1) * photosPerPage)
                 .Take(photosPerPage)
                 .Select(p => new PhotoServiceModel
                 {
+                    Id = p.Id,
                     Url = p.Url,
                 })
                 .ToList(),

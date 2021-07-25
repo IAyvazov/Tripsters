@@ -56,7 +56,18 @@
             <div class="row ml-5 mr-5 mt-5 mb-5">
                 @foreach (var photo in Model.Photos)
                 {
-                    <div class="col-lg-6 mb-2 pr-lg-1"><img src="@photo.Url" class="img-fluid rounded shadow-sm"></div>
+                    <div class="col-lg-6 mb-2 pr-lg-1">
+                        <img src="@photo.Url" class="img-fluid rounded shadow-sm">
+                        @if (this.User.Identity.Name == Model.UserName)
+                        {
+                            <a asp-controller="Users"
+                               asp-action="DeletePhoto"
+                               asp-route-photoId="@photo.Id"
+                               asp-route-userId="@Model.UserId"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               asp-route-photosPerPage="@Model.PhotosPerPage" class="btn btn-outline-danger float-right mt-2">Delete</a>
+                        }
+                    </div>
                 }
 
                 @{
