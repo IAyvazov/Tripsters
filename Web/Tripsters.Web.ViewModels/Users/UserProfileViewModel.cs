@@ -32,7 +32,9 @@
 
         public ICollection<UserViewModel> Friends { get; set; }
 
-        public ICollection<BadgeViewModel> Badges { get; set; }
+        public ICollection<BadgeViewModel> UserBadges { get; set; }
+
+        public ICollection<BadgeViewModel> AllBadges { get; set; }
 
         public ICollection<PhotoViewModel> Photos { get; set; }
     }

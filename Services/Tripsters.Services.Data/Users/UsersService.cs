@@ -27,7 +27,7 @@
             this.badgesService = badgesService;
         }
 
-        public async Task AddBadgeToUser(int badgeId, string userId)
+        public async Task AddBadgeToUser(int badgeId, string userId, string userWhoAddId)
         {
             var user = this.userRepostory.All()
                 .Where(u => u.Id == userId)
@@ -51,7 +51,7 @@
                 return;
             }
 
-            var userBadges = new UsersBadges { BadgeId = badgeId, UserId = userId };
+            var userBadges = new UsersBadges { BadgeId = badgeId, UserId = userId, AdderId = userWhoAddId };
 
             await this.userBadgesRepostory.AddAsync(userBadges);
 
@@ -118,6 +118,7 @@
                 {
                     Id = b.Badge.Id,
                     Name = b.Badge.Name,
+                    AdderId = b.AdderId,
                 }).ToList(),
             }).FirstOrDefault();
 
@@ -137,11 +138,12 @@
                 ProfilePictureUrl = u.Photos
                 .Where(p => p.IsProfilePicture == true)
                 .FirstOrDefault().Url,
-                Badges = u.Badges
+                UserBadges = u.Badges
                 .Select(b => new BadgeServiceModel
                 {
                     Id = b.Badge.Id,
                     Name = b.Badge.Name,
+                    AdderId = b.AdderId,
                 })
                 .ToList(),
                 Friends = u.Friends
@@ -157,6 +159,7 @@
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
+                        AdderId = b.AdderId,
                     })
                     .ToList(),
                 })
@@ -168,6 +171,7 @@
                     Url = p.Url,
                 })
                 .ToList(),
+                AllBadges = this.badgesService.GetAllBadges(),
             })
             .FirstOrDefault();
 
@@ -188,11 +192,12 @@
                 ProfilePictureUrl = u.Photos
                 .Where(p => p.IsProfilePicture == true)
                 .FirstOrDefault().Url,
-                Badges = u.Badges
+                UserBadges = u.Badges
                 .Select(b => new BadgeServiceModel
                 {
                     Id = b.Badge.Id,
                     Name = b.Badge.Name,
+                    AdderId = b.AdderId,
                 })
                 .ToList(),
                 Friends = u.Friends
@@ -208,6 +213,7 @@
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
+                        AdderId = b.AdderId,
                     })
                     .ToList(),
                 })
@@ -221,6 +227,7 @@
                     Url = p.Url,
                 })
                 .ToList(),
+                AllBadges = this.badgesService.GetAllBadges(),
             })
             .FirstOrDefault();
     }

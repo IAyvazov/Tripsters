@@ -32,7 +32,10 @@
                 <li>
                     <a asp-controller="Users" asp-action="Profile" asp-route-userId="@member.Id"><h3 class="card-title">@member.UserName</h3></a>
                     <h5 class="card-text">Age: @member.Age</h5>
-                    <h5 class="card-text">Badges: @string.Join(",", member.Badges.Select(b => b.Name))</h5>
+                    @if (member.Badges.Count != 0)
+                    {
+                        <h5 class="card-text">Badges: @string.Join(",", member.Badges.Select(b => b.Name))</h5>
+                    }
                 </li>
             }
         </ul>

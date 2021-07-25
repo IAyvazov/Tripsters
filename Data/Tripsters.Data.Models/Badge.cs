@@ -1,6 +1,5 @@
 ﻿namespace Tripsters.Data.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
@@ -17,12 +16,5 @@
         public string Name { get; set; }
 
         public ICollection<UsersBadges> Users { get; set; }
-
-        // Funny,
-        // Adventurer,
-        // Grumbler,
-        // Talkative,
-        // Angry,
-        // Crazy,
     }
 }

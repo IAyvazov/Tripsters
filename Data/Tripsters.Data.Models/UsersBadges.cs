@@ -11,5 +11,8 @@
         public int BadgeId { get; set; }
 
         public Badge Badge { get; set; }
+
+        // User who add this badge
+        public string AdderId { get; set; }
     }
 }

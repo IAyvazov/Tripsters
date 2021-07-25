@@ -8,9 +8,9 @@
 
     public interface ITripsService
     {
-        Task AddTrip(TripsInputFormModel tripData, string userName);
+        Task AddTrip(TripServiceFormModel tripData, string userName);
 
-        Task EditTrip(string tripId, TripsInputFormModel tripData);
+        Task EditTrip(string tripId, TripServiceFormModel tripData);
 
         ICollection<TripServiceModel> GetAllTrips(int currentPage, int tripsPerPage);
 

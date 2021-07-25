@@ -1,6 +1,11 @@
-﻿@using Tripsters.Services.Data.Users.Models
+﻿@using Microsoft.AspNetCore.Identity
+
+@using Tripsters.Data.Models
+@using Tripsters.Services.Data.Users.Models
 
 @model UserProfileServiceModel
+@inject UserManager<ApplicationUser> UserManager
+
 
 @{
     ViewData["Title"] = $"{User.Identity.Name} Profile";
@@ -62,41 +67,37 @@
                     </li>
                 </ul>
             </div>
-            @if (Model.Badges.Count != 0)
-            {
-                <div class="px-4 py-3">
-
-                    <h5 class="mb-0">Badges</h5>
-                    <div class="p-4 rounded shadow-sm bg-light">
-                        @if (Model.Badges.Count > 1)
+            <div class="px-4 py-3">
+                <h5 class="mb-0">Badges</h5>
+                <div class="p-4 rounded shadow-sm bg-light">
+                    @if (Model.UserBadges.Count != 0)
+                    {
+                        @foreach (var badge in Model.UserBadges)
                         {
-                            @foreach (var badge in Model.Badges)
-                            {
-                                <h3><span class="badge bg-transparent">@badge.Name</span></h3>
-                            }
+                            <h3><span class="badge bg-transparent">@badge.Name</span></h3>
                         }
-                        else
-                        {
-                            @if (User.Identity.Name != Model.UserName)
-                            {
-                                <form asp-controller="Users" asp-action="AddBadge" method="post">
-                                    <label asp-for="Badges"></label>
-                                    <select name="badgeId" class="form-control">
-                                        @foreach (var badge in Model.Badges)
-                                        {
-                                            <option value="@badge.Id">@badge.Name</option>
-                                        }
-                                    </select>
-                                    <select name="userId" class="form-control" hidden>
-                                        <option value="@Model.UserId"></option>
-                                    </select>
-                                    <button class="btn btn-outline-dark" type="submit">Add</button>
-                                </form>
-                            }
-                        }
-                    </div>
+                    }
+                    @if (User.Identity.Name != Model.UserName && !Model.UserBadges.Any(b => b.AdderId == UserManager.GetUserId(User)))
+                    {
+                        <form asp-controller="Users" asp-action="AddBadge" method="post">
+                            <label asp-for="UserBadges"></label>
+                            <select name="badgeId" class="form-control">
+                                @foreach (var badge in Model.AllBadges)
+                                {
+                                    <option value="@badge.Id">@badge.Name</option>
+                                }
+                            </select>
+                            <select name="userId" class="form-control" hidden>
+                                <option value="@Model.UserId"></option>
+                            </select>
+                            <select name="userWhoAddId" class="form-control" hidden>
+                                <option value="@UserManager.GetUserId(User)"></option>
+                            </select>
+                            <button class="btn btn-outline-dark" type="submit">Add</button>
+                        </form>
+                    }
                 </div>
-            }
+            </div>
             @if (Model.Photos.Count == 0)
             {
                 @if (Model.UserName == User.Identity.Name)
@@ -113,6 +114,20 @@
                 else
                 {
                     <p>There is no photo yet.</p>
+                    @if (Model.UserName == User.Identity.Name)
+                    {
+                        <div class="form-control-file ml-5 mt-5">
+
+                            <form method="post" enctype="multipart/form-data" asp-controller="Users" asp-action="UploadPhoto">
+                                <span>Select File:</span>
+                                <input type="file" name="postedFiles" multiple />
+                                <input name="userId" value="@Model.UserId" hidden />
+                                <input class="btn btn-outline-dark" type="submit" value="Upload" />
+                                <br />
+                                <span style="color:green">@Html.Raw(ViewBag.Message)</span>
+                            </form>
+                        </div>
+                    }
                 }
             }
             else

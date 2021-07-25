@@ -52,13 +52,13 @@
                     </li>
                 </ul>
             </div>
-            @if (Model.Badges.Count != 0)
+            @if (Model.UserBadges.Count != 0)
             {
                 <div class="px-4 py-3">
 
                     <h5 class="mb-0">Badges</h5>
                     <div class="p-4 rounded shadow-sm bg-light">
-                        @foreach (var badge in Model.Badges)
+                        @foreach (var badge in Model.UserBadges)
                         {
                             <h3><span class="badge bg-transparent">@badge.Name</span></h3>
                         }

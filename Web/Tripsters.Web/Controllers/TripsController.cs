@@ -72,15 +72,26 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Add(TripsInputFormModel trips)
+        public async Task<IActionResult> Add(TripsInputFormModel trip)
         {
-            if (!this.ModelState.IsValid || trips.StartDate.DayOfYear < DateTime.Now.DayOfYear)
+            if (!this.ModelState.IsValid || trip.StartDate.DayOfYear < DateTime.Now.DayOfYear)
             {
-                return this.View(trips);
+                return this.View(trip);
             }
 
             var userId = this.userManager.GetUserId(this.User);
-            await this.tripsService.AddTrip(trips, userId);
+            await this.tripsService.AddTrip(
+                new TripServiceFormModel
+                {
+                    Id = trip.Id,
+                    Name = trip.Name,
+                    AvailableSeats = trip.AvailableSeats,
+                    From = trip.From,
+                    To = trip.To,
+                    StartDate = trip.StartDate,
+                    Description = trip.Description,
+                },
+                userId);
 
             return this.Redirect("/Trips/All");
         }
@@ -199,14 +210,25 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Edit(string tripId, TripsInputFormModel trips)
+        public async Task<IActionResult> Edit(string tripId, TripsInputFormModel trip)
         {
-            if (!this.ModelState.IsValid || trips.StartDate.DayOfYear < DateTime.Now.DayOfYear)
+            if (!this.ModelState.IsValid || trip.StartDate.DayOfYear < DateTime.Now.DayOfYear)
             {
-                return this.View(trips);
+                return this.View(trip);
             }
 
-            await this.tripsService.EditTrip(tripId, trips);
+            await this.tripsService.EditTrip(
+                tripId,
+                new TripServiceFormModel
+                {
+                    Id = trip.Id,
+                    Name = trip.Name,
+                    AvailableSeats = trip.AvailableSeats,
+                    From = trip.From,
+                    To = trip.To,
+                    StartDate = trip.StartDate,
+                    Description = trip.Description,
+                });
 
             return this.Redirect("/Trips/MadeByMe");
         }
@@ -230,7 +252,20 @@
             var userId = this.userManager.GetUserId(this.User);
             var pastTrips = this.ConvertFromServiceToViewModel(this.tripsService.GetPastTrips(userId, model.CurrentPage, model.TripsPerPage));
             var badges = this.badgesService.GetAllBadges();
-            model = new TripsListingModel { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count(), Badges = badges };
+
+            List<BadgeViewModel> badgesModel = new();
+
+            foreach (var badge in badges)
+            {
+                badgesModel.Add(new BadgeViewModel
+                {
+                    Id = badge.Id,
+                    Name = badge.Name,
+                });
+            }
+
+            model = new TripsListingModel
+            { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count(), Badges = badgesModel };
 
             return this.View(model);
         }

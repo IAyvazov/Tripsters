@@ -5,7 +5,6 @@
 
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
-    using Tripsters.Web.ViewModels.Badges;
 
     public class BadgesService : IBadgesService
     {
@@ -16,10 +15,10 @@
             this.badgeRepository = badgeRepository;
         }
 
-        public ICollection<BadgeViewModel> GetAllBadges()
+        public ICollection<BadgeServiceModel> GetAllBadges()
         => this.badgeRepository.All()
             .OrderBy(b => b.Name)
-            .Select(b => new BadgeViewModel
+            .Select(b => new BadgeServiceModel
             {
                 Id = b.Id,
                 Name = b.Name,

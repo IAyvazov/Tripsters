@@ -17,7 +17,7 @@
 
         Task Edit(UserProfileServiceModel userData);
 
-        Task AddBadgeToUser(int badgeId, string userId);
+        Task AddBadgeToUser(int badgeId, string userId, string userWhoAddId);
 
         Task AddPhoto(string path, string userId);
 

@@ -47,7 +47,7 @@
             await this.tripRepository.SaveChangesAsync();
         }
 
-        public async Task AddTrip(TripsInputFormModel tripData, string userId)
+        public async Task AddTrip(TripServiceFormModel tripData, string userId)
         {
             var trip = new Trip
             {
@@ -74,7 +74,7 @@
             await this.tripRepository.SaveChangesAsync();
         }
 
-        public async Task EditTrip(string tripId, TripsInputFormModel tripData)
+        public async Task EditTrip(string tripId, TripServiceFormModel tripData)
         {
             var trip = this.tripRepository.All()
                  .Where(t => t.Id == tripId)
@@ -119,6 +119,7 @@
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
+                        AdderId = b.AdderId,
                     })
                     .ToList(),
                 })
@@ -154,6 +155,7 @@
                     {
                         Name = b.Badge.Name,
                         Id = b.Badge.Id,
+                        AdderId = b.AdderId,
                     })
                     .ToList(),
                 })
@@ -188,6 +190,7 @@
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
+                        AdderId = b.AdderId,
                     }).ToList(),
                 }).ToList(),
             }).ToList();
@@ -238,6 +241,7 @@
                     {
                         Id = b.Badge.Id,
                         Name = b.Badge.Name,
+                        AdderId = b.AdderId,
                     })
                     .ToList(),
                 })
@@ -269,6 +273,7 @@
                    {
                        Id = b.BadgeId,
                        Name = b.Badge.Name,
+                       AdderId = b.AdderId,
                    }).ToList(),
                }).ToList(),
             })
@@ -298,6 +303,7 @@
                    {
                        Id = b.BadgeId,
                        Name = b.Badge.Name,
+                       AdderId = b.AdderId,
                    }).ToList(),
                }).ToList(),
            })
@@ -349,10 +355,10 @@
 
                 await this.tripRepository.SaveChangesAsync();
 
-                return trip.Likes.Count();
+                return trip.Likes.Count;
             }
 
-            return tripLike.Likes.Count();
+            return tripLike.Likes.Count;
         }
 
         public int GetAllTripsCount()

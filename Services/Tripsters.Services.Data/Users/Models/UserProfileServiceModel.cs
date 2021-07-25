@@ -37,7 +37,11 @@
 
         public ICollection<UserServiceModel> Friends { get; set; }
 
-        public ICollection<BadgeServiceModel> Badges { get; set; }
+        [Display(Name = "Add Badge")]
+
+        public ICollection<BadgeServiceModel> UserBadges { get; set; }
+
+        public ICollection<BadgeServiceModel> AllBadges { get; set; }
 
         public ICollection<PhotoServiceModel> Photos { get; set; }
     }

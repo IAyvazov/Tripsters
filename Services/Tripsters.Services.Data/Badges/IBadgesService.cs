@@ -3,11 +3,10 @@
     using System.Collections.Generic;
 
     using Tripsters.Data.Models;
-    using Tripsters.Web.ViewModels.Badges;
 
     public interface IBadgesService
     {
-        ICollection<BadgeViewModel> GetAllBadges();
+        ICollection<BadgeServiceModel> GetAllBadges();
 
         Badge GetBadgeById(int badgeId);
     }

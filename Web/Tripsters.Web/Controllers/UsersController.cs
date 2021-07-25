@@ -95,11 +95,11 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBadge(int badgeId, string userId)
+        public async Task<IActionResult> AddBadge(int badgeId, string userId, string userWhoAddId)
         {
-            await this.usersService.AddBadgeToUser(badgeId, userId);
+            await this.usersService.AddBadgeToUser(badgeId, userId, userWhoAddId);
 
-            return this.Redirect("/Trips/Past");
+            return this.Redirect($"/Users/Profile?userId={userId}");
         }
 
         [HttpPost]
