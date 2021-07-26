@@ -15,13 +15,10 @@
                 <a class="nav-link " asp-controller="Trips" asp-action="Details" asp-route-tripId="@Model.Id">Trip info</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " asp-controller="Trips" asp-action="Creator" asp-route-creatorId="@Model.CreatorId" asp-route-userId="@Model.CurrentUserId" asp-route-currTripId="@Model.Id">Creator info</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" asp-controller="Trips" asp-action="Members" asp-route-tripId="@Model.Id">Members (@Model.Members.Count)</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " asp-controller="Trips" asp-action="Comment" asp-route-tripId="@Model.Id">Comments</a>
+                <a class="nav-link " asp-controller="Trips" asp-action="Comment" asp-route-tripId="@Model.Id">Comments(@Model.Comments.Count)</a>
             </li>
         </ul>
     </div>

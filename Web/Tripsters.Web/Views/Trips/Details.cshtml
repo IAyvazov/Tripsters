@@ -15,17 +15,15 @@
                 <a class="nav-link active" asp-controller="Trips" asp-action="Details" asp-route-tripId="@Model.Id">Trip info</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " asp-controller="Trips" asp-action="Creator" asp-route-creatorId="@Model.CreatorId" asp-route-userId="@Model.CurrentUserId" asp-route-currTripId="@Model.Id">Creator info</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" asp-controller="Trips" asp-action="Members" asp-route-tripId="@Model.Id">Members (@Model.Members.Count)</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " asp-controller="Trips" asp-action="Comment" asp-route-tripId="@Model.Id">Comments</a>
+                <a class="nav-link " asp-controller="Trips" asp-action="Comment" asp-route-tripId="@Model.Id">Comments(@Model.Comments.Count)</a>
             </li>
         </ul>
     </div>
     <div class="card-body">
+        <h1>Creator: <a asp-controller="Users" asp-action="Profile" asp-route-userId="@Model.CreatorId"> @Model.CreatorName</a></h1>
         <h3 class="card-title">@Model.Name</h3>
         <h5 class="card-text">We go on: @Model.StartDate</h5>
         <h5 class="card-text">From: @Model.From</h5>
