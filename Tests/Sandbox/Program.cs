@@ -9,7 +9,6 @@
     using Tripsters.Data.Common;
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
-    using Tripsters.Data.Repositories;
     using Tripsters.Data.Seeding;
     using Tripsters.Services.Data;
     using Tripsters.Services.Messaging;
@@ -72,8 +71,6 @@
             services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
                 .AddRoles<ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // Application services

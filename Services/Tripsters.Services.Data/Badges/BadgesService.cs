@@ -3,20 +3,20 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Tripsters.Data.Common.Repositories;
+    using Tripsters.Data;
     using Tripsters.Data.Models;
 
     public class BadgesService : IBadgesService
     {
-        private readonly IDeletableEntityRepository<Badge> badgeRepository;
+        private readonly ApplicationDbContext dbContext;
 
-        public BadgesService(IDeletableEntityRepository<Badge> badgeRepository)
+        public BadgesService(ApplicationDbContext dbContext)
         {
-            this.badgeRepository = badgeRepository;
+            this.dbContext = dbContext;
         }
 
         public ICollection<BadgeServiceModel> GetAllBadges()
-        => this.badgeRepository.All()
+        => this.dbContext.Badges
             .OrderBy(b => b.Name)
             .Select(b => new BadgeServiceModel
             {
@@ -26,7 +26,7 @@
             .ToList();
 
         public Badge GetBadgeById(int badgeId)
-        => this.badgeRepository.All()
+        => this.dbContext.Badges
             .Where(b => b.Id == badgeId)
             .Select(b => new Badge
             {

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Tripsters.Data.Common\Tripsters.Data.Common.csproj" />
     <ProjectReference Include="..\..\Data\Tripsters.Data.Models\Tripsters.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Data\Tripsters.Data\Tripsters.Data.csproj" />
     <ProjectReference Include="..\..\Web\Tripsters.Web.ViewModels\Tripsters.Web.ViewModels.csproj" />
     <ProjectReference Include="..\Tripsters.Services.Mapping\Tripsters.Services.Mapping.csproj" />
   </ItemGroup>

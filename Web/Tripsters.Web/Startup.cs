@@ -15,7 +15,6 @@
     using Tripsters.Data.Common;
     using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
-    using Tripsters.Data.Repositories;
     using Tripsters.Data.Seeding;
     using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Trips;
@@ -60,8 +59,6 @@
             services.AddSingleton(this.configuration);
 
             // Data repositories
-            services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // Application services

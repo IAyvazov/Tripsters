@@ -5,31 +5,27 @@
     using System.Threading.Tasks;
 
     using Microsoft.EntityFrameworkCore;
-
-    using Tripsters.Data.Common.Repositories;
+    using Tripsters.Data;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Users.Models;
 
     public class UsersService : IUsersService
     {
-        private readonly IDeletableEntityRepository<ApplicationUser> userRepostory;
-        private readonly IDeletableEntityRepository<UsersBadges> userBadgesRepostory;
+        private readonly ApplicationDbContext dbContext;
         private readonly IBadgesService badgesService;
 
         public UsersService(
-            IDeletableEntityRepository<ApplicationUser> userRepostory,
-            IDeletableEntityRepository<UsersBadges> userBadgesRepostory,
-            IBadgesService badgesService)
+            IBadgesService badgesService,
+            ApplicationDbContext dbContext)
         {
-            this.userRepostory = userRepostory;
-            this.userBadgesRepostory = userBadgesRepostory;
             this.badgesService = badgesService;
+            this.dbContext = dbContext;
         }
 
         public async Task AddBadgeToUser(int badgeId, string userId, string userWhoAddId)
         {
-            var user = this.userRepostory.All()
+            var user = this.dbContext.Users
                 .Where(u => u.Id == userId)
                 .Include(x => x.Badges)
                 .FirstOrDefault();
@@ -53,9 +49,9 @@
 
             var userBadges = new UsersBadges { BadgeId = badgeId, UserId = userId, AdderId = userWhoAddId };
 
-            await this.userBadgesRepostory.AddAsync(userBadges);
+            await this.dbContext.UsersBadges.AddAsync(userBadges);
 
-            await this.userBadgesRepostory.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
 
         public async Task AddFriend(string currUserId, string friendUserId)
@@ -68,12 +64,12 @@
 
             friend.Friends.Add(friendFriends);
             user.Friends.Add(userFriends);
-            await this.userRepostory.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
 
         public async Task AddPhoto(string path, string userId)
         {
-            var user = this.userRepostory.All()
+            var user = this.dbContext.Users
                .Where(u => u.Id == userId)
                .FirstOrDefault();
 
@@ -81,12 +77,12 @@
 
             user.Photos.Add(photo);
 
-            await this.userRepostory.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> DeletePhoto(int photoId, string userId)
         {
-            var user = this.userRepostory.All()
+            var user = this.dbContext.Users
                 .Where(u => u.Id == userId)
                 .Include(x => x.Photos)
                 .FirstOrDefault();
@@ -106,14 +102,14 @@
 
             photo.IsDeleted = true;
 
-            await this.userRepostory.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
 
             return true;
         }
 
         public async Task Edit(UserProfileServiceModel userData)
         {
-            var user = this.userRepostory.All()
+            var user = this.dbContext.Users
                 .Where(u => u.Id == userData.UserId)
                 .FirstOrDefault();
 
@@ -122,17 +118,17 @@
             user.Email = userData.Email;
             user.Photos.Add(new Photo { Url = userData.ProfilePictureUrl.Substring(62), UserId = user.Id, IsProfilePicture = true });
 
-            await this.userRepostory.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
 
         public ApplicationUser GetUser(string userId)
-        => this.userRepostory.All()
+        => this.dbContext.Users
             .Where(u => u.Id == userId)
             .Include(p => p.Photos)
             .FirstOrDefault();
 
         public UserServiceModel GetUserById(string creatorId, string userId, string currTripId)
-        => this.userRepostory.All()
+        => this.dbContext.Users
             .Where(u => u.Id == creatorId)
             .Select(u => new UserServiceModel
             {
@@ -150,7 +146,7 @@
             }).FirstOrDefault();
 
         public UserProfileServiceModel GetUserProfile(string userName)
-        => this.userRepostory.All()
+        => this.dbContext.Users
             .Where(u => u.UserName == userName)
             .Include(f => f.Friends)
             .Select(u => new UserProfileServiceModel
@@ -204,7 +200,7 @@
             .FirstOrDefault();
 
         public UserProfileServiceModel GetUserProfileById(string userId, int currentPage, int photosPerPage)
-         => this.userRepostory.All()
+         => this.dbContext.Users
             .Where(u => u.Id == userId)
             .Include(f => f.Friends)
             .Select(u => new UserProfileServiceModel

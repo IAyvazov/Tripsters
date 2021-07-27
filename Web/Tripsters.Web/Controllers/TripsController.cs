@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Security.Claims;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -265,7 +264,7 @@
             }
 
             model = new TripsListingModel
-            { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count(), Badges = badgesModel };
+            { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count, Badges = badgesModel };
 
             return this.View(model);
         }
