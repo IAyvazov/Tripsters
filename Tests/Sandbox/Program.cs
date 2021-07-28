@@ -7,10 +7,8 @@
 
     using Tripsters.Data;
     using Tripsters.Data.Common;
-    using Tripsters.Data.Common.Repositories;
     using Tripsters.Data.Models;
     using Tripsters.Data.Seeding;
-    using Tripsters.Services.Data;
     using Tripsters.Services.Messaging;
 
     using CommandLine;

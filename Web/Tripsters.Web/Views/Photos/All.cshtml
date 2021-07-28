@@ -1,0 +1,113 @@
+﻿@using Tripsters.Services.Data.Users.Models
+
+@model UserProfileServiceModel
+
+@{
+    ViewData["Title"] = $"{@Model.UserName} Photos";
+}
+
+<div class="row py-5 px-4">
+    <div class="col-md-12 mx-auto">
+        <div class="bg-white shadow rounded overflow-hidden m-sm-auto">
+            <div class="px-4 pt-0 pb-4 cover">
+                <div class="media align-items-end profile-head">
+                    <div class="profile mr-3">
+                        @if (Model.ProfilePictureUrl == null)
+                        {
+                            <img src="/profilePic.png" alt="profile-picture" />
+                        }
+                        else
+                        {
+                            <img src="@Model.ProfilePictureUrl" alt="@Model.UserName" width="130" class="rounded mb-2 img-thumbnail">
+                        }
+
+                        @if (User.Identity.Name == Model.UserName)
+                        {
+                            <a asp-controller="Users" asp-action="Edit" asp-route-userId="@Model.UserId" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
+                        }
+                    </div>
+                    <div class="media-body mb-5 text-white">
+                        <h4 class="mt-0 mb-0">@Model.UserName</h4>
+                        <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i></p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-light p-4 d-flex justify-content-end text-center">
+                @if (this.User.Identity.Name != Model.UserName && !Model.Friends.Any(f => f.UserName == this.User.Identity.Name))
+                {
+                    <a class="btn btn-outline-info mr-4" asp-controller="Users" asp-action="AddFriend" asp-route-friendUserId="@Model.UserId">Add Friend</a>
+                }
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">@Model.TotalPhotos</h5><small class="text-muted">
+                            <i class="fas fa-image mr-1"></i>
+                            <a asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId">Photos</a>
+                        </small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count</h5><small class="text-muted">
+                            <i class="fas fa-image mr-1"></i>
+                            <a asp-controller="Users" asp-action="MyFriends" asp-route-userId="@Model.UserId">Friends</a>
+                        </small>
+                    </li>
+                </ul>
+            </div>
+            <h5 class="ml-3">All photos</h5>
+            <div class="row ml-5 mr-5 mt-5 mb-5">
+                @foreach (var photo in Model.Photos)
+                {
+                    <div class="col-lg-6 mb-2 pr-lg-1">
+                        <img src="@photo.Url" class="img-fluid rounded shadow-sm">
+                        @if (this.User.Identity.Name == Model.UserName)
+                        {
+                            <a asp-controller="Photos"
+                               asp-action="Delete"
+                               asp-route-photoId="@photo.Id"
+                               asp-route-userId="@Model.UserId"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               asp-route-photosPerPage="@Model.PhotosPerPage" class="btn btn-outline-danger float-right mt-2">Delete</a>
+                        }
+                    </div>
+                }
+
+                @{
+                    var previousPage = Model.CurrentPage - 1;
+                    if (previousPage < 1)
+                    {
+                        previousPage = 1;
+                    }
+
+                    var maxPage = Math.Ceiling((double)Model.TotalPhotos / Model.PhotosPerPage);
+                }
+
+                @if (Model.TotalPhotos > Model.PhotosPerPage)
+                {
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" asp-controller="Photos" asp-action="All" asp-route-userId=@Model.UserId asp-route-currentPage=@previousPage>&lt;&lt;</a>
+                        </div>
+                        <div class="col-md-6">
+                            <a class="btn btn-primary float-right @(Model.CurrentPage >= maxPage ? "disabled" : string.Empty)" asp-controller="Photos" asp-action="All" asp-route-userId=@Model.UserId asp-route-currentPage=@(Model.CurrentPage + 1)>&gt;&gt;</a>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.UserName == User.Identity.Name)
+            {
+                <div class="form-control-file ml-5 mt-5">
+
+                    <form method="post" enctype="multipart/form-data" asp-controller="Photos" asp-action="Upload">
+                        <span>Select File:</span>
+                        <input type="file" name="postedFiles" multiple />
+                        <input name="userId" value="@Model.UserId" hidden />
+                        <input class="btn btn-outline-dark" type="submit" value="Upload" />
+                        <br />
+                        <span style="color:green">@Html.Raw(ViewBag.Message)</span>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

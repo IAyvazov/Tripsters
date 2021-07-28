@@ -53,7 +53,7 @@
                           t.Name.ToLower().Contains(model.SearchTerm.ToLower()))
                     .ToList();
 
-                tripCount = trips.Count();
+                tripCount = trips.Count;
             }
 
             var tripsModel = this.ConvertFromServiceToViewModel(trips);

@@ -29,7 +29,7 @@
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <span>Select File:</span>
+                <label asp-for="ProfilePicture"></label>
                 <input type="file" asp-for="ProfilePicture" multiple />
                 <br />
                 <span style="color:green">@Html.Raw(ViewBag.Message)</span>

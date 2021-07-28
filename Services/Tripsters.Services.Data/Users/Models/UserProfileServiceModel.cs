@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Http;
 
     using Tripsters.Services.Data.Badges;
+    using Tripsters.Services.Data.Photos;
 
     public class UserProfileServiceModel
     {
@@ -30,6 +31,8 @@
         public int PhotosPerPage { get; } = 4;
 
         public int TotalPhotos { get; set; }
+
+        [Display(Name = "Profile picture")]
 
         public IFormFile ProfilePicture { get; set; }
 

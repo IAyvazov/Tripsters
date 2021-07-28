@@ -51,8 +51,9 @@
                 Name = tripData.Name,
                 Description = tripData.Description,
                 StartDate = tripData.StartDate,
-                Destination = new Destination { From = tripData.From, To = tripData.To },
             };
+
+            trip.Destination = new Destination { From = tripData.From, To = tripData.To, TripId = trip.Id };
 
             var user = this.usersService.GetUser(userId);
             trip.User = user ?? throw new ArgumentNullException("You are not logged.");

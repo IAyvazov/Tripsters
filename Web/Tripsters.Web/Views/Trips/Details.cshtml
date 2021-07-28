@@ -30,7 +30,7 @@
         <h5 class="card-text">To: @Model.To</h5>
         <h5 class="card-text">We have: @Model.AvailableSeats seats left</h5>
         <p class="card-text">@Model.Description</p>
-        @if (Model.CreatorName != User.Identity.Name && ViewBag.IsAvailableSeats && (Model.Members.Count == 0 || Model.Members.Any(u => u.UserName != User.Identity.Name)))
+        @if (Model.CreatorName != User.Identity.Name && ViewBag.IsAvailableSeats && !Model.Members.Any(u => u.UserName == User.Identity.Name))
         {
             <a asp-controller="Trips" asp-action="Join" asp-route-tripId="@Model.Id" asp-route-userId="@Model.CurrentUserId" class="btn btn-primary">Join</a>
         }

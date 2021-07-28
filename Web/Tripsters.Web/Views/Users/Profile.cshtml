@@ -56,7 +56,7 @@
                     <li class="list-inline-item">
                         <h5 class="font-weight-bold mb-0 d-block">@Model.TotalPhotos</h5><small class="text-muted">
                             <i class="fas fa-image mr-1"></i>
-                            <a asp-controller="Users" asp-action="AllPhoto" asp-route-userId="@Model.UserId">Photos</a>
+                            <a asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId">Photos</a>
                         </small>
                     </li>
                     <li class="list-inline-item">
@@ -102,7 +102,7 @@
             {
                 @if (Model.UserName == User.Identity.Name)
                 {
-                    <form method="post" enctype="multipart/form-data" asp-controller="Users" asp-action="UploadPhoto">
+                    <form method="post" enctype="multipart/form-data" asp-controller="Photos" asp-action="Upload">
                         <span>Select File:</span>
                         <input type="file" name="postedFiles" multiple />
                         <input name="userId" value="@Model.UserId" hidden />
@@ -118,7 +118,7 @@
                     {
                         <div class="form-control-file ml-5 mt-5">
 
-                            <form method="post" enctype="multipart/form-data" asp-controller="Users" asp-action="UploadPhoto">
+                            <form method="post" enctype="multipart/form-data" asp-controller="Photos" asp-action="Upload">
                                 <span>Select File:</span>
                                 <input type="file" name="postedFiles" multiple />
                                 <input name="userId" value="@Model.UserId" hidden />
@@ -134,7 +134,7 @@
             {
                 <div class="py-4 px-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h5 class="mb-0">Recent photos</h5><a asp-controller="Users" asp-action="AllPhoto" asp-route-userId="@Model.UserId" class="btn btn-link text-muted">Show all</a>
+                        <h5 class="mb-0">Recent photos</h5><a asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId" class="btn btn-link text-muted">Show all</a>
                     </div>
                     <div class="row">
                         @for (int i = 0; i < maxLength; i++)

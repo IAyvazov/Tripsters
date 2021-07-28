@@ -7,5 +7,9 @@
         public string From { get; set; }
 
         public string To { get; set; }
+
+        public string TripId { get; set; }
+
+        public Trip Trip { get; set; }
     }
 }
