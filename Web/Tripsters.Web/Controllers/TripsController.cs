@@ -183,7 +183,7 @@
         {
             await this.tripsService.Delete(tripId);
 
-            return this.Redirect("/Trips/MadeByMe");
+            return this.Redirect("/Trips/MyTrips");
         }
 
         [Authorize]

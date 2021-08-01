@@ -35,19 +35,19 @@
             <div class="bg-light p-4 d-flex justify-content-end text-center">
                 @if (this.User.Identity.Name != Model.UserName && !Model.Friends.Any(f => f.UserName == this.User.Identity.Name))
                 {
-                    <a class="btn btn-outline-info mr-4" asp-controller="Users" asp-action="AddFriend" asp-route-friendUserId="@Model.UserId">Add Friend</a>
+                    <a class="btn btn-outline-info mr-4" asp-controller="Friends" asp-action="Add" asp-route-friendUserId="@Model.UserId">Add Friend</a>
                 }
                 <ul class="list-inline mb-0">
                     <li class="list-inline-item">
                         <h5 class="font-weight-bold mb-0 d-block">@Model.Photos.Count</h5><small class="text-muted">
                             <i class="fas fa-image mr-1"></i>
-                            <a asp-controller="Users" asp-action="AllPhoto" asp-route-userId="@Model.UserId">Photos</a>
+                            <a asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId">Photos</a>
                         </small>
                     </li>
                     <li class="list-inline-item">
                         <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count</h5><small class="text-muted">
                             <i class="fas fa-image mr-1"></i>
-                            <a asp-controller="Users" asp-action="MyFriends" asp-route-userId="@Model.UserId">Friends</a>
+                            <a asp-controller="Friends" asp-action="MyFriends" asp-route-userId="@Model.UserId">Friends</a>
                         </small>
                     </li>
                 </ul>

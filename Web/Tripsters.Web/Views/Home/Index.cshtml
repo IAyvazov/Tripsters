@@ -7,14 +7,16 @@
 <div class="text-center">
     <h1 class="display-4">Welcome to @GlobalConstants.SystemName!</h1>
     <div class="carousel-item active">
-        <img src="https://adventure.ir/wp-content/uploads/2019/12/adventure-trips-in-india_1440486703_aNbqdJ.jpg" class="d-block w-100" alt="Adventure trips">
+        <img src="https://adventure.ir/wp-content/uploads/2019/12/adventure-trips-in-india_1440486703_aNbqdJ.jpg" class="d-block w-100 mt-4" alt="Adventure trips">
         @if (User.Identity.Name != null)
         {
             <a class="btn btn-outline-primary mt-5" asp-controller="Trips" asp-action="Add">Make Trip</a>
+            <a class="btn btn-outline-primary mt-5 ml-4" asp-controller="Trips" asp-action="All">All trips</a>
         }
         else
         {
-            <a class="btn btn-outline-primary mt-5" asp-area="Identity" asp-page="/Account/Login">Log in</a>
+            <a class="btn btn-outline-primary mt-5" asp-area="Identity" asp-page="/Account/Login">Login</a>
         }
     </div>
 </div>
+

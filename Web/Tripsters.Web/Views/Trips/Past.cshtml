@@ -11,6 +11,10 @@
 <partial name="_MyTripsMenuPartial" />
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
+    @if (Model.Trips.Count == 0)
+    {
+        <h1>There is no past trips yet.</h1>
+    }
     @foreach (var trip in Model.Trips)
     {
         <div class="col mt-4">

@@ -15,15 +15,15 @@
                 <a class="nav-link text-dark" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
             </li>
         }
-        
+
         <li class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Trips
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="/Trips/Add">Add Trip</a>
-                <a class="dropdown-item" href="/Trips/All">All Trips</a>
-                <a class="dropdown-item" href="/Trips/MyTrips">My Trips</a>
+                <a class="dropdown-item" asp-controller="Trips" asp-action="Add">Add Trip</a>
+                <a class="dropdown-item" asp-controller="Trips" asp-action="All">All Trips</a>
+                <a class="dropdown-item" asp-controller="Trips" asp-action="MyTrips">My Trips</a>
             </div>
         </li>
 

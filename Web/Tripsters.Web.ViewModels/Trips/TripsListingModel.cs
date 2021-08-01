@@ -7,7 +7,7 @@
 
     public class TripsListingModel
     {
-        public int TripsPerPage { get; } = 4;
+        public int TripsPerPage { get; } = 3;
 
         public ICollection<TripsViewModel> Trips { get; set; }
 

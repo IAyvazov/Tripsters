@@ -28,27 +28,6 @@
             this.userManager = userManager;
         }
 
-        [Authorize]
-        public IActionResult MyFriends(UserProfileServiceModel userModel)
-        {
-            var user = this.usersService.GetUserProfile(this.User.Identity.Name);
-
-            if (userModel.UserId != null)
-            {
-                user = this.usersService.GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
-            }
-
-            return this.View(user);
-        }
-
-        [Authorize]
-        public async Task<IActionResult> AddFriend(string friendUserId)
-        {
-            var currUserId = this.userManager.GetUserId(this.User);
-            await this.usersService.AddFriend(currUserId, friendUserId);
-
-            return this.Redirect($"/Users/Profile?userId={friendUserId}");
-        }
 
         [Authorize]
         public IActionResult Profile(UserProfileServiceModel userModel)
