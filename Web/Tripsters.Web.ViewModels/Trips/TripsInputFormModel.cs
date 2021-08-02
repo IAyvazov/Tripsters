@@ -1,6 +1,7 @@
 ﻿namespace Tripsters.Web.ViewModels.Trips
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using Tripsters.Common;
@@ -36,9 +37,14 @@
         [Range(GlobalConstants.TripSecurity.AvailableSeatsMinRange, GlobalConstants.TripSecurity.AvailableSeatsMaxRange)]
         public int AvailableSeats { get; set; }
 
+        [Display(Name = "Category")]
+        public int CategoryId { get; set; }
+
         [DataType(DataType.Text)]
         [Display(Name = "Description")]
         [StringLength(GlobalConstants.TripSecurity.DescriptionMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.DescriptionMinLength)]
         public string Description { get; set; }
+
+        public IEnumerable<TripCategoryVIewModel> Categories { get; set; }
     }
 }

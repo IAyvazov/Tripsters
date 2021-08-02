@@ -28,5 +28,7 @@
 
         [StringLength(GlobalConstants.TripSecurity.DescriptionMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = GlobalConstants.TripSecurity.DescriptionMinLength)]
         public string Description { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

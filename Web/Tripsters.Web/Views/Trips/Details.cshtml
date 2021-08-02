@@ -23,8 +23,9 @@
         </ul>
     </div>
     <div class="card-body">
-        <h1>Creator: <a asp-controller="Users" asp-action="Profile" asp-route-userId="@Model.CreatorId"> @Model.CreatorName</a></h1>
-        <h3 class="card-title">@Model.Name</h3>
+        <h1 class="card-title">@Model.Name</h1>
+        <h2>Creator: <a asp-controller="Users" asp-action="Profile" asp-route-userId="@Model.CreatorId"> @Model.CreatorName</a></h2>
+        <h3 class="card-text">Category: @Model.CategoryName</h3>
         <h5 class="card-text">We go on: @Model.StartDate</h5>
         <h5 class="card-text">From: @Model.From</h5>
         <h5 class="card-text">To: @Model.To</h5>

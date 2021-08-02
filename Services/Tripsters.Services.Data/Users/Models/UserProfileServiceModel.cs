@@ -21,6 +21,13 @@
         [Range(16, 120)]
         public int Age { get; set; }
 
+        [Display(Name = "Phone Number")]
+        [StringLength(15, MinimumLength = 10)]
+        public string PhoneNumber { get; set; }
+
+        [StringLength(30, MinimumLength = 3)]
+        public string Town { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

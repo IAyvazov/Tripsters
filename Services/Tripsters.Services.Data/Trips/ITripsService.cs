@@ -8,6 +8,8 @@
 
     public interface ITripsService
     {
+        IEnumerable<TripCategoryServiceModel> AllCategories();
+
         Task AddTrip(TripServiceFormModel tripData, string userName);
 
         Task EditTrip(string tripId, TripServiceFormModel tripData);

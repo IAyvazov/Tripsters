@@ -28,7 +28,6 @@
             this.userManager = userManager;
         }
 
-
         [Authorize]
         public IActionResult Profile(UserProfileServiceModel userModel)
         {

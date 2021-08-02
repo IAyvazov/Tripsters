@@ -38,6 +38,12 @@
         }
 
         [Authorize]
+        public IActionResult RecentTrips()
+        {
+            return this.View();
+        }
+
+        [Authorize]
         public IActionResult All(TripsListingModel model)
         {
             var tripCount = this.tripsService.GetAllTripsCount();
@@ -66,7 +72,22 @@
         [Authorize]
         public IActionResult Add()
         {
-            return this.View();
+
+            var categories = new HashSet<TripCategoryVIewModel>();
+
+            foreach (var category in this.tripsService.AllCategories())
+            {
+                categories.Add(new TripCategoryVIewModel
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                });
+            }
+
+            return this.View(new TripsInputFormModel
+            {
+                Categories = categories,
+            });
         }
 
         [HttpPost]
@@ -89,6 +110,7 @@
                     To = trip.To,
                     StartDate = trip.StartDate,
                     Description = trip.Description,
+                    CategoryId = trip.CategoryId,
                 },
                 userId);
 
@@ -292,6 +314,7 @@
             StartDate = t.StartDate,
             Description = t.Description,
             Comments = t.Comments,
+            CategoryName = t.CategoryName,
             Likes = t.Likes,
             Members = t.Members
             .Select(m => new UserViewModel

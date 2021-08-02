@@ -26,6 +26,16 @@
             this.dbContext = dbContext;
         }
 
+        public IEnumerable<TripCategoryServiceModel> AllCategories()
+           => this.dbContext
+               .Categories
+               .Select(c => new TripCategoryServiceModel
+               {
+                   Id = c.Id,
+                   Name = c.Name,
+               })
+               .ToList();
+
         public async Task AddComment(string userId, string tripId, string commentInput)
         {
             var comment = new Comment
@@ -51,12 +61,11 @@
                 Name = tripData.Name,
                 Description = tripData.Description,
                 StartDate = tripData.StartDate,
+                CategoryId = tripData.CategoryId,
+                UserId = userId,
             };
 
             trip.Destination = new Destination { From = tripData.From, To = tripData.To, TripId = trip.Id };
-
-            var user = this.usersService.GetUser(userId);
-            trip.User = user ?? throw new ArgumentNullException("You are not logged.");
 
             await this.dbContext.Trips.AddAsync(trip);
             await this.dbContext.SaveChangesAsync();
@@ -83,6 +92,7 @@
             trip.StartDate = tripData.StartDate;
             trip.Destination.From = tripData.From;
             trip.Destination.To = tripData.To;
+            trip.CategoryId = tripData.CategoryId;
 
             await this.dbContext.SaveChangesAsync();
         }
@@ -104,6 +114,7 @@
                 CreatorName = t.User.UserName,
                 StartDate = t.StartDate.ToString("G"),
                 CreatorId = t.UserId,
+                CategoryName = t.Category.Name,
                 Members = t.Travellers
                 .Select(m => new UserServiceModel
                 {
@@ -139,6 +150,7 @@
                 Description = t.Description,
                 From = t.Destination.From,
                 To = t.Destination.To,
+                CategoryName = t.Category.Name,
                 StartDate = t.StartDate.ToString("G"),
                 Name = t.Name,
                 Members = t.Travellers
@@ -171,6 +183,7 @@
                 Name = t.Trip.Name,
                 From = t.Trip.Destination.From,
                 To = t.Trip.Destination.To,
+                CategoryName = t.Trip.Category.Name,
                 CreatorName = t.Trip.User.UserName,
                 CreatorId = t.Trip.UserId,
                 Description = t.Trip.Description,
@@ -226,6 +239,7 @@
                 CreatorId = t.UserId,
                 CurrentUserId = userId,
                 Comments = t.Comments,
+                CategoryName = t.Category.Name,
                 Members = t.Travellers
                 .Select(m => new UserServiceModel
                 {
@@ -257,6 +271,7 @@
                 To = t.Destination.To,
                 CreatorName = t.User.UserName,
                 Description = t.Description,
+                CategoryName = t.Category.Name,
                 StartDate = t.StartDate.ToString("G"),
                 Members = t.Travellers
                .Select(m => new UserServiceModel
@@ -287,6 +302,7 @@
                To = t.Destination.To,
                CreatorName = t.User.UserName,
                Description = t.Description,
+               CategoryName = t.Category.Name,
                StartDate = t.StartDate.ToString("G"),
                Members = t.Travellers
                .Select(m => new UserServiceModel

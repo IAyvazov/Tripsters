@@ -29,6 +29,16 @@
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" class="form-control" value="@Model.PhoneNumber" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Town"></label>
+                <input asp-for="Town" class="form-control" value="@Model.Town" />
+                <span asp-validation-for="Town" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="ProfilePicture"></label>
                 <input type="file" asp-for="ProfilePicture" multiple />
                 <br />

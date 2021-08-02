@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tripsters.Data.Migrations
 {
-    public partial class InUsersBadgesAddAdderIdColumn : Migration
+    public partial class CategoryTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,13 +43,12 @@ namespace Tripsters.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Destinations",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    From = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    To = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -57,7 +56,7 @@ namespace Tripsters.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Destinations", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,7 +189,7 @@ namespace Tripsters.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AvailableSeats = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DestinationId = table.Column<int>(type: "int", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -201,9 +200,34 @@ namespace Tripsters.Data.Migrations
                 {
                     table.PrimaryKey("PK_Trips", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Trips_Destinations_DestinationId",
-                        column: x => x.DestinationId,
-                        principalTable: "Destinations",
+                        name: "FK_Trips_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Destinations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    From = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    To = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TripId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Destinations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Destinations_Trips_TripId",
+                        column: x => x.TripId,
+                        principalTable: "Trips",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -414,6 +438,11 @@ namespace Tripsters.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_IsDeleted",
+                table: "Categories",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_IsDeleted",
                 table: "Comments",
                 column: "IsDeleted");
@@ -434,6 +463,13 @@ namespace Tripsters.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Destinations_TripId",
+                table: "Destinations",
+                column: "TripId",
+                unique: true,
+                filter: "[TripId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Photo_IsDeleted",
                 table: "Photo",
                 column: "IsDeleted");
@@ -449,9 +485,9 @@ namespace Tripsters.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Trips_DestinationId",
+                name: "IX_Trips_CategoryId",
                 table: "Trips",
-                column: "DestinationId");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Trips_IsDeleted",
@@ -596,6 +632,9 @@ namespace Tripsters.Data.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "Destinations");
+
+            migrationBuilder.DropTable(
                 name: "Photo");
 
             migrationBuilder.DropTable(
@@ -623,7 +662,7 @@ namespace Tripsters.Data.Migrations
                 name: "Trips");
 
             migrationBuilder.DropTable(
-                name: "Destinations");
+                name: "Categories");
         }
     }
 }

@@ -40,6 +40,8 @@
 
         public DbSet<UserFriend> UserFriends { get; set; }
 
+        public DbSet<Category> Categories { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -61,6 +63,11 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Category>()
+                .HasMany(t => t.Trips)
+                .WithOne(c => c.Category)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<UserFriend>()
                 .HasKey(k => new { k.UserId, k.FriendId });
 

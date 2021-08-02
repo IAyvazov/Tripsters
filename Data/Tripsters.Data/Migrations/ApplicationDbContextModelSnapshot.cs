@@ -230,6 +230,9 @@ namespace Tripsters.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Town")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -282,6 +285,35 @@ namespace Tripsters.Data.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.ToTable("Badges");
+                });
+
+            modelBuilder.Entity("Tripsters.Data.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Comment", b =>
@@ -428,6 +460,9 @@ namespace Tripsters.Data.Migrations
                     b.Property<int>("AvailableSeats")
                         .HasColumnType("int");
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -455,6 +490,8 @@ namespace Tripsters.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("IsDeleted");
 
@@ -676,9 +713,17 @@ namespace Tripsters.Data.Migrations
 
             modelBuilder.Entity("Tripsters.Data.Models.Trip", b =>
                 {
+                    b.HasOne("Tripsters.Data.Models.Category", "Category")
+                        .WithMany("Trips")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Tripsters.Data.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Category");
 
                     b.Navigation("User");
                 });
@@ -759,6 +804,11 @@ namespace Tripsters.Data.Migrations
             modelBuilder.Entity("Tripsters.Data.Models.Badge", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Tripsters.Data.Models.Category", b =>
+                {
+                    b.Navigation("Trips");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Like", b =>

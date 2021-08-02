@@ -78,6 +78,8 @@
             user.Age = userData.Age;
             user.Email = userData.Email;
             user.Photos.Add(new Photo { Url = userData.ProfilePictureUrl.Substring(62), UserId = user.Id, IsProfilePicture = true });
+            user.PhoneNumber = userData.PhoneNumber;
+            user.Town = userData.Town;
 
             await this.dbContext.SaveChangesAsync();
         }
@@ -116,6 +118,8 @@
                 UserName = u.UserName,
                 Age = u.Age,
                 Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
+                Town = u.Town,
                 TotalPhotos = u.Photos
                 .Where(p => p.IsProfilePicture == false)
                 .Count(),
@@ -170,6 +174,8 @@
                 UserName = u.UserName,
                 Age = u.Age,
                 Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
+                Town = u.Town,
                 TotalPhotos = u.Photos
                 .Where(p => p.IsProfilePicture == false && !p.IsDeleted)
                 .Count(),
