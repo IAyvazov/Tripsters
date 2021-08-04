@@ -27,7 +27,7 @@
                         }
                     </div>
                     <div class="media-body mb-5 text-white">
-                        <h4 class="mt-0 mb-0">@Model.UserName</h4>
+                        <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Profile"><h4 class="mt-0 mb-0">@Model.UserName</h4></a>
                         <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i></p>
                     </div>
                 </div>
@@ -52,24 +52,32 @@
                     </li>
                 </ul>
             </div>
-            <h5 class="ml-3">All photos</h5>
-            <div class="row ml-5 mr-5 mt-5 mb-5">
-                @foreach (var photo in Model.Photos)
+            <div class="d-flex align-items-center justify-content-between py-4 px-4">
+                <h5><a style="color:black" asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId">Recent Photos</a></h5>
+                <h5><a style="color:black" asp-controller="Trips" asp-action="RecentTrips" asp-route-userId="@Model.UserId">Recent Trips</a></h5>
+            </div>
+            <div class="row ml-5 mr-5 mb-5">
+                @if (Model.Photos.Count == 0)
                 {
-                    <div class="col-lg-6 mb-2 pr-lg-1">
-                        <img src="@photo.Url" class="img-fluid rounded shadow-sm">
-                        @if (this.User.Identity.Name == Model.UserName)
-                        {
-                            <a asp-controller="Photos"
-                               asp-action="Delete"
-                               asp-route-photoId="@photo.Id"
-                               asp-route-userId="@Model.UserId"
-                               asp-route-currentPage="@Model.CurrentPage"
-                               asp-route-photosPerPage="@Model.PhotosPerPage" class="btn btn-outline-danger float-right mt-2">Delete</a>
-                        }
-                    </div>
+                    <h1>There is no photo yet.</h1>
                 }
 
+                @foreach (var photo in Model.Photos)
+                {
+            <div class="col-lg-6 mb-2 pr-lg-1">
+                <img src="@photo.Url" class="img-fluid rounded shadow-sm">
+                <a asp-controller="Photos" asp-action="Like" asp-route-photoId="@photo.Id" class="btn btn-primary mt-2 mr-2 ml-2">👍 Likes</a>
+                @if (this.User.Identity.Name == Model.UserName)
+                {
+                    <a asp-controller="Photos"
+                       asp-action="Delete"
+                       asp-route-photoId="@photo.Id"
+                       asp-route-userId="@Model.UserId"
+                       asp-route-currentPage="@Model.CurrentPage"
+                       asp-route-photosPerPage="@Model.PhotosPerPage" class="btn btn-outline-danger float-right mt-2 mr-2 ml-2">Delete</a>
+                }
+            </div>
+                }
                 @{
                     var previousPage = Model.CurrentPage - 1;
                     if (previousPage < 1)

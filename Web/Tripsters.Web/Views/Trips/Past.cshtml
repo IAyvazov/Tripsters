@@ -58,8 +58,8 @@
                         }
                     </ul>
                     <div>
-                        <a href="/Trips/Like?tripId=@trip.Id" class="btn btn-primary mt-5">👍 @trip.Likes Likes</a>
-                        <a href="/Trips/Comment?tripId=@trip.Id" class="btn btn-primary mt-5">Comment (@trip.Comments.Count)</a>
+                        <a asp-controller="Trips" asp-action="Like" asp-route-tripId="@trip.Id" class="btn btn-primary mt-5">👍 @trip.Likes Likes</a>
+                        <a asp-controller="Trips" asp-action="Comment" asp-route-tripId="@trip.Id" class="btn btn-primary mt-5">Comment (@trip.Comments.Count)</a>
                     </div>
                 </div>
             </div>

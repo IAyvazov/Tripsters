@@ -42,7 +42,7 @@
                         }
                     </div>
                     <div class="media-body mb-5 text-white">
-                        <h4 class="mt-0 mb-0">@Model.UserName</h4>
+                        <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Profile"><h4 class="mt-0 mb-0">@Model.UserName</h4></a> 
                         @if (Model.Town != null)
                         {
                             <p class="float-right" style="color:white">Town: @Model.Town</p>
@@ -112,68 +112,52 @@
                     </form>
                 }
             </div>
-            @if (Model.Photos.Count == 0)
-            {
-                @if (Model.UserName == User.Identity.Name)
+            <div class="py-4 px-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0"><a style="color:black" asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId">Recent Photos</a></h5>
+                    <h5><a style="color:black" asp-controller="Trips" asp-action="RecentTrips" asp-route-userId="@Model.UserId">Recent Trips</a></h5>
+                </div>
+                @if (Model.Photos.Count == 0)
                 {
-                    <form method="post" enctype="multipart/form-data" asp-controller="Photos" asp-action="Upload">
-                        <span>Select File:</span>
-                        <input type="file" name="postedFiles" multiple />
-                        <input name="userId" value="@Model.UserId" hidden />
-                        <input class="btn btn-outline-dark" type="submit" value="Upload" />
-                        <br />
-                        <span style="color:green">@Html.Raw(ViewBag.Message)</span>
-                    </form>
+                    @if (Model.UserName == User.Identity.Name)
+                    {
+                        <form method="post" enctype="multipart/form-data" asp-controller="Photos" asp-action="Upload">
+                            <span>Select File:</span>
+                            <input type="file" name="postedFiles" multiple />
+                            <input name="userId" value="@Model.UserId" hidden />
+                            <input class="btn btn-outline-dark" type="submit" value="Upload" />
+                            <br />
+                            <span style="color:green">@Html.Raw(ViewBag.Message)</span>
+                        </form>
+                    }
+                    else
+                    {
+                        <p>There is no photo yet.</p>
+                        @if (Model.UserName == User.Identity.Name)
+                        {
+                            <div class="form-control-file ml-5 mt-5">
+                                <form method="post" enctype="multipart/form-data" asp-controller="Photos" asp-action="Upload">
+                                    <span>Select File:</span>
+                                    <input type="file" name="postedFiles" multiple />
+                                    <input name="userId" value="@Model.UserId" hidden />
+                                    <input class="btn btn-outline-dark" type="submit" value="Upload" />
+                                    <br />
+                                    <span style="color:green">@Html.Raw(ViewBag.Message)</span>
+                                </form>
+                            </div>
+                        }
+                    }
                 }
                 else
                 {
-                    <p>There is no photo yet.</p>
-                    @if (Model.UserName == User.Identity.Name)
-                    {
-                        <div class="form-control-file ml-5 mt-5">
-
-                            <form method="post" enctype="multipart/form-data" asp-controller="Photos" asp-action="Upload">
-                                <span>Select File:</span>
-                                <input type="file" name="postedFiles" multiple />
-                                <input name="userId" value="@Model.UserId" hidden />
-                                <input class="btn btn-outline-dark" type="submit" value="Upload" />
-                                <br />
-                                <span style="color:green">@Html.Raw(ViewBag.Message)</span>
-                            </form>
-                        </div>
-                    }
-                }
-            }
-            else
-            {
-                <div class="py-4 px-4">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h5 class="mb-0"><a style="color:black" asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId">Recent Photos</a></h5>
-                        <h5><a style="color:black" asp-controller="Trips" asp-action="RecentTrips">Recent Trips</a></h5>
-
-                    </div>
                     <div class="row">
                         @for (int i = 0; i < maxLength; i++)
                         {
                             <div class="col-lg-6 mb-2 pr-lg-1"><img src=@photos[i].Url class="img-fluid rounded shadow-sm"></div>
                         }
                     </div>
-                </div>
-            }
+                }
+            </div>
         </div>
-    </div>
-</div>
-
-<div>
-    <div class="toast-header">
-        <img src="..." class="rounded mr-2" alt="...">
-        <strong class="mr-auto">Bootstrap</strong>
-        <small>11 mins ago</small>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="toast-body">
-        Hello, world! This is a toast message.
     </div>
 </div>

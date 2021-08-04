@@ -7,5 +7,7 @@
         Task AddPhoto(string path, string userId);
 
         Task<bool> DeletePhoto(int photoId, string userId);
+
+        // Task<int> LikePhoto(int photoId, string userId);
     }
 }

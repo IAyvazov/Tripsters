@@ -68,5 +68,14 @@
             var user = this.usersService.GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
             return this.View(user);
         }
+
+        [Authorize]
+        public async Task<IActionResult> Like(string tripId)
+        {
+            var userId = this.userManager.GetUserId(this.User);
+            await this.tripsService.LikeTrip(tripId, userId);
+
+            return this.RedirectToAction("Past");
+        }
     }
 }

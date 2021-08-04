@@ -16,13 +16,11 @@
     public class TripsService : ITripsService
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly IUsersService usersService;
 
         public TripsService(
             IUsersService usersService,
             ApplicationDbContext dbContext)
         {
-            this.usersService = usersService;
             this.dbContext = dbContext;
         }
 
@@ -172,9 +170,78 @@
             })
             .ToList();
 
+        public ICollection<TripServiceModel> GetAllTripsByCategoryId(int categoryId, int currentPage, int tripsPerPage)
+        => this.dbContext.Trips
+            .Where(t => t.CategoryId == categoryId && t.IsDeleted == false)
+            .OrderBy(t => t.StartDate)
+            .Skip((currentPage - 1) * tripsPerPage)
+                .Take(tripsPerPage)
+            .Select(t => new TripServiceModel
+            {
+                Id = t.Id,
+                AvailableSeats = t.AvailableSeats,
+                CreatorName = t.User.UserName,
+                Description = t.Description,
+                From = t.Destination.From,
+                To = t.Destination.To,
+                CategoryName = t.Category.Name,
+                StartDate = t.StartDate.ToString("G"),
+                Name = t.Name,
+                Members = t.Travellers
+                .Select(u => new UserServiceModel
+                {
+                    Id = u.User.Id,
+                    UserName = u.User.UserName,
+                    Age = u.User.Age,
+                    Badges = u.User.Badges
+                    .Select(b => new BadgeServiceModel
+                    {
+                        Name = b.Badge.Name,
+                        Id = b.Badge.Id,
+                        AdderId = b.AdderId,
+                    })
+                    .ToList(),
+                })
+                .ToList(),
+            })
+            .ToList();
+
+        public ICollection<TripServiceModel> RecentTrips(string userId, int currentPage, int tripsPerPage)
+       => this.dbContext.UserTrips
+           .Where(u => u.Trip.IsDeleted == false && u.Trip.UserId == userId && u.Trip.Travellers.Any(tr => tr.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+           .Skip((currentPage - 1) * tripsPerPage)
+               .Take(tripsPerPage)
+           .Select(t => new TripServiceModel
+           {
+               Id = t.TripId,
+               Name = t.Trip.Name,
+               From = t.Trip.Destination.From,
+               To = t.Trip.Destination.To,
+               CategoryName = t.Trip.Category.Name,
+               CreatorName = t.Trip.User.UserName,
+               CreatorId = t.Trip.UserId,
+               Description = t.Trip.Description,
+               Likes = t.Trip.Likes.Count,
+               Comments = t.Trip.Comments,
+               Members = t.Trip.Travellers
+               .Select(m => new UserServiceModel
+               {
+                   Id = m.UserId,
+                   UserName = m.User.UserName,
+                   Age = m.User.Age,
+                   Badges = m.User.Badges
+                   .Select(b => new BadgeServiceModel
+                   {
+                       Id = b.Badge.Id,
+                       Name = b.Badge.Name,
+                       AdderId = b.AdderId,
+                   }).ToList(),
+               }).ToList(),
+           }).ToList();
+
         public ICollection<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
         => this.dbContext.UserTrips
-            .Where(u => u.Trip.Travellers.Any(tr => tr.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+            .Where(u => u.Trip.IsDeleted == false && u.Trip.Travellers.Any(tr => tr.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
             .Select(t => new TripServiceModel

@@ -3,9 +3,8 @@
 @model TripsListingModel
 
 @{
-    ViewData["Title"] = "All Trips";
+    ViewData["Title"] = "Category";
 }
-<h1>@ViewData["Title"]</h1>
 
 <form asp-action="All" method="get">
     <div class="form-group col-md-4">
@@ -27,12 +26,12 @@
                         <li class="list-group-item">To: @trip.To</li>
                         <li class="list-group-item">Seats: @trip.AvailableSeats</li>
                     </ul>
-                        <a asp-controller="Trips" asp-action="Details" asp-route-tripId="@trip.Id" class="btn btn-primary">Info</a>
-                        @if (trip.CreatorName == User.Identity.Name)
-                        {
-                            <a asp-controller="Trips" asp-action="Edit" asp-route-tripId="@trip.Id" class="btn badge-warning">Edit</a>
-                            <a asp-controller="Trips" asp-action="Delete" asp-route-tripId="@trip.Id" class="btn btn-danger">Delete</a>
-                        }
+                    <a asp-controller="Trips" asp-action="Details" asp-route-tripId="@trip.Id" class="btn btn-primary">Info</a>
+                    @if (trip.CreatorName == User.Identity.Name)
+                    {
+                        <a asp-controller="Trips" asp-action="Edit" asp-route-tripId="@trip.Id" class="btn badge-warning">Edit</a>
+                        <a asp-controller="Trips" asp-action="Delete" asp-route-tripId="@trip.Id" class="btn btn-danger">Delete</a>
+                    }
                 </div>
             </div>
         </div>

@@ -17,6 +17,34 @@
             this.dbContext = dbContext;
         }
 
+        // public async Task<int> LikePhoto(int photoId, string userId)
+        // {
+        //    var tripLike = this.dbContext.Trips
+        //        .Where(t => t.Likes.Any(l => l.PhotoId == photoId && l.UserId == userId))
+        //        .FirstOrDefault();
+
+        // if (tripLike == null)
+        //    {
+        //        var like = new Like
+        //        {
+        //            TripId = photoId,
+        //            UserId = userId,
+        //        };
+
+        // var trip = this.dbContext.Trips
+        //            .Where(t => t.Id == photoId)
+        //            .FirstOrDefault();
+
+        // trip.Likes.Add(like);
+
+        // await this.dbContext.SaveChangesAsync();
+
+        // return trip.Likes.Count;
+        //    }
+
+        // return tripLike.Likes.Count;
+        // }
+
         public async Task AddPhoto(string path, string userId)
         {
             var user = this.dbContext.Users

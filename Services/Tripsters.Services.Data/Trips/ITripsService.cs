@@ -39,5 +39,9 @@
         Task AddComment(string userId, string tripId, string commentInput);
 
         public ICollection<CommentViewModel> GetAllTripComments(string tripId);
+
+        public ICollection<TripServiceModel> RecentTrips(string userId, int currentPage, int tripsPerPage);
+
+        public ICollection<TripServiceModel> GetAllTripsByCategoryId(int categoryId, int currentPage, int tripsPerPage);
     }
 }

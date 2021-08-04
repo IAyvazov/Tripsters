@@ -21,5 +21,7 @@
         public string SearchTerm { get; set; }
 
         public ICollection<BadgeViewModel> Badges { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

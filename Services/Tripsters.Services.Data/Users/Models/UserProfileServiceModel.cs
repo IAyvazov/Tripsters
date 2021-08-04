@@ -7,6 +7,7 @@
 
     using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Photos;
+    using Tripsters.Services.Data.Trips.Models;
 
     public class UserProfileServiceModel
     {
@@ -44,6 +45,8 @@
         public IFormFile ProfilePicture { get; set; }
 
         public string ProfilePictureUrl { get; set; }
+
+        public ICollection<TripServiceModel> RecentTrips { get; set; }
 
         public ICollection<UserServiceModel> Friends { get; set; }
 

@@ -3,14 +3,21 @@
     using System.Diagnostics;
 
     using Microsoft.AspNetCore.Mvc;
-
+    using Tripsters.Services.Data.Trips;
     using Tripsters.Web.ViewModels;
 
     public class HomeController : BaseController
     {
+        private readonly ITripsService tripsService;
+
+        public HomeController(ITripsService tripsService)
+        {
+            this.tripsService = tripsService;
+        }
+
         public IActionResult Index()
         {
-            return this.View();
+            return this.View(this.tripsService.AllCategories());
         }
 
         public IActionResult Privacy()
@@ -23,11 +30,6 @@
         {
             return this.View(
                 new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
-        }
-
-        public IActionResult About()
-        {
-            return this.View();
         }
     }
 }

@@ -9,11 +9,13 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Trips.Models;
     using Tripsters.Services.Data.Users;
+    using Tripsters.Services.Data.Users.Models;
     using Tripsters.Web.ViewModels.Badges;
     using Tripsters.Web.ViewModels.Trips;
     using Tripsters.Web.ViewModels.Users;
@@ -38,12 +40,13 @@
         }
 
         [Authorize]
-        public IActionResult RecentTrips()
+        public IActionResult RecentTrips(UserProfileServiceModel userModel)
         {
-            return this.View();
+            var user = this.usersService.GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
+            user.RecentTrips = this.tripsService.RecentTrips(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
+            return this.View(user);
         }
 
-        [Authorize]
         public IActionResult All(TripsListingModel model)
         {
             var tripCount = this.tripsService.GetAllTripsCount();
