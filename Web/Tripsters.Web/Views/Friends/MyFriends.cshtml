@@ -27,7 +27,7 @@
                         }
                     </div>
                     <div class="media-body mb-5 text-white">
-                        <h4 class="mt-0 mb-0">@Model.UserName</h4>
+                        <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Profile" asp-route-userId="@Model.UserId"><h4 class="mt-0 mb-0">@Model.UserName</h4></a>
                         <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i></p>
                     </div>
                 </div>

@@ -195,11 +195,8 @@ namespace Tripsters.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LikeTripId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LikeUserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("LikeId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -244,6 +241,8 @@ namespace Tripsters.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
+                    b.HasIndex("LikeId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -251,8 +250,6 @@ namespace Tripsters.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("LikeTripId", "LikeUserId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -396,16 +393,25 @@ namespace Tripsters.Data.Migrations
 
             modelBuilder.Entity("Tripsters.Data.Models.Like", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("PhotoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TripId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.HasKey("TripId", "UserId");
+                    b.HasIndex("PhotoId");
+
+                    b.HasIndex("TripId");
 
                     b.ToTable("Likes");
                 });
@@ -449,7 +455,7 @@ namespace Tripsters.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Photo");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Trip", b =>
@@ -658,7 +664,7 @@ namespace Tripsters.Data.Migrations
                 {
                     b.HasOne("Tripsters.Data.Models.Like", null)
                         .WithMany("User")
-                        .HasForeignKey("LikeTripId", "LikeUserId");
+                        .HasForeignKey("LikeId");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Comment", b =>
@@ -687,26 +693,29 @@ namespace Tripsters.Data.Migrations
 
             modelBuilder.Entity("Tripsters.Data.Models.Like", b =>
                 {
+                    b.HasOne("Tripsters.Data.Models.Photo", "Photo")
+                        .WithMany("Likes")
+                        .HasForeignKey("PhotoId");
+
                     b.HasOne("Tripsters.Data.Models.Trip", "Trip")
                         .WithMany("Likes")
                         .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Photo");
 
                     b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Photo", b =>
                 {
-                    b.HasOne("Tripsters.Data.Models.Trip", "Trip")
+                    b.HasOne("Tripsters.Data.Models.Trip", null)
                         .WithMany("Photos")
                         .HasForeignKey("TripId");
 
                     b.HasOne("Tripsters.Data.Models.ApplicationUser", "User")
                         .WithMany("Photos")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Trip");
 
                     b.Navigation("User");
                 });
@@ -814,6 +823,11 @@ namespace Tripsters.Data.Migrations
             modelBuilder.Entity("Tripsters.Data.Models.Like", b =>
                 {
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Tripsters.Data.Models.Photo", b =>
+                {
+                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("Tripsters.Data.Models.Trip", b =>

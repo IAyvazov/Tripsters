@@ -42,6 +42,8 @@
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<Photo> Photos { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -92,7 +94,7 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Like>()
-                .HasKey(l => new { l.TripId, l.UserId });
+                .HasKey(l => new { l.Id });
 
             builder.Entity<UserTrip>()
                 .HasKey(k => new { k.UserId, k.TripId });

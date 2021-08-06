@@ -42,8 +42,12 @@
         [Authorize]
         public IActionResult RecentTrips(UserProfileServiceModel userModel)
         {
-            var user = this.usersService.GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
-            user.RecentTrips = this.tripsService.RecentTrips(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
+            var user = this.usersService
+                .GetUserProfileById(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
+
+            user.RecentTrips = this.tripsService
+                .RecentTrips(userModel.UserId, userModel.CurrentPage, userModel.PhotosPerPage);
+
             return this.View(user);
         }
 
@@ -300,7 +304,7 @@
             var userId = this.userManager.GetUserId(this.User);
             await this.tripsService.LikeTrip(tripId, userId);
 
-            return this.RedirectToAction("Past");
+            return this.RedirectToAction(nameof(this.Past));
         }
 
         private ICollection<TripsViewModel> ConvertFromServiceToViewModel(ICollection<TripServiceModel> trips)

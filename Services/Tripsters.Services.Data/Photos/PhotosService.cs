@@ -17,33 +17,36 @@
             this.dbContext = dbContext;
         }
 
-        // public async Task<int> LikePhoto(int photoId, string userId)
-        // {
-        //    var tripLike = this.dbContext.Trips
-        //        .Where(t => t.Likes.Any(l => l.PhotoId == photoId && l.UserId == userId))
-        //        .FirstOrDefault();
+        public async Task<int> Like(int photoId, string userId)
+        {
+            var photo = this.dbContext.Photos
+                .Where(t => t.Likes.Any(l => l.PhotoId == photoId && l.UserId == userId))
+                .FirstOrDefault();
 
-        // if (tripLike == null)
-        //    {
-        //        var like = new Like
-        //        {
-        //            TripId = photoId,
-        //            UserId = userId,
-        //        };
+            if (photo == null)
+            {
+                var like = new Like
+                {
+                    PhotoId = photoId,
+                    UserId = userId,
+                    TripId = null,
+                };
 
-        // var trip = this.dbContext.Trips
-        //            .Where(t => t.Id == photoId)
-        //            .FirstOrDefault();
+                var currentPhoto = this.dbContext.Photos
+                           .Where(t => t.Id == photoId)
+                           .FirstOrDefault();
 
-        // trip.Likes.Add(like);
+                currentPhoto.Likes.Add(like);
 
-        // await this.dbContext.SaveChangesAsync();
+                await this.dbContext.Likes.AddAsync(like);
 
-        // return trip.Likes.Count;
-        //    }
+                await this.dbContext.SaveChangesAsync();
 
-        // return tripLike.Likes.Count;
-        // }
+                return currentPhoto.Likes.Count;
+            }
+
+            return photo.Likes.Count;
+        }
 
         public async Task AddPhoto(string path, string userId)
         {

@@ -8,6 +8,6 @@
 
         Task<bool> DeletePhoto(int photoId, string userId);
 
-        // Task<int> LikePhoto(int photoId, string userId);
+        Task<int> Like(int photoId, string userId);
     }
 }

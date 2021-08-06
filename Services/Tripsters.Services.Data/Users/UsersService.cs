@@ -158,6 +158,13 @@
                 {
                     Id = p.Id,
                     Url = p.Url,
+                    Likes = p.Likes
+                    .Select(l => new LikeServiceModel
+                    {
+                        Count = p.Likes.Count,
+                        UserName = l.User.UserName
+                    })
+                    .ToList(),
                 })
                 .ToList(),
                 AllBadges = this.badgesService.GetAllBadges(),
@@ -217,6 +224,13 @@
                 {
                     Id = p.Id,
                     Url = p.Url,
+                    Likes = p.Likes
+                    .Select(l => new LikeServiceModel
+                    {
+                        Count = p.Likes.Count,
+                        UserName = l.User.UserName,
+                    })
+                    .ToList(),
                 })
                 .ToList(),
                 AllBadges = this.badgesService.GetAllBadges(),

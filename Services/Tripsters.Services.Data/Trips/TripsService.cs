@@ -208,7 +208,7 @@
 
         public ICollection<TripServiceModel> RecentTrips(string userId, int currentPage, int tripsPerPage)
        => this.dbContext.UserTrips
-           .Where(u => u.Trip.IsDeleted == false && u.Trip.UserId == userId && u.Trip.Travellers.Any(tr => tr.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+           .Where(u => u.Trip.IsDeleted == false && (u.Trip.UserId == userId || u.Trip.Travellers.Any(t => t.UserId == userId)) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
            .Skip((currentPage - 1) * tripsPerPage)
                .Take(tripsPerPage)
            .Select(t => new TripServiceModel

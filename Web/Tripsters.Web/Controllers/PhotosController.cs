@@ -70,12 +70,11 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> Like(string tripId)
+        public async Task<IActionResult> Like(int photoId, string currUserId, string userId)
         {
-            var userId = this.userManager.GetUserId(this.User);
-            await this.tripsService.LikeTrip(tripId, userId);
+            await this.photosService.Like(photoId, currUserId);
 
-            return this.RedirectToAction("Past");
+            return this.RedirectToAction(nameof(this.All), new { UserId = userId });
         }
     }
 }
