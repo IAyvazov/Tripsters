@@ -7,22 +7,34 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+
+    using Tripsters.Common;
+    using Tripsters.Data.Models;
+    using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Photos;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
 
-    public class PhotosController : Controller
+    public class PhotosController : BaseController
     {
+        private readonly INotificationsService notificationsService;
         private readonly IUsersService usersService;
         private readonly IPhotosService photosService;
         private readonly IWebHostEnvironment environment;
 
-        public PhotosController(IWebHostEnvironment environment, IPhotosService photosService, IUsersService usersService)
+        public PhotosController(
+            UserManager<ApplicationUser> userManager,
+            INotificationsService notificationsService,
+            IUsersService usersService,
+            IPhotosService photosService,
+            IWebHostEnvironment environment)
         {
-            this.environment = environment;
-            this.photosService = photosService;
             this.usersService = usersService;
+            this.photosService = photosService;
+            this.notificationsService = notificationsService;
+            this.environment = environment;
         }
 
         [HttpPost]
@@ -73,6 +85,8 @@
         public async Task<IActionResult> Like(int photoId, string currUserId, string userId)
         {
             await this.photosService.Like(photoId, currUserId);
+
+            await this.notificationsService.Notifie(currUserId, userId, GlobalConstants.NotifePhotoLikeText);
 
             return this.RedirectToAction(nameof(this.All), new { UserId = userId });
         }

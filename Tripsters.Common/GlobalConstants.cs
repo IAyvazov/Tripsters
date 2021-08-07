@@ -6,6 +6,18 @@
 
         public const string AdministratorRoleName = "Administrator";
 
+        public const string NotifeFriendRequestText = "sent you friend request";
+
+        public const string NotifeCommentText = "write a comment in ";
+
+        public const string NotifeLikeText = "like ";
+
+        public const string NotifeJoinText = "join in ";
+
+        public const string NotifePhotoLikeText = "like your photo";
+
+        public const string NotifeBadgeText = "added badge to your profile";
+
         public class TripSecurity
         {
             public const int NameMinLength = 5;

@@ -1,10 +1,18 @@
 ﻿@using Tripsters.Common
 @using Tripsters.Data.Models
+@using Tripsters.Services.Data.Notifications
 
 @using Microsoft.AspNetCore.Identity
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject INotificationsService notificationService
+
+@{
+    var notifications = this.notificationService.GetAllNotification(this.UserManager.GetUserId(this.User));
+
+    var currUserId = this.UserManager.GetUserId(this.User);
+}
 
 <ul class="navbar-nav">
     @if (this.SignInManager.IsSignedIn(this.User))
@@ -15,7 +23,41 @@
                 <a class="nav-link text-dark" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
             </li>
         }
+        <li class="dropdown">
+            <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                🕭@if (notifications.Count != 0)
+                {
+                    <small>(@notifications.Count)</small>
+                }
+            </button>
+            <div class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton">
+                @foreach (var notification in notifications)
+                {
+                    if (notification.IsSeen == false)
+                    {
+                        if (notification.Text.Contains("friend"))
+                        {
+                            <div class="dropdown-item-text border-bottom alert-info ml-2 mr-2 mb-2 text-dark">
+                                @notification.Text
+                                <a 
+                                   asp-controller="Friends"
+                                        asp-action="Confirm"
+                                        asp-route-currUserId="@currUserId"
+                                        asp-route-friendUserId="@notification.FriendId"
+                                        asp-route-notificationId="@notification.Id" class="btn btn-primary">
+                                    Confirm
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <button onClick="window.location.reload();" action="@this.notificationService.Seen(notification.Id);" class="dropdown-item-text border-bottom alert-info ml-2 mr-2 mb-2 text-dark">@notification.Text</button>
+                        }
+                    }
 
+                }
+            </div>
+        </li>
         <li class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Trips

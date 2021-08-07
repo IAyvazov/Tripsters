@@ -2,7 +2,11 @@
 {
     using System.Diagnostics;
 
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+
+    using Tripsters.Data.Models;
+    using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Web.ViewModels;
 
@@ -10,7 +14,10 @@
     {
         private readonly ITripsService tripsService;
 
-        public HomeController(ITripsService tripsService)
+        public HomeController(
+            UserManager<ApplicationUser> userManager,
+            INotificationsService notificationsService,
+            ITripsService tripsService)
         {
             this.tripsService = tripsService;
         }

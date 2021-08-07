@@ -21,6 +21,7 @@ namespace Tripsters.Data.Models
             this.Badges = new HashSet<UsersBadges>();
             this.Trips = new HashSet<UserTrip>();
             this.Photos = new HashSet<Photo>();
+            this.Notifications = new HashSet<Notification>();
         }
 
         [Range(16, 99)]
@@ -43,6 +44,8 @@ namespace Tripsters.Data.Models
         public ICollection<UserTrip> Trips { get; set; }
 
         public ICollection<Photo> Photos { get; set; }
+
+        public ICollection<Notification> Notifications { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 

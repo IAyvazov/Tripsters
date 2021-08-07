@@ -44,6 +44,8 @@
 
         public DbSet<Photo> Photos { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

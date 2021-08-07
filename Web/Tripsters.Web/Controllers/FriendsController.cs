@@ -6,19 +6,26 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using Tripsters.Common;
     using Tripsters.Data.Models;
+    using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
 
-    public class FriendsController : Controller
+    public class FriendsController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly INotificationsService notificationsService;
         private readonly IUsersService usersService;
 
-        public FriendsController(IUsersService usersService, UserManager<ApplicationUser> userManager)
+        public FriendsController(
+            UserManager<ApplicationUser> userManager,
+            INotificationsService notificationsService,
+            IUsersService usersService)
         {
             this.usersService = usersService;
             this.userManager = userManager;
+            this.notificationsService = notificationsService;
         }
 
         [Authorize]
@@ -38,10 +45,18 @@
         public async Task<IActionResult> Add(string friendUserId)
         {
             var currUserId = this.userManager.GetUserId(this.User);
-            await this.usersService.AddFriend(currUserId, friendUserId);
+
+            await this.notificationsService.Notifie(currUserId, friendUserId, GlobalConstants.NotifeFriendRequestText);
 
             return this.Redirect($"/Users/Profile?userId={friendUserId}");
         }
 
+        public async Task<IActionResult> Confirm(string currUserId, string friendUserId, int notificationId)
+        {
+            await this.usersService.AddFriend(currUserId, friendUserId);
+            await this.notificationsService.Seen(notificationId);
+
+            return this.Redirect($"/Users/Profile?userId={friendUserId}");
+        }
     }
 }

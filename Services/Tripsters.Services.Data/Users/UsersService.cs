@@ -65,6 +65,7 @@
 
             friend.Friends.Add(friendFriends);
             user.Friends.Add(userFriends);
+
             await this.dbContext.SaveChangesAsync();
         }
 
@@ -162,7 +163,7 @@
                     .Select(l => new LikeServiceModel
                     {
                         Count = p.Likes.Count,
-                        UserName = l.User.UserName
+                        UserName = l.User.UserName,
                     })
                     .ToList(),
                 })

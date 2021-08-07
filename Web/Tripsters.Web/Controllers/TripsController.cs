@@ -9,9 +9,10 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-
+    using Tripsters.Common;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Badges;
+    using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Trips.Models;
     using Tripsters.Services.Data.Users;
@@ -23,19 +24,22 @@
     public class TripsController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly INotificationsService notificationsService;
         private readonly ITripsService tripsService;
         private readonly IUsersService usersService;
         private readonly IBadgesService badgesService;
 
         public TripsController(
+            UserManager<ApplicationUser> userManager,
+            INotificationsService notificationsService,
             ITripsService tripsService,
             IUsersService usersService,
-            IBadgesService badgesService,
-            UserManager<ApplicationUser> userManager)
+            IBadgesService badgesService)
         {
             this.tripsService = tripsService;
             this.usersService = usersService;
             this.badgesService = badgesService;
+            this.notificationsService = notificationsService;
             this.userManager = userManager;
         }
 
@@ -127,15 +131,24 @@
         [Authorize]
         public IActionResult Comment(string tripId)
         {
-            var comments = this.tripsService.GetAllTripComments(tripId);
             var userId = this.userManager.GetUserId(this.User);
+
+            var comments = this.tripsService.GetAllTripComments(tripId);
             var tripName = this.tripsService.GetTripById(tripId, userId).Name;
             var user = this.usersService.GetUser(userId);
+
             var userProfilePictureUrl = user.Photos
                 .Where(p => p.IsProfilePicture)
                 .Select(p => p.Url)
                 .FirstOrDefault();
-            var model = new CommentListingVIewModel { Comments = comments, TripId = tripId, TripName = tripName, UserProfilePictureUrl = userProfilePictureUrl };
+
+            var model = new CommentListingVIewModel
+            {
+                Comments = comments,
+                TripId = tripId,
+                TripName = tripName,
+                UserProfilePictureUrl = userProfilePictureUrl,
+            };
 
             return this.View(model);
         }
@@ -144,8 +157,13 @@
         [HttpPost]
         public async Task<IActionResult> Comment(CommentFormModel commentData)
         {
-            var userId = this.userManager.GetUserId(this.User);
-            await this.tripsService.AddComment(userId, commentData.TripId, commentData.Text);
+            var currUserId = this.userManager.GetUserId(this.User);
+            await this.tripsService.AddComment(currUserId, commentData.TripId, commentData.Text);
+
+            var userTrip = this.tripsService
+                .GetTripById(commentData.TripId, currUserId);
+
+            await this.notificationsService.Notifie(currUserId, userTrip.CreatorId, GlobalConstants.NotifeCommentText + userTrip.Name);
 
             return this.Redirect($"/Trips/Comment?tripId={commentData.TripId}");
         }
@@ -153,8 +171,12 @@
         [Authorize]
         public async Task<IActionResult> Join(string tripId, string userId)
         {
+            var currUserId = this.userManager.GetUserId(this.User);
+
             await this.tripsService.JoinTrip(tripId, userId);
             var trip = this.tripsService.GetTripById(tripId, userId);
+
+            await this.notificationsService.Notifie(currUserId, trip.CreatorId, GlobalConstants.NotifeJoinText + trip.Name);
 
             return this.View(trip);
         }
@@ -301,8 +323,12 @@
         [Authorize]
         public async Task<IActionResult> Like(string tripId)
         {
-            var userId = this.userManager.GetUserId(this.User);
-            await this.tripsService.LikeTrip(tripId, userId);
+            var currUserId = this.userManager.GetUserId(this.User);
+            await this.tripsService.LikeTrip(tripId, currUserId);
+
+            var trip = this.tripsService.GetTripById(tripId, currUserId);
+
+            await this.notificationsService.Notifie(currUserId, trip.CreatorId, GlobalConstants.NotifeLikeText + trip.Name);
 
             return this.RedirectToAction(nameof(this.Past));
         }

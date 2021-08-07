@@ -3,19 +3,23 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using Tripsters.Data.Models;
+    using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Trips.Models;
     using Tripsters.Web.ViewModels.Badges;
     using Tripsters.Web.ViewModels.Trips;
     using Tripsters.Web.ViewModels.Users;
 
-    public class CategoriesController : Controller
+    public class CategoriesController : BaseController
     {
         private readonly ITripsService tripsService;
 
-        public CategoriesController(ITripsService tripsService)
+        public CategoriesController(
+            ITripsService tripsService)
         {
             this.tripsService = tripsService;
         }

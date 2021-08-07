@@ -7,23 +7,27 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-
+    using Tripsters.Common;
     using Tripsters.Data.Models;
+    using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
 
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly INotificationsService notificationsService;
         private readonly IUsersService usersService;
         private readonly IWebHostEnvironment environment;
 
         public UsersController(
+            UserManager<ApplicationUser> userManager,
+            INotificationsService notificationsService,
             IUsersService usersService,
-            IWebHostEnvironment environment,
-            UserManager<ApplicationUser> userManager)
+            IWebHostEnvironment environment)
         {
             this.usersService = usersService;
+            this.notificationsService = notificationsService;
             this.environment = environment;
             this.userManager = userManager;
         }
@@ -78,9 +82,11 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddBadge(int badgeId, string userId, string userWhoAddId)
+        public async Task<IActionResult> AddBadge(int badgeId, string userId, string currUserId)
         {
-            await this.usersService.AddBadgeToUser(badgeId, userId, userWhoAddId);
+            await this.usersService.AddBadgeToUser(badgeId, userId, currUserId);
+
+            await this.notificationsService.Notifie(currUserId, userId, GlobalConstants.NotifeBadgeText);
 
             return this.Redirect($"/Users/Profile?userId={userId}");
         }
