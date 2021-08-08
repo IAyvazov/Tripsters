@@ -54,13 +54,13 @@
                     {
                         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     }).AddRazorRuntimeCompilation();
+
             services.AddRazorPages();
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddSingleton(this.configuration);
 
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
-
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ITripsService, TripsService>();
             services.AddTransient<IUsersService, UsersService>();
