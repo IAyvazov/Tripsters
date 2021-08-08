@@ -1,14 +1,14 @@
-﻿namespace Tripsters.Data.Migrations
-{
-    using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-    public partial class AddIsSeenInNotificationTable : Migration
+namespace Tripsters.Data.Migrations
+{
+    public partial class AddInTripTableIsApprovedColumn : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "IsSeen",
-                table: "Notifications",
+                name: "IsApproved",
+                table: "Trips",
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
@@ -17,8 +17,8 @@
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsSeen",
-                table: "Notifications");
+                name: "IsApproved",
+                table: "Trips");
         }
     }
 }

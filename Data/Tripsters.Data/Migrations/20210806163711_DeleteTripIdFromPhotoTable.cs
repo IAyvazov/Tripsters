@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace Tripsters.Data.Migrations
+﻿namespace Tripsters.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class DeleteTripIdFromPhotoTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -81,7 +81,7 @@ namespace Tripsters.Data.Migrations
                 table: "Likes",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)",
                 oldNullable: true);

@@ -28,13 +28,15 @@
         [Range(2, 6)]
         public int AvailableSeats { get; set; }
 
+        public bool IsApproved { get; set; }
+
         public string UserId { get; set; }
+
+        public ApplicationUser User { get; set; }
 
         public int CategoryId { get; set; }
 
         public Category Category { get; set; }
-
-        public ApplicationUser User { get; set; }
 
         public Destination Destination { get; set; }
 

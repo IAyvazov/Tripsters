@@ -1,4 +1,5 @@
 ﻿@using Tripsters.Web.ViewModels.Trips
+@using Tripsters.Common 
 
 @model TripsListingModel
 
@@ -28,7 +29,7 @@
                         <li class="list-group-item">Seats: @trip.AvailableSeats</li>
                     </ul>
                         <a asp-controller="Trips" asp-action="Details" asp-route-tripId="@trip.Id" class="btn btn-primary">Info</a>
-                        @if (trip.CreatorName == User.Identity.Name)
+                        @if (trip.CreatorName == User.Identity.Name || User.IsInRole(GlobalConstants.AdministratorRoleName))
                         {
                             <a asp-controller="Trips" asp-action="Edit" asp-route-tripId="@trip.Id" class="btn badge-warning">Edit</a>
                             <a asp-controller="Trips" asp-action="Delete" asp-route-tripId="@trip.Id" class="btn btn-danger">Delete</a>

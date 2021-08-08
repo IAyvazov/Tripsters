@@ -5,11 +5,12 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Microsoft.EntityFrameworkCore;
+
     using Tripsters.Data;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Trips.Models;
-    using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
     using Tripsters.Web.ViewModels.Trips;
 
@@ -18,7 +19,6 @@
         private readonly ApplicationDbContext dbContext;
 
         public TripsService(
-            IUsersService usersService,
             ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
@@ -82,6 +82,7 @@
         {
             var trip = this.dbContext.Trips
                  .Where(t => t.Id == tripId)
+                 .Include(d => d.Destination)
                  .FirstOrDefault();
 
             trip.Name = tripData.Name;
@@ -95,9 +96,42 @@
             await this.dbContext.SaveChangesAsync();
         }
 
+        public async Task<string> Approve(string tripId)
+        {
+            var trip = this.dbContext.Trips.Where(t => t.Id == tripId).FirstOrDefault();
+
+            trip.IsApproved = true;
+
+            await this.dbContext.SaveChangesAsync();
+
+            return trip.UserId;
+        }
+
+        public ICollection<TripServiceModel> GetAllTripsForAdmin(int currentPage, int tripsPerPage)
+       => this.dbContext.Trips
+           .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow)
+           .OrderBy(t => t.StartDate)
+           .Skip((currentPage - 1) * tripsPerPage)
+               .Take(tripsPerPage)
+           .Select(t => new TripServiceModel
+           {
+               Id = t.Id,
+               Name = t.Name,
+               From = t.Destination.From,
+               To = t.Destination.To,
+               AvailableSeats = t.AvailableSeats,
+               Description = t.Description,
+               CreatorName = t.User.UserName,
+               StartDate = t.StartDate.ToString("G"),
+               CreatorId = t.UserId,
+               CategoryName = t.Category.Name,
+               IsApproved = t.IsApproved,
+           })
+           .ToList();
+
         public ICollection<TripServiceModel> GetAllTrips(int currentPage, int tripsPerPage)
         => this.dbContext.Trips
-            .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow)
+            .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow && t.IsApproved)
             .OrderBy(t => t.StartDate)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
@@ -135,7 +169,7 @@
 
         public ICollection<TripServiceModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage)
         => this.dbContext.Trips
-            .Where(t => t.UserId == userId && t.IsDeleted == false)
+            .Where(t => t.UserId == userId && t.IsDeleted == false && t.IsApproved)
             .OrderBy(t => t.StartDate)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
@@ -172,7 +206,7 @@
 
         public ICollection<TripServiceModel> GetAllTripsByCategoryId(int categoryId, int currentPage, int tripsPerPage)
         => this.dbContext.Trips
-            .Where(t => t.CategoryId == categoryId && t.IsDeleted == false)
+            .Where(t => t.CategoryId == categoryId && t.IsDeleted == false && t.IsApproved)
             .OrderBy(t => t.StartDate)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
@@ -208,7 +242,7 @@
 
         public ICollection<TripServiceModel> RecentTrips(string userId, int currentPage, int tripsPerPage)
        => this.dbContext.UserTrips
-           .Where(u => u.Trip.IsDeleted == false && (u.Trip.UserId == userId || u.Trip.Travellers.Any(t => t.UserId == userId)) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+           .Where(u => u.Trip.IsDeleted == false && (u.Trip.UserId == userId || u.Trip.Travellers.Any(t => t.UserId == userId)) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0 && u.Trip.IsApproved)
            .Skip((currentPage - 1) * tripsPerPage)
                .Take(tripsPerPage)
            .Select(t => new TripServiceModel
@@ -241,7 +275,7 @@
 
         public ICollection<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
         => this.dbContext.UserTrips
-            .Where(u => u.Trip.IsDeleted == false && u.Trip.Travellers.Any(tr => tr.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0)
+            .Where(u => u.Trip.IsDeleted == false && u.Trip.Travellers.Any(tr => tr.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0 && u.Trip.IsApproved)
             .Skip((currentPage - 1) * tripsPerPage)
                 .Take(tripsPerPage)
             .Select(t => new TripServiceModel
@@ -274,7 +308,7 @@
 
         public ICollection<CommentViewModel> GetAllTripComments(string tripId)
        => this.dbContext.Trips
-            .Where(t => t.IsDeleted == false && t.Id == tripId)
+            .Where(t => t.IsDeleted == false && t.Id == tripId && t.IsApproved)
            .SelectMany(c => c.Comments)
             .Select(c => new CommentViewModel
             {
@@ -292,7 +326,7 @@
 
         public TripServiceModel GetTripById(string tripId, string userId)
         => this.dbContext.Trips
-            .Where(t => t.Id == tripId && t.IsDeleted == false)
+            .Where(t => t.Id == tripId && t.IsDeleted == false && t.IsApproved)
             .Select(t => new TripServiceModel
             {
                 Id = t.Id,
@@ -329,7 +363,7 @@
 
         public ICollection<TripServiceModel> GetUpcommingTodayTrips(string userId)
         => this.dbContext.Trips
-            .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear.CompareTo(DateTime.Today.DayOfYear) == 0)
+            .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear.CompareTo(DateTime.Today.DayOfYear) == 0 && t.IsApproved)
             .Select(t => new TripServiceModel
             {
                 Id = t.Id,
@@ -360,7 +394,7 @@
 
         public ICollection<TripServiceModel> GetUpcommingTomorrowTrips(string userId)
        => this.dbContext.Trips
-           .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.UtcNow.DayOfYear == 1)
+           .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.UtcNow.DayOfYear == 1 && t.IsApproved)
            .Select(t => new TripServiceModel
            {
                Id = t.Id,
@@ -443,12 +477,12 @@
 
         public int GetAllTripsCount()
         => this.dbContext.Trips
-            .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow)
+            .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow && t.IsApproved)
             .Count();
 
         public int GetAllUserTripsCount(string userId)
         => this.dbContext.Trips
-            .Where(t => t.UserId == userId && t.IsDeleted == false)
+            .Where(t => t.UserId == userId && t.IsDeleted == false && t.IsApproved)
             .Count();
     }
 }

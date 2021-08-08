@@ -8,6 +8,8 @@
 
     public interface ITripsService
     {
+        ICollection<TripServiceModel> GetAllTripsForAdmin(int currentPage, int tripsPerPage);
+
         IEnumerable<TripCategoryServiceModel> AllCategories();
 
         Task AddTrip(TripServiceFormModel tripData, string userName);
@@ -43,5 +45,7 @@
         public ICollection<TripServiceModel> RecentTrips(string userId, int currentPage, int tripsPerPage);
 
         public ICollection<TripServiceModel> GetAllTripsByCategoryId(int categoryId, int currentPage, int tripsPerPage);
+
+        Task<string> Approve(string tripId);
     }
 }

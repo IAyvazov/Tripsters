@@ -6,11 +6,12 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using Tripsters.Common;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
+
+    using static Tripsters.Common.GlobalConstants;
 
     public class FriendsController : BaseController
     {
@@ -46,7 +47,7 @@
         {
             var currUserId = this.userManager.GetUserId(this.User);
 
-            await this.notificationsService.Notifie(currUserId, friendUserId, GlobalConstants.NotifeFriendRequestText);
+            await this.notificationsService.Notifie(currUserId, friendUserId, Notifications.FriendRequestText);
 
             return this.Redirect($"/Users/Profile?userId={friendUserId}");
         }

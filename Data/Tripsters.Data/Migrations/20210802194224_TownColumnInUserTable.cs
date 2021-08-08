@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace Tripsters.Data.Migrations
+﻿namespace Tripsters.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class TownColumnInUserTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

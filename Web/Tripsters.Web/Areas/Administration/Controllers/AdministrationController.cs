@@ -4,11 +4,10 @@
     using Microsoft.AspNetCore.Mvc;
 
     using Tripsters.Common;
-    using Tripsters.Web.Controllers;
 
     [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
     [Area("Administration")]
-    public class AdministrationController : Controller
+    public abstract class AdministrationController : Controller
     {
     }
 }

@@ -20,7 +20,7 @@
         if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
+                <a class="nav-link text-dark" asp-area="Administration" asp-controller="Trips" asp-action="Index" >@GlobalConstants.AdministratorRoleName</a>
             </li>
         }
         <li class="dropdown">
@@ -63,9 +63,9 @@
                 Trips
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" asp-controller="Trips" asp-action="Add">Add Trip</a>
-                <a class="dropdown-item" asp-controller="Trips" asp-action="All">All Trips</a>
-                <a class="dropdown-item" asp-controller="Trips" asp-action="MyTrips">My Trips</a>
+                <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Add">Add Trip</a>
+                <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="All">All Trips</a>
+                <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="MyTrips">My Trips</a>
             </div>
         </li>
 

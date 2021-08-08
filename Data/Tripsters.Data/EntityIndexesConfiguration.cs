@@ -2,9 +2,9 @@
 {
     using System.Linq;
 
-    using Tripsters.Data.Common.Models;
-
     using Microsoft.EntityFrameworkCore;
+
+    using Tripsters.Data.Common.Models;
 
     internal static class EntityIndexesConfiguration
     {

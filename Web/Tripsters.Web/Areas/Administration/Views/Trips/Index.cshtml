@@ -1,0 +1,41 @@
+﻿@using Tripsters.Services.Data.Trips.Models
+
+@model ICollection<TripServiceModel>
+
+@{
+    ViewData["Title"] = "Administration";
+    var counter = 0;
+}
+<table class="table table-striped mt-5">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Trip Name</th>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Available Seats</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Category</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trip in Model)
+        {
+            <tr>
+                <th scope="row">@(counter++)</th>
+                <td>@trip.Name</td>
+                <td>@trip.From</td>
+                <td>@trip.To</td>
+                <td>@trip.AvailableSeats</td>
+                <td>@trip.StartDate</td>
+                <td>@trip.CategoryName</td>
+                <td>@trip.Description</td>
+                <td><a asp-area="Administration" asp-controller="Trips" asp-action="Approve" asp-route-tripId="@trip.Id" class="btn btn-primary  @(trip.IsApproved ? "disabled" : string.Empty)">Approve</a></td>
+                <td><a asp-area="" asp-controller="Trips" asp-action="Edit" asp-route-tripId="@trip.Id" class="btn badge-warning">Edit</a></td>
+                <td><a asp-area="" asp-controller="Trips" asp-action="Delete" asp-route-tripId="@trip.Id" class="btn btn-danger">Delete</a></td>
+            </tr>
+        }
+
+    </tbody>
+</table>

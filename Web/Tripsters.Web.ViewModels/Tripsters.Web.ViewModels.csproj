@@ -24,4 +24,8 @@
     <ProjectReference Include="..\..\Services\Tripsters.Services.Mapping\Tripsters.Services.Mapping.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Administration\" />
+  </ItemGroup>
+
 </Project>

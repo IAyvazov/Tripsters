@@ -7,11 +7,13 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Tripsters.Common;
+
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
+
+    using static Tripsters.Common.GlobalConstants;
 
     public class UsersController : BaseController
     {
@@ -86,7 +88,7 @@
         {
             await this.usersService.AddBadgeToUser(badgeId, userId, currUserId);
 
-            await this.notificationsService.Notifie(currUserId, userId, GlobalConstants.NotifeBadgeText);
+            await this.notificationsService.Notifie(currUserId, userId, Notifications.BadgeText);
 
             return this.Redirect($"/Users/Profile?userId={userId}");
         }

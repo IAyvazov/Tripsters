@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace Tripsters.Data.Migrations
+﻿namespace Tripsters.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class AddPhotoIdInLikeTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

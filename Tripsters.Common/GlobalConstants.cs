@@ -6,17 +6,24 @@
 
         public const string AdministratorRoleName = "Administrator";
 
-        public const string NotifeFriendRequestText = "sent you friend request";
+        public const string GlobalMessageKey = "GlobalMessage";
 
-        public const string NotifeCommentText = "write a comment in ";
+        public class Notifications
+        {
+            public const string FriendRequestText = "sent you friend request";
 
-        public const string NotifeLikeText = "like ";
+            public const string CommentText = "write a comment in ";
 
-        public const string NotifeJoinText = "join in ";
+            public const string LikeText = "like ";
 
-        public const string NotifePhotoLikeText = "like your photo";
+            public const string JoinText = "join in ";
 
-        public const string NotifeBadgeText = "added badge to your profile";
+            public const string PhotoLikeText = "like your photo";
+
+            public const string BadgeText = "added badge to your profile";
+
+            public const string ApprovedTrip = "your trip is approved";
+        }
 
         public class TripSecurity
         {

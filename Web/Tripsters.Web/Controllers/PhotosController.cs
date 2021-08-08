@@ -10,12 +10,13 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using Tripsters.Common;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Photos;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
+
+    using static Tripsters.Common.GlobalConstants;
 
     public class PhotosController : BaseController
     {
@@ -58,6 +59,8 @@
                 await this.photosService.AddPhoto(path + $"\\{fileName}", userId);
             }
 
+            this.TempData[GlobalMessageKey] = "Your photo was successfully uploaded!";
+
             return this.Redirect("/Users/Profile");
         }
 
@@ -70,6 +73,8 @@
             {
                 return this.BadRequest();
             }
+
+            this.TempData[GlobalMessageKey] = "Your photo was successfully deleted!";
 
             return this.Redirect($"/Photos/All?userId={userId}&currentPage={currentPage}&photosPerPage={photosPerPage}");
         }
@@ -86,7 +91,7 @@
         {
             await this.photosService.Like(photoId, currUserId);
 
-            await this.notificationsService.Notifie(currUserId, userId, GlobalConstants.NotifePhotoLikeText);
+            await this.notificationsService.Notifie(currUserId, userId, Notifications.PhotoLikeText);
 
             return this.RedirectToAction(nameof(this.All), new { UserId = userId });
         }

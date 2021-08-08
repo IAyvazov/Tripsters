@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+
     using Tripsters.Common;
     using Tripsters.Data.Models;
     using Tripsters.Services.Data.Badges;
@@ -20,6 +21,8 @@
     using Tripsters.Web.ViewModels.Badges;
     using Tripsters.Web.ViewModels.Trips;
     using Tripsters.Web.ViewModels.Users;
+
+    using static Tripsters.Common.GlobalConstants;
 
     public class TripsController : BaseController
     {
@@ -83,7 +86,6 @@
         [Authorize]
         public IActionResult Add()
         {
-
             var categories = new HashSet<TripCategoryVIewModel>();
 
             foreach (var category in this.tripsService.AllCategories())
@@ -125,6 +127,8 @@
                 },
                 userId);
 
+            this.TempData[GlobalMessageKey] = "You trip was added and is awaiting for approval!";
+
             return this.Redirect("/Trips/All");
         }
 
@@ -163,7 +167,7 @@
             var userTrip = this.tripsService
                 .GetTripById(commentData.TripId, currUserId);
 
-            await this.notificationsService.Notifie(currUserId, userTrip.CreatorId, GlobalConstants.NotifeCommentText + userTrip.Name);
+            await this.notificationsService.Notifie(currUserId, userTrip.CreatorId, Notifications.CommentText + userTrip.Name);
 
             return this.Redirect($"/Trips/Comment?tripId={commentData.TripId}");
         }
@@ -176,7 +180,9 @@
             await this.tripsService.JoinTrip(tripId, userId);
             var trip = this.tripsService.GetTripById(tripId, userId);
 
-            await this.notificationsService.Notifie(currUserId, trip.CreatorId, GlobalConstants.NotifeJoinText + trip.Name);
+            await this.notificationsService.Notifie(currUserId, trip.CreatorId, Notifications.JoinText + trip.Name);
+
+            this.TempData[GlobalMessageKey] = "You have successfully joined this trip!";
 
             return this.View(trip);
         }
@@ -234,6 +240,15 @@
         {
             await this.tripsService.Delete(tripId);
 
+            if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+            {
+                this.TempData[GlobalMessageKey] = "This trip was successfully deleted!";
+
+                return this.Redirect("/Administration/Trips/Index");
+            }
+
+            this.TempData[GlobalMessageKey] = "Your trip was successfully deleted!";
+
             return this.Redirect("/Trips/MyTrips");
         }
 
@@ -243,10 +258,9 @@
             var userId = this.userManager.GetUserId(this.User);
             var trip = this.tripsService.GetTripById(tripId, userId);
 
-            DateTime startDate;
-            DateTime.TryParseExact(trip.StartDate, "G", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
+            DateTime.TryParseExact(trip.StartDate, "G", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startDate);
 
-            return this.View(new TripsInputFormModel
+            var model = new TripsInputFormModel
             {
                 Id = trip.Id,
                 Name = trip.Name,
@@ -255,7 +269,22 @@
                 From = trip.From,
                 To = trip.To,
                 Description = trip.Description,
-            });
+            };
+
+            var categories = new HashSet<TripCategoryVIewModel>();
+
+            foreach (var category in this.tripsService.AllCategories())
+            {
+                categories.Add(new TripCategoryVIewModel
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                });
+            }
+
+            model.Categories = categories;
+
+            return this.View(model);
         }
 
         [HttpPost]
@@ -271,16 +300,26 @@
                 tripId,
                 new TripServiceFormModel
                 {
-                    Id = trip.Id,
+                    Id = tripId,
                     Name = trip.Name,
                     AvailableSeats = trip.AvailableSeats,
                     From = trip.From,
                     To = trip.To,
                     StartDate = trip.StartDate,
                     Description = trip.Description,
+                    CategoryId = trip.CategoryId,
                 });
 
-            return this.Redirect("/Trips/MadeByMe");
+            if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+            {
+                this.TempData[GlobalMessageKey] = "This trip was successfully edited!";
+
+                return this.Redirect("/Administration/Trips/Index");
+            }
+
+            this.TempData[GlobalMessageKey] = "Your trip was successfully edited!";
+
+            return this.Redirect("/Trips/MyTrips");
         }
 
         public IActionResult Upcoming(TripsListingModel model)
@@ -328,7 +367,7 @@
 
             var trip = this.tripsService.GetTripById(tripId, currUserId);
 
-            await this.notificationsService.Notifie(currUserId, trip.CreatorId, GlobalConstants.NotifeLikeText + trip.Name);
+            await this.notificationsService.Notifie(currUserId, trip.CreatorId, Notifications.LikeText + trip.Name);
 
             return this.RedirectToAction(nameof(this.Past));
         }

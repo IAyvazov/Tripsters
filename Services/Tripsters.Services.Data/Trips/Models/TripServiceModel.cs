@@ -31,6 +31,8 @@
 
         public int Likes { get; set; }
 
+        public bool IsApproved { get; set; }
+
         public ICollection<Comment> Comments { get; set; }
 
         public ICollection<UserServiceModel> Members { get; set; }
