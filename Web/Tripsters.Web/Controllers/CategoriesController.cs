@@ -3,11 +3,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using Tripsters.Data.Models;
-    using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Trips;
     using Tripsters.Services.Data.Trips.Models;
     using Tripsters.Web.ViewModels.Badges;
@@ -24,7 +21,7 @@
             this.tripsService = tripsService;
         }
 
-        public IActionResult AllCategoryTrips(TripsListingModel model)
+        public IActionResult AllTripsByCategory(TripsListingModel model)
         {
             var trips = new TripsListingModel
             {
