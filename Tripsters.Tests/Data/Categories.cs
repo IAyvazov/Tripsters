@@ -10,7 +10,8 @@
         public static IEnumerable<Category> ThreeCategories
            => Enumerable.Range(0, 3).Select(i => new Category
            {
-               Name = "name"
+               Name = "name",
+               Id=1,
            });
     }
 }

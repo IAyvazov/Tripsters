@@ -22,14 +22,12 @@
             <h4>Trips Category</h4>
             @foreach (var category in Model)
             {
-                <a class="btn btn-outline-primary mt-3 mb-5 mr-2 ml-2" asp-controller="Categories" asp-action="AllCategoryTrips" asp-route-categoryId="@category.Id">@category.Name</a>
+                <a class="btn btn-outline-primary mt-3 mb-5 mr-2 ml-2" asp-controller="Categories" asp-action="AllTripsByCategory" asp-route-categoryId="@category.Id">@category.Name</a>
             }
         </div>
         <div class="mt-5 mb-5 alert-secondary h-50">
             <div>
                 <h4>About us</h4>
-                <p>Some text about who we are and what we do.</p>
-                <p>Resize the browser window to see that this page is responsive by the way.</p>
             </div>
             <h2 class="row-cols-md-6" style="text-align:center">Our Team</h2>
             <div class="row ml-3">
@@ -40,7 +38,6 @@
                             <div class="container">
                                 <h2>Ivo Ayvazov</h2>
                                 <p class="title">Creator</p>
-                                <p>Some text that describes me.</p>
                                 <p>iayvazovl@gmail.com</p>
                             </div>
                         </div>
