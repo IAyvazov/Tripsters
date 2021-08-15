@@ -15,21 +15,21 @@
 
     public class FriendsControllerTests
     {
-        [Fact]
-        public void MyFriends()
-        {
-            var serverFactory = new SeleniumServerFactory<Startup>();
+        //[Fact]
+        //public void MyFriends()
+        //{
+        //    var serverFactory = new SeleniumServerFactory<Startup>();
 
-            var options = new ChromeOptions();
-            options.AddArgument("--headless");
-            options.AcceptInsecureCertificates = true;
+        //    var options = new ChromeOptions();
+        //    options.AddArgument("--headless");
+        //    options.AcceptInsecureCertificates = true;
 
-            var webDriver = new ChromeDriver(options);
+        //    var webDriver = new ChromeDriver(options);
 
-            webDriver.Navigate().GoToUrl(serverFactory.RootUri + "/Friends/MyFriends");
-            var element = webDriver.FindElementByClassName("card-body");
+        //    webDriver.Navigate().GoToUrl(serverFactory.RootUri + "/Friends/MyFriends");
+        //    var element = webDriver.FindElementByClassName("card-body");
 
-            Assert.Null(element);
+        //    Assert.Null(element);
         }
     }
 }

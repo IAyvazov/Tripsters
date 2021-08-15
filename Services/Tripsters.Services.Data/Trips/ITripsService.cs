@@ -38,7 +38,7 @@
 
         Task<int> LikeTrip(string tripId, string userId);
 
-        Task AddComment(string userId, string tripId, string commentInput);
+        Task AddComment(string userId, string tripId, string text);
 
         public ICollection<CommentViewModel> GetAllTripComments(string tripId);
 

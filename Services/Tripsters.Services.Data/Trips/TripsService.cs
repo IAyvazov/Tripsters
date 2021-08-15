@@ -24,33 +24,6 @@
             this.dbContext = dbContext;
         }
 
-        public IEnumerable<TripCategoryServiceModel> AllCategories()
-           => this.dbContext
-               .Categories
-               .Select(c => new TripCategoryServiceModel
-               {
-                   Id = c.Id,
-                   Name = c.Name,
-               })
-               .ToList();
-
-        public async Task AddComment(string userId, string tripId, string commentInput)
-        {
-            var comment = new Comment
-            {
-                TripId = tripId,
-                Text = commentInput,
-                UserId = userId,
-            };
-
-            var comments = this.dbContext.Trips
-                .Where(t => t.Id == tripId)
-                .FirstOrDefault();
-
-            comments.Comments.Add(comment);
-            await this.dbContext.SaveChangesAsync();
-        }
-
         public async Task AddTrip(TripServiceFormModel tripData, string userId)
         {
             var trip = new Trip
@@ -93,6 +66,38 @@
             trip.Destination.To = tripData.To;
             trip.CategoryId = tripData.CategoryId;
 
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public IEnumerable<TripCategoryServiceModel> AllCategories()
+           => this.dbContext
+               .Categories
+               .Select(c => new TripCategoryServiceModel
+               {
+                   Id = c.Id,
+                   Name = c.Name,
+               })
+               .ToList();
+
+        public async Task AddComment(string userId, string tripId, string text)
+        {
+            var comment = new Comment
+            {
+                TripId = tripId,
+                Text = text,
+                UserId = userId,
+            };
+
+            var trip = this.dbContext.Trips
+                .Where(t => t.Id == tripId)
+                .FirstOrDefault();
+
+            if (trip == null)
+            {
+                throw new NullReferenceException("There is no trip");
+            }
+
+            trip.Comments.Add(comment);
             await this.dbContext.SaveChangesAsync();
         }
 

@@ -162,6 +162,12 @@
         public async Task<IActionResult> Comment(CommentFormModel commentData)
         {
             var currUserId = this.userManager.GetUserId(this.User);
+
+            if (!this.ModelState.IsValid)
+            {
+                return this.RedirectToAction(nameof(this.Comment), new { commentData.TripId });
+            }
+
             await this.tripsService.AddComment(currUserId, commentData.TripId, commentData.Text);
 
             var userTrip = this.tripsService
