@@ -17,7 +17,6 @@
 
         Task Edit(UserProfileServiceModel userData);
 
-        Task AddBadgeToUser(int badgeId, string userId, string userWhoAddId);
 
         Task AddFriend(string currUserId, string friendUserId);
     }

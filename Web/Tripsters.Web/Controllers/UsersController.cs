@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     using Tripsters.Data.Models;
+    using Tripsters.Services.Data.Badges;
     using Tripsters.Services.Data.Notifications;
     using Tripsters.Services.Data.Users;
     using Tripsters.Services.Data.Users.Models;
@@ -17,21 +18,24 @@
 
     public class UsersController : BaseController
     {
+        private readonly IUsersService usersService;
+        private readonly IBadgesService badgesService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly INotificationsService notificationsService;
-        private readonly IUsersService usersService;
         private readonly IWebHostEnvironment environment;
 
         public UsersController(
+            IUsersService usersService,
+            IBadgesService badgesService,
             UserManager<ApplicationUser> userManager,
             INotificationsService notificationsService,
-            IUsersService usersService,
             IWebHostEnvironment environment)
         {
             this.usersService = usersService;
             this.notificationsService = notificationsService;
             this.environment = environment;
             this.userManager = userManager;
+            this.badgesService = badgesService;
         }
 
         [Authorize]
@@ -86,7 +90,7 @@
         [Authorize]
         public async Task<IActionResult> AddBadge(int badgeId, string userId, string currUserId)
         {
-            await this.usersService.AddBadgeToUser(badgeId, userId, currUserId);
+            await this.badgesService.AddBadgeToUser(badgeId, userId, currUserId);
 
             await this.notificationsService.Notifie(currUserId, userId, Notifications.BadgeText);
 

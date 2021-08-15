@@ -4,7 +4,7 @@
 
     public class CommentListingVIewModel
     {
-        public ICollection<CommentViewModel> Comments { get; set; }
+        public IEnumerable<CommentViewModel> Comments { get; set; }
 
         public string TripId { get; set; }
 

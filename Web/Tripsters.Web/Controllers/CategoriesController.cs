@@ -30,7 +30,7 @@
             return this.View(trips);
         }
 
-        private static ICollection<TripsViewModel> ConvertFromServiceToViewModel(ICollection<TripServiceModel> trips)
+        private static IEnumerable<TripsViewModel> ConvertFromServiceToViewModel(IEnumerable<TripServiceModel> trips)
       => trips.Select(t => new TripsViewModel
       {
           Id = t.Id,

@@ -94,7 +94,7 @@
 
             if (trip == null)
             {
-                throw new NullReferenceException("There is no trip");
+                throw new NullReferenceException("There is no such trip");
             }
 
             trip.Comments.Add(comment);
@@ -105,6 +105,11 @@
         {
             var trip = this.dbContext.Trips.Where(t => t.Id == tripId).FirstOrDefault();
 
+            if (trip == null)
+            {
+                throw new NullReferenceException("There is no such trip");
+            }
+
             trip.IsApproved = true;
 
             await this.dbContext.SaveChangesAsync();
@@ -112,7 +117,7 @@
             return trip.UserId;
         }
 
-        public ICollection<TripServiceModel> GetAllTripsForAdmin(int currentPage, int tripsPerPage)
+        public IEnumerable<TripServiceModel> GetAllTripsForAdmin(int currentPage, int tripsPerPage)
        => this.dbContext.Trips
            .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow)
            .OrderBy(t => t.StartDate)
@@ -134,7 +139,7 @@
            })
            .ToList();
 
-        public ICollection<TripServiceModel> GetAllTrips(int currentPage, int tripsPerPage)
+        public IEnumerable<TripServiceModel> GetAllTrips(int currentPage, int tripsPerPage)
         => this.dbContext.Trips
             .Where(t => t.IsDeleted == false && t.StartDate >= DateTime.UtcNow && t.IsApproved)
             .OrderBy(t => t.StartDate)
@@ -172,7 +177,7 @@
             })
             .ToList();
 
-        public ICollection<TripServiceModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage)
+        public IEnumerable<TripServiceModel> GetAllUserTrips(string userId, int currentPage, int tripsPerPage)
         => this.dbContext.Trips
             .Where(t => t.UserId == userId && t.IsDeleted == false && t.IsApproved)
             .OrderBy(t => t.StartDate)
@@ -209,7 +214,7 @@
             })
             .ToList();
 
-        public ICollection<TripServiceModel> GetAllTripsByCategoryId(int categoryId, int currentPage, int tripsPerPage)
+        public IEnumerable<TripServiceModel> GetAllTripsByCategoryId(int categoryId, int currentPage, int tripsPerPage)
         => this.dbContext.Trips
             .Where(t => t.CategoryId == categoryId && t.IsDeleted == false && t.IsApproved)
             .OrderBy(t => t.StartDate)
@@ -245,7 +250,7 @@
             })
             .ToList();
 
-        public ICollection<TripServiceModel> RecentTrips(string userId, int currentPage, int tripsPerPage)
+        public IEnumerable<TripServiceModel> RecentTrips(string userId, int currentPage, int tripsPerPage)
        => this.dbContext.UserTrips
            .Where(u => u.Trip.IsDeleted == false && (u.Trip.UserId == userId || u.Trip.Travellers.Any(t => t.UserId == userId)) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0 && u.Trip.IsApproved)
            .Skip((currentPage - 1) * tripsPerPage)
@@ -278,7 +283,7 @@
                }).ToList(),
            }).ToList();
 
-        public ICollection<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
+        public IEnumerable<TripServiceModel> GetPastTrips(string userId, int currentPage, int tripsPerPage)
         => this.dbContext.UserTrips
             .Where(u => u.Trip.IsDeleted == false && u.Trip.Travellers.Any(tr => tr.UserId == userId) && u.Trip.StartDate.Date.DayOfYear.CompareTo(DateTime.Today.DayOfYear) < 0 && u.Trip.IsApproved)
             .Skip((currentPage - 1) * tripsPerPage)
@@ -311,7 +316,7 @@
                 }).ToList(),
             }).ToList();
 
-        public ICollection<CommentViewModel> GetAllTripComments(string tripId)
+        public IEnumerable<CommentViewModel> GetAllTripComments(string tripId)
        => this.dbContext.Trips
             .Where(t => t.IsDeleted == false && t.Id == tripId && t.IsApproved)
            .SelectMany(c => c.Comments)
@@ -366,7 +371,7 @@
             })
             .FirstOrDefault();
 
-        public ICollection<TripServiceModel> GetUpcommingTodayTrips(string userId)
+        public IEnumerable<TripServiceModel> GetUpcommingTodayTrips(string userId)
         => this.dbContext.Trips
             .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear.CompareTo(DateTime.Today.DayOfYear) == 0 && t.IsApproved)
             .Select(t => new TripServiceModel
@@ -397,7 +402,7 @@
             })
             .ToList();
 
-        public ICollection<TripServiceModel> GetUpcommingTomorrowTrips(string userId)
+        public IEnumerable<TripServiceModel> GetUpcommingTomorrowTrips(string userId)
        => this.dbContext.Trips
            .Where(t => t.Travellers.Any(u => u.UserId == userId) && t.IsDeleted == false && t.StartDate.DayOfYear - DateTime.UtcNow.DayOfYear == 1 && t.IsApproved)
            .Select(t => new TripServiceModel
@@ -430,26 +435,33 @@
 
         public async Task JoinTrip(string tripId, string userId)
         {
-            if (!this.dbContext.UserTrips.Any(u => u.UserId == userId && u.TripId == tripId && u.IsDeleted == false))
+            if (this.dbContext.UserTrips.Any(u => u.UserId == userId && u.TripId == tripId && u.IsDeleted == false))
             {
-                var userTrip = new UserTrip
-                {
-                    TripId = tripId,
-                    UserId = userId,
-                };
-
-                if (this.dbContext.Trips.FirstOrDefault(t => t.Id == tripId && t.IsDeleted == false).AvailableSeats > 0)
-                {
-                    this.dbContext.Trips.FirstOrDefault(t => t.Id == tripId && t.IsDeleted == false).AvailableSeats--;
-                }
-                else
-                {
-                    throw new InvalidOperationException("There is no more avalable seats.");
-                }
-
-                await this.dbContext.UserTrips.AddAsync(userTrip);
-                await this.dbContext.SaveChangesAsync();
+                throw new InvalidOperationException("User is already joined in this trip");
             }
+
+            if (this.dbContext.Trips.Any(u => u.Id == tripId && u.UserId == userId))
+            {
+                throw new InvalidOperationException("Creator can't be joined in his own trip");
+            }
+
+            var userTrip = new UserTrip
+            {
+                TripId = tripId,
+                UserId = userId,
+            };
+
+            if (this.dbContext.Trips.FirstOrDefault(t => t.Id == tripId && t.IsDeleted == false).AvailableSeats > 0)
+            {
+                this.dbContext.Trips.FirstOrDefault(t => t.Id == tripId && t.IsDeleted == false).AvailableSeats--;
+            }
+            else
+            {
+                throw new InvalidOperationException("There is no more avalable seats.");
+            }
+
+            await this.dbContext.UserTrips.AddAsync(userTrip);
+            await this.dbContext.SaveChangesAsync();
         }
 
         public async Task<int> LikeTrip(string tripId, string userId)

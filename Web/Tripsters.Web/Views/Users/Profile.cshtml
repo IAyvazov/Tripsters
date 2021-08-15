@@ -74,7 +74,7 @@
                         </small>
                     </li>
                     <li class="list-inline-item">
-                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count</h5><small class="text-muted">
+                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count()</h5><small class="text-muted">
                             <i class="fas fa-image mr-1"></i>
                             <a asp-controller="Friends" asp-action="MyFriends" asp-route-userId="@Model.UserId">Friends</a>
                         </small>
@@ -82,7 +82,7 @@
                 </ul>
             </div>
             <div class="px-4 py-3">
-                @if (Model.UserBadges.Count != 0)
+                @if (Model.UserBadges.Count() != 0)
                 {
                     <div class="p-4 rounded shadow-sm bg-light">
                         <h5 class="mb-0">Badges</h5>
@@ -117,7 +117,7 @@
                     <h5 class="mb-0"><a style="color:black" asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId">Recent Photos</a></h5>
                     <h5><a style="color:black" asp-controller="Trips" asp-action="RecentTrips" asp-route-userId="@Model.UserId">Recent Trips</a></h5>
                 </div>
-                @if (Model.Photos.Count == 0)
+                @if (Model.Photos.Count() == 0)
                 {
                     @if (Model.UserName == User.Identity.Name)
                     {

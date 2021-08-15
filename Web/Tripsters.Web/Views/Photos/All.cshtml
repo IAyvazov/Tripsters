@@ -49,7 +49,7 @@
                         </small>
                     </li>
                     <li class="list-inline-item">
-                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count</h5><small class="text-muted">
+                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count()</h5><small class="text-muted">
                             <i class="fas fa-image mr-1"></i>
                             <a asp-controller="Friends" asp-action="MyFriends" asp-route-userId="@Model.UserId">Friends</a>
                         </small>
@@ -61,7 +61,7 @@
                 <h5><a style="color:black" asp-controller="Trips" asp-action="RecentTrips" asp-route-userId="@Model.UserId">Recent Trips</a></h5>
             </div>
             <div class="row ml-5 mr-5 mb-5">
-                @if (Model.Photos.Count == 0)
+                @if (Model.Photos.Count() == 0)
                 {
                     <h1>There is no photo yet.</h1>
                 }

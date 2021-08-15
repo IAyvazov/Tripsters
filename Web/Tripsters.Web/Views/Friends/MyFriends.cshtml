@@ -39,20 +39,20 @@
                 }
                 <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                        <h5 class="font-weight-bold mb-0 d-block">@Model.Photos.Count</h5><small class="text-muted">
+                        <h5 class="font-weight-bold mb-0 d-block">@Model.Photos.Count()</h5><small class="text-muted">
                             <i class="fas fa-image mr-1"></i>
                             <a asp-controller="Photos" asp-action="All" asp-route-userId="@Model.UserId">Photos</a>
                         </small>
                     </li>
                     <li class="list-inline-item">
-                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count</h5><small class="text-muted">
+                        <h5 class="font-weight-bold mb-0 d-block">@Model.Friends.Count()</h5><small class="text-muted">
                             <i class="fas fa-image mr-1"></i>
                             <a asp-controller="Friends" asp-action="MyFriends" asp-route-userId="@Model.UserId">Friends</a>
                         </small>
                     </li>
                 </ul>
             </div>
-            @if (Model.UserBadges.Count != 0)
+            @if (Model.UserBadges.Count() != 0)
             {
                 <div class="px-4 py-3">
 

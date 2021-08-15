@@ -9,7 +9,7 @@
     {
         public int TripsPerPage { get; } = 3;
 
-        public ICollection<TripsViewModel> Trips { get; set; }
+        public IEnumerable<TripsViewModel> Trips { get; set; }
 
         public TripsUpcomingListingViewModel UpcomingTrips { get; set; }
 
@@ -20,7 +20,7 @@
         [Display(Name = "Search by text")]
         public string SearchTerm { get; set; }
 
-        public ICollection<BadgeViewModel> Badges { get; set; }
+        public IEnumerable<BadgeViewModel> Badges { get; set; }
 
         public int CategoryId { get; set; }
     }

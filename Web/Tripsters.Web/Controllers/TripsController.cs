@@ -73,7 +73,7 @@
                           t.Name.ToLower().Contains(model.SearchTerm.ToLower()))
                     .ToList();
 
-                tripCount = trips.Count;
+                tripCount = trips.Count();
             }
 
             var tripsModel = this.ConvertFromServiceToViewModel(trips);
@@ -336,7 +336,7 @@
 
             var upcomingTripsModel = new TripsUpcomingListingViewModel { TodayTrips = todayTrips, TomorrowTrips = tomorrowTrips };
 
-            var viewModel = new TripsListingModel { UpcomingTrips = upcomingTripsModel, CurrentPage = model.CurrentPage, TotalTrips = upcomingTripsModel.TodayTrips.Count + upcomingTripsModel.TomorrowTrips.Count };
+            var viewModel = new TripsListingModel { UpcomingTrips = upcomingTripsModel, CurrentPage = model.CurrentPage, TotalTrips = upcomingTripsModel.TodayTrips.Count() + upcomingTripsModel.TomorrowTrips.Count() };
 
             return this.View(viewModel);
         }
@@ -360,7 +360,7 @@
             }
 
             model = new TripsListingModel
-            { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count, Badges = badgesModel };
+            { Trips = pastTrips, CurrentPage = model.CurrentPage, TotalTrips = pastTrips.Count(), Badges = badgesModel };
 
             return this.View(model);
         }
@@ -378,7 +378,7 @@
             return this.RedirectToAction(nameof(this.Past));
         }
 
-        private ICollection<TripsViewModel> ConvertFromServiceToViewModel(ICollection<TripServiceModel> trips)
+        private IEnumerable<TripsViewModel> ConvertFromServiceToViewModel(IEnumerable<TripServiceModel> trips)
         => trips.Select(t => new TripsViewModel
         {
             Id = t.Id,

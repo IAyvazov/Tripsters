@@ -46,16 +46,16 @@
 
         public string ProfilePictureUrl { get; set; }
 
-        public ICollection<TripServiceModel> RecentTrips { get; set; }
+        public IEnumerable<TripServiceModel> RecentTrips { get; set; }
 
-        public ICollection<UserServiceModel> Friends { get; set; }
+        public IEnumerable<UserServiceModel> Friends { get; set; }
 
         [Display(Name = "Add Badge")]
 
-        public ICollection<BadgeServiceModel> UserBadges { get; set; }
+        public IEnumerable<BadgeServiceModel> UserBadges { get; set; }
 
-        public ICollection<BadgeServiceModel> AllBadges { get; set; }
+        public IEnumerable<BadgeServiceModel> AllBadges { get; set; }
 
-        public ICollection<PhotoServiceModel> Photos { get; set; }
+        public IEnumerable<PhotoServiceModel> Photos { get; set; }
     }
 }

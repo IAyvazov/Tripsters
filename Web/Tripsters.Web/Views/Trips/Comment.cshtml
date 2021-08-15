@@ -18,7 +18,7 @@
                 <a class="nav-link" asp-controller="Trips" asp-action="Members" asp-route-tripId="@Model.TripId">Members</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" asp-controller="Trips" asp-action="Comment" asp-route-tripId="@Model.TripId">Comments(@Model.Comments.Count)</a>
+                <a class="nav-link active" asp-controller="Trips" asp-action="Comment" asp-route-tripId="@Model.TripId">Comments(@Model.Comments.Count())</a>
             </li>
         </ul>
     </div>

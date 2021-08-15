@@ -4,8 +4,8 @@
 
     public class TripsUpcomingListingViewModel
     {
-        public ICollection<TripsViewModel> TodayTrips { get; set; }
+        public IEnumerable<TripsViewModel> TodayTrips { get; set; }
 
-        public ICollection<TripsViewModel> TomorrowTrips { get; set; }
+        public IEnumerable<TripsViewModel> TomorrowTrips { get; set; }
     }
 }

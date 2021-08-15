@@ -269,5 +269,453 @@
                 await service.AddComment(user.Id, "", "some comment");
             });
         }
+
+        [Fact]
+        public async Task ApprovetShouldThrowExceptionIfTripIdIsIncorect()
+        {
+            // Arrange
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+
+            var service = new TripsService(dbContext);
+
+            // Act
+            // Assert
+
+            await Assert.ThrowsAnyAsync<NullReferenceException>(async () =>
+            {
+                await service.Approve("incorectId");
+            });
+        }
+
+        [Fact]
+        public async Task ApproveShouldSetProperyIsApprovedToTrue()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId"
+            };
+
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now,
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+
+            var trip = dbContext.Trips.FirstOrDefault();
+
+            var result = await service.Approve(trip.Id);
+
+            // Assert
+            Assert.Equal(user.Id, result);
+            Assert.True(trip.IsApproved);
+        }
+
+
+        [Fact]
+        public async Task GetAllTripsCountShouldReturnAllTripsCount()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId",
+            };
+
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+            await service.AddTrip(tripData, "userId");
+            await service.AddTrip(tripData, "userId");
+            await service.AddTrip(tripData, "userId");
+
+            var allTripsCount = service.GetAllTripsCount();
+
+            await service.Approve(dbContext.Trips.FirstOrDefault().Id);
+
+            var allApprovedTripsCount = service.GetAllTripsCount();
+
+            // Assert
+            Assert.Equal(0, allTripsCount);
+            Assert.Equal(1, allApprovedTripsCount);
+        }
+
+
+        [Fact]
+        public async Task GetAllUsersTripsCountShouldReturnAllTripsCount()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId",
+            };
+
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+            await service.AddTrip(tripData, "userId");
+            await service.AddTrip(tripData, "userId");
+            await service.AddTrip(tripData, "userId");
+
+            var allTripsCount = service.GetAllUserTripsCount("userId");
+
+            await service.Approve(dbContext.Trips.FirstOrDefault().Id);
+            await service.Approve(dbContext.Trips.LastOrDefault().Id);
+
+            var allApprovedTripsCount = service.GetAllUserTripsCount("userId");
+
+            // Assert
+            Assert.Equal(0, allTripsCount);
+            Assert.Equal(2, allApprovedTripsCount);
+        }
+
+        [Fact]
+        public async Task JoinTripShouldThrowInvalidOperationExceptionIfUserIsAlreadyJoined()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId",
+            };
+
+            var newUser = new ApplicationUser
+            {
+                Id = "newUserId",
+            };
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.Users.Add(newUser);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+
+            var tripId = dbContext.Trips.FirstOrDefault().Id;
+
+            await service.JoinTrip(tripId, newUser.Id);
+            // Assert
+            Assert.Single(dbContext.UserTrips);
+            await Assert.ThrowsAnyAsync<InvalidOperationException>(async () =>
+            {
+                await service.JoinTrip(tripId, newUser.Id);
+            });
+        }
+
+        [Fact]
+        public async Task JoinTripShouldAddUserInTripMembers()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId",
+            };
+
+            var newUser = new ApplicationUser
+            {
+                Id = "newUserId",
+            };
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.Users.Add(newUser);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+
+            var tripId = dbContext.Trips.FirstOrDefault().Id;
+
+            await service.JoinTrip(tripId, newUser.Id);
+            // Assert
+            Assert.Single(dbContext.UserTrips);
+        }
+
+        [Fact]
+        public async Task JoinTripShouldThrowInvalidOperationExceptionIfAvailableSeatsAreZero()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId",
+            };
+
+            var newUser = new ApplicationUser
+            {
+                Id = "newUserId",
+            };
+
+            var anotherUser = new ApplicationUser
+            {
+                Id = "anotherUser",
+            };
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.Users.Add(newUser);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 1,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+
+            var tripId = dbContext.Trips.FirstOrDefault().Id;
+
+            await service.JoinTrip(tripId, newUser.Id);
+            // Assert
+
+            Assert.Equal(0, dbContext.Trips.FirstOrDefault().AvailableSeats);
+
+            await Assert.ThrowsAnyAsync<InvalidOperationException>(async () =>
+            {
+                await service.JoinTrip(tripId, anotherUser.Id);
+            });
+        }
+
+        [Fact]
+        public async Task JoinTripShouldThrowInvalidOperationExceptionIfUserWhoMadeTheTripTryToJoinTheTrip()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId",
+            };
+
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+
+            var tripId = dbContext.Trips.FirstOrDefault().Id;
+
+            // Assert
+
+            await Assert.ThrowsAnyAsync<InvalidOperationException>(async () =>
+            {
+                await service.JoinTrip(tripId, user.Id);
+            });
+        }
+
+        [Fact]
+        public async Task LikeShouldIncreesWithOneAndReturnCountOfLikes()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId"
+            };
+
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+            var tripId = dbContext.Trips.FirstOrDefault().Id;
+
+            var result = await service.LikeTrip(tripId, user.Id);
+
+            // Assert
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public async Task LikeShouldIncreesWithOneIfOnlyOneUserLikeThePhotoAndReturnCountOfLikes()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId"
+            };
+
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+            var tripId = dbContext.Trips.FirstOrDefault().Id;
+
+            var result = await service.LikeTrip(tripId, user.Id);
+            await service.LikeTrip(tripId, user.Id);
+
+            // Assert
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public async Task LikeShouldIncreesWithTwoIfTwoUsersLikeThePhotoAndReturnCountOfLikes()
+        {
+            // Arrange
+            var user = new ApplicationUser
+            {
+                Id = "userId"
+            };
+
+            var anotherUser = new ApplicationUser
+            {
+                Id = "anotherUserId"
+            };
+
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("test");
+
+            var dbContext = new ApplicationDbContext(optionsBuilder.Options);
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
+
+            var service = new TripsService(dbContext);
+
+            var tripData = new TripServiceFormModel
+            {
+                AvailableSeats = 2,
+                Name = "TripName",
+                Description = "TripDescription",
+                StartDate = DateTime.Now.AddDays(1),
+                CategoryId = 1,
+            };
+
+            // Act
+            await service.AddTrip(tripData, "userId");
+            var tripId = dbContext.Trips.FirstOrDefault().Id;
+
+            await service.LikeTrip(tripId, anotherUser.Id);
+            var result = await service.LikeTrip(tripId, user.Id);
+
+            // Assert
+            Assert.Equal(2, result);
+        }
     }
 }
