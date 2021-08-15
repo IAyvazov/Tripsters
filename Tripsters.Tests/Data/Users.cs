@@ -11,7 +11,8 @@
         public static IEnumerable<UserServiceModel> UserFriends
         => Enumerable.Range(0, 4).Select(i => new UserServiceModel
         {
-            UserName = "username"
+            UserName = "username",
+            Id="userId",
         });
 
         public static UserProfileServiceModel User = new UserProfileServiceModel { UserId = "userId", Friends = UserFriends.ToList() };

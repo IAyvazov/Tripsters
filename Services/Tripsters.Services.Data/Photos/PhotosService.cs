@@ -1,5 +1,6 @@
 ﻿namespace Tripsters.Services.Data.Photos
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -54,7 +55,12 @@
                .Where(u => u.Id == userId)
                .FirstOrDefault();
 
-            var photo = new Photo { Url = path.Substring(62), IsProfilePicture = false };
+            if (user == null)
+            {
+                throw new NullReferenceException("There is no such user.");
+            }
+
+            var photo = new Photo { Url = path.Substring(63), IsProfilePicture = false };
 
             user.Photos.Add(photo);
 
