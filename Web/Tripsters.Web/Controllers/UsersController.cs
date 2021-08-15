@@ -83,7 +83,7 @@
 
             await this.usersService.Edit(userData);
 
-            return this.RedirectToAction("Profile");
+            return this.RedirectToAction(nameof(this.Profile));
         }
 
         [HttpPost]

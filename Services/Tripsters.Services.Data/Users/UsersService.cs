@@ -30,6 +30,11 @@
             var user = this.GetUser(currUserId);
             var friend = this.GetUser(friendUserId);
 
+            if (user == null || friend == null)
+            {
+                throw new NullReferenceException("There is no such user");
+            }
+
             var userFriends = new UserFriend { UserId = currUserId, FriendId = friendUserId };
             var friendFriends = new UserFriend { UserId = friendUserId, FriendId = currUserId };
 
@@ -45,10 +50,19 @@
                 .Where(u => u.Id == userData.UserId)
                 .FirstOrDefault();
 
+            if (user == null)
+            {
+                throw new NullReferenceException("There is no such user");
+            }
+
             user.UserName = userData.UserName;
             user.Age = userData.Age;
             user.Email = userData.Email;
-            user.Photos.Add(new Photo { Url = userData.ProfilePictureUrl.Substring(62), UserId = user.Id, IsProfilePicture = true });
+            if (userData.ProfilePictureUrl != null)
+            {
+                user.Photos.Add(new Photo { Url = userData.ProfilePictureUrl.Substring(63), UserId = user.Id, IsProfilePicture = true });
+            }
+
             user.PhoneNumber = userData.PhoneNumber;
             user.Town = userData.Town;
 
@@ -95,8 +109,10 @@
                 .Where(p => p.IsProfilePicture == false)
                 .Count(),
                 ProfilePictureUrl = u.Photos
-                .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
-                .FirstOrDefault().Url,
+                 .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
+                  .OrderByDescending(p => p.CreatedOn)
+                 .FirstOrDefault()
+                    .Url,
                 UserBadges = u.Badges
                 .Select(b => new BadgeServiceModel
                 {
@@ -113,6 +129,7 @@
                     Age = f.Friend.Age,
                     ProfilePictureUrl = f.Friend.Photos
                     .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
+                    .OrderByDescending(p => p.CreatedOn)
                     .FirstOrDefault().Url,
                     Badges = f.Friend.Badges.Select(b => new BadgeServiceModel
                     {
@@ -155,55 +172,58 @@
                 PhoneNumber = u.PhoneNumber,
                 Town = u.Town,
                 TotalPhotos = u.Photos
-                .Where(p => p.IsProfilePicture == false && !p.IsDeleted)
-                .Count(),
+                    .Where(p => p.IsProfilePicture == false && !p.IsDeleted)
+                    .Count(),
                 CurrentPage = currentPage,
                 ProfilePictureUrl = u.Photos
-                .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
-                .FirstOrDefault().Url,
-                UserBadges = u.Badges
-                .Select(b => new BadgeServiceModel
-                {
-                    Id = b.Badge.Id,
-                    Name = b.Badge.Name,
-                    AdderId = b.AdderId,
-                })
-                .ToList(),
-                Friends = u.Friends
-                .Select(f => new UserServiceModel
-                {
-                    Id = f.FriendId,
-                    UserName = f.Friend.UserName,
-                    Age = f.Friend.Age,
-                    ProfilePictureUrl = f.Friend.Photos
                     .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
-                    .FirstOrDefault().Url,
-                    Badges = f.Friend.Badges.Select(b => new BadgeServiceModel
-                    {
-                        Id = b.Badge.Id,
-                        Name = b.Badge.Name,
-                        AdderId = b.AdderId,
-                    })
-                    .ToList(),
-                })
-                .ToList(),
+                    .OrderByDescending(p => p.CreatedOn)
+                    .FirstOrDefault()
+                        .Url,
+                UserBadges = u.Badges
+                     .Select(b => new BadgeServiceModel
+                     {
+                         Id = b.Badge.Id,
+                         Name = b.Badge.Name,
+                         AdderId = b.AdderId,
+                     })
+                     .ToList(),
+                Friends = u.Friends
+                      .Select(f => new UserServiceModel
+                      {
+                          Id = f.FriendId,
+                          UserName = f.Friend.UserName,
+                          Age = f.Friend.Age,
+                          ProfilePictureUrl = f.Friend.Photos
+                          .Where(p => p.IsProfilePicture == true && !p.IsDeleted)
+                           .OrderByDescending(p => p.CreatedOn)
+                          .FirstOrDefault().Url,
+                          Badges = f.Friend.Badges.Select(b => new BadgeServiceModel
+                          {
+                              Id = b.Badge.Id,
+                              Name = b.Badge.Name,
+                              AdderId = b.AdderId,
+                          })
+                          .ToList(),
+                      })
+                      .ToList(),
                 Photos = u.Photos
-                .Where(p => p.IsProfilePicture == false && !p.IsDeleted)
-                .Skip((currentPage - 1) * photosPerPage)
-                .Take(photosPerPage)
-                .Select(p => new PhotoServiceModel
-                {
-                    Id = p.Id,
-                    Url = p.Url,
-                    Likes = p.Likes
-                    .Select(l => new LikeServiceModel
-                    {
-                        Count = p.Likes.Count,
-                        UserName = l.User.UserName,
-                    })
-                    .ToList(),
-                })
-                .ToList(),
+                       .Where(p => p.IsProfilePicture == false && !p.IsDeleted)
+                       .Skip((currentPage - 1) * photosPerPage)
+                       .Take(photosPerPage)
+                       .Select(p => new PhotoServiceModel
+                       {
+                           Id = p.Id,
+                           Url = p.Url,
+                           Likes = p.Likes
+                           .Select(l => new LikeServiceModel
+                           {
+                               Count = p.Likes.Count,
+                               UserName = l.User.UserName,
+                           })
+                           .ToList(),
+                       })
+                       .ToList(),
                 AllBadges = this.badgesService.GetAllBadges(),
             })
             .FirstOrDefault();

@@ -17,7 +17,6 @@
 
         Task Edit(UserProfileServiceModel userData);
 
-
         Task AddFriend(string currUserId, string friendUserId);
     }
 }
