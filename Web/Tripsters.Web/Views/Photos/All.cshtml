@@ -70,7 +70,7 @@
                 {
                     <div class="col-lg-6 mb-2 pr-lg-1">
                         <img src="@photo.Url" class="img-fluid rounded shadow-sm">
-                        <a asp-controller="Photos" asp-action="Like" asp-route-photoId="@photo.Id" asp-route-currUserId="@UserManager.GetUserId(User)" asp-route-userId="@Model.UserId" class="btn btn-primary mt-2 mr-2 ml-2">👍 Like</a>
+                        <a asp-controller="Photos" asp-action="Like" asp-route-photoId="@photo.Id" asp-route-currUserId="@UserManager.GetUserId(User)" asp-route-userId="@Model.UserId" class="mt-2 mr-2 ml-2">👍 Like</a>
                         <span>
                             @if (photo.Likes.Count != 0)
                             {
@@ -84,7 +84,7 @@
                                asp-route-photoId="@photo.Id"
                                asp-route-userId="@Model.UserId"
                                asp-route-currentPage="@Model.CurrentPage"
-                               asp-route-photosPerPage="@Model.PhotosPerPage" class="btn btn-outline-danger float-right mt-2 mr-2 ml-2">Delete</a>
+                               asp-route-photosPerPage="@Model.PhotosPerPage" class="alert-danger float-right mt-2 mr-2 ml-2 ">Delete</a>
                         }
                     </div>
                 }

@@ -328,6 +328,7 @@
             return this.Redirect("/Trips/MyTrips");
         }
 
+        [Authorize]
         public IActionResult Upcoming(TripsListingModel model)
         {
             var userId = this.userManager.GetUserId(this.User);
