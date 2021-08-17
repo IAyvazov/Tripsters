@@ -1,6 +1,8 @@
 # Tripsters
 
-**Tripsters** is simple social media that help people, who want to go somewhere and to do something cool.
+**Tripsters** connects adventurous spirits from all over the country.
+
+Share your trips, find new travel buddies and go somewhere cool and exciting together!
 
 ![Tripsters](https://user-images.githubusercontent.com/69473198/129778150-d4ff36bd-4bdf-43cc-bc82-5ee13df9c044.png)
 
