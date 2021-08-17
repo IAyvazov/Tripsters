@@ -6,7 +6,7 @@
     using Tripsters.Tests.Data;
     using Tripsters.Web;
 
-    public class TripsControllerTests
+    public class TripsControllerSeleniumTests
     {
         [Fact]
         public void TripsAllShouldReturnH1ElementWithAllTripsText()

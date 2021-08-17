@@ -3,15 +3,15 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Tripsters.Data.Models;
+    using Tripsters.Services.Data.Trips.Models;
 
     public static class Categories
     {
-        public static IEnumerable<Category> ThreeCategories
-           => Enumerable.Range(0, 3).Select(i => new Category
+        public static IEnumerable<TripCategoryServiceModel> ThreeCategories
+           => Enumerable.Range(0, 3).Select(i => new TripCategoryServiceModel
            {
-               Name = "name",
-               Id=1,
+               Name = $"name{i}",
+               Id = 1 + i,
            });
     }
 }

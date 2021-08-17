@@ -6,7 +6,7 @@
     using Tripsters.Tests.Data;
     using Tripsters.Web;
 
-    public class HomeControllerTests
+    public class HomeControllerSeleniumTests
     {
         [Fact]
         public void IndexShouldVisualizeFiveButtons()
@@ -27,7 +27,7 @@
             // Assert
             Assert.NotNull(buttons);
             Assert.Contains(buttons, b => b.Text.Contains("Make Trip"));
-            Assert.Contains(buttons, b => b.Text.Contains("All trips"));
+            Assert.Contains(buttons, b => b.Text.Contains("All Trips"));
             Assert.Contains(buttons, b => b.Text.Contains("Sky"));
             Assert.Contains(buttons, b => b.Text.Contains("Water"));
             Assert.Contains(buttons, b => b.Text.Contains("Mountain"));

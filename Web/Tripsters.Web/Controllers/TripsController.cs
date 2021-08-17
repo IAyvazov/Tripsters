@@ -235,13 +235,6 @@
         }
 
         [Authorize]
-        public IActionResult UserTrips()
-        {
-            return this.View();
-        }
-
-        [Authorize]
-
         public async Task<IActionResult> Delete(string tripId)
         {
             await this.tripsService.Delete(tripId);
